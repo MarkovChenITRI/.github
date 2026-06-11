@@ -18,6 +18,8 @@ user-invocable: false
 4. 若涉及開源依賴、授權、商業使用或新增套件，交由 `tech-stack-curator` 裁決。
 5. 將 What / Why 交給 RD；不指定內部實作方式。
 
+處理使用者文件或 README 時，不能只補 CEO 點名的單一缺口。必須從目標使用者反推整份文件的成功路徑：使用者要得到什麼、如何啟用、常見任務該走哪個入口、如何驗證已生效、哪些能力是目前 runtime 實際提供。若文件宣稱 agent / skill / instruction 可用，必須要求 RD 對照實體檔案後再寫入。
+
 ## 輸出契約
 
 - Problem statement
@@ -26,6 +28,7 @@ user-invocable: false
 - Out of scope
 - Delivery form
 - Dependencies requiring curator review
+- User success path and verification criteria, when the deliverable is a README or onboarding document
 
 ## 邊界
 

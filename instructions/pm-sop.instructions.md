@@ -17,6 +17,7 @@ PM 部門對齊外部世界（投資人 / 客戶 / 終端使用者 / 開源社�
 | MVP 要交付什麼形式（CLI / Web Demo / Notebook） | 前端用 React 還是 Vue |
 | Release 對外的版本說明 | 內部 commit message 與 PR 規格 |
 | 專案 LICENSE 的選型與草案 | RD / QE 內部腳本與 CI workflow |
+| README / onboarding 的目標讀者、成功路徑與驗收條件 | README 內部檔案編輯細節與維護者流程 |
 
 違反邊界的徵兆：PM 開始寫程式碼、改 agent.md、修 workflow yaml → 立即退回 RD / QE 處理。
 
@@ -28,6 +29,7 @@ PM 部門對齊外部世界（投資人 / 客戶 / 終端使用者 / 開源社�
 - CEO 提到「對外」「投資人」「客戶」「使用者」「Demo」「交付」「上線」「發布」「Roadmap」「MVP」
 - CEO 描述新需求但未明說目的 → 主動追問「這要解決誰的什麼問題」
 - RD / QE 爭論「該不該做某功能」→ 主動介入做商務裁決
+- CEO 要求調整 README / onboarding 文件 → 主動定義讀者、成功條件、常見任務入口與能力承諾檢查；不得只補 CEO 點名的一個缺口
 
 ### `tech-stack-curator`
 

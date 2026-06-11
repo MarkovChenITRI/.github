@@ -1,38 +1,28 @@
 # `.github` —— Connect AI 的 VS Code Copilot Runtime
 
-本 repo 是 Connect AI 公司化開發規範的 **VS Code Copilot 端自足 runtime**。子專案只需掛載本 repo，即可在 VS Code Copilot 取得完整的 agent organization、部門 SOP、深度 skill playbook 與公司憲法。
+本 repo 是 Connect AI 公司化開發規範的 **VS Code Copilot 端自足 runtime**。子專案只需掛載本 repo，即可在 VS Code Copilot 取得完整的七位員工 agent、部門 SOP、深度 skill playbook 與公司憲法。
 
-> **擇一掛載原則**：使用 VS Code Copilot → 掛 `.github/`；使用 Claude Code → 掛 `.claude/`。兩個 repo 互為內容等效鏡像，同一個工具不需要兩個都掛。
+> 使用 Claude Code 的使用者，請掛載 `.claude/` 並閱讀 `.claude/README.md`。兩個 repo 各自服務自己的 AI 工具，使用時不要把一邊的檔案複製到另一邊。
 
-## 目錄結構
+## 你會得到的能力
 
-```
-.github/
-├── README.md                       # 本檔
-├── copilot-instructions.md         # 公司憲法（VS Code Copilot 全域常駐）
-├── instructions/                   # 部門 SOP（依 applyTo 條件自動載入）
-│   ├── cross-team.instructions.md
-│   ├── pm-sop.instructions.md
-│   ├── rd-sop.instructions.md
-│   ├── qe-sop.instructions.md
-│   └── hr-sop.instructions.md
-├── agents/                         # 員工 custom agents（角色、工具白名單、handoffs）
-    ├── product-strategy-manager.agent.md
-    ├── tech-stack-curator.agent.md
-    ├── architecture-research-developer.agent.md
-    ├── senior-software-engineer.agent.md
-    ├── testing-quality-engineer.agent.md
-    ├── skill-talent-acquisition.agent.md
-    └── skill-quality-auditor.agent.md
-└── skills/                         # 深度 playbook（按需載入）
-    ├── product-strategy-manager/SKILL.md
-    ├── tech-stack-curator/SKILL.md
-    ├── architecture-research-developer/SKILL.md
-    ├── senior-software-engineer/SKILL.md
-    ├── testing-quality-engineer/SKILL.md
-    ├── skill-talent-acquisition/SKILL.md
-    └── skill-quality-auditor/SKILL.md
-```
+掛載後，你不需要每次手動貼規範給 Copilot。VS Code 會自動或按需讀取下列內容：
+
+| 你想要 | 使用方式 | 本 repo 提供 |
+|--------|----------|-------------|
+| 讓 Copilot 一直遵守 Connect AI 的工作方式 | 直接在 Chat / Agent mode 提問 | `.github/copilot-instructions.md` |
+| 讓特定任務套用對應部門 SOP | 描述任務或開啟相關檔案 | `.github/instructions/*.instructions.md` |
+| 讓特定員工處理任務 | 從 Agent picker 選取，或輸入 `@agent-name` | `.github/agents/*.agent.md` |
+| 啟動深度 playbook | 輸入 `/skill-name`，或讓 Copilot 依任務自動匹配 | `.github/skills/*/SKILL.md` |
+
+## 五分鐘啟用路徑
+
+1. 在子專案根目錄掛載 `.github/`。
+2. 用 `Chat: Open Customizations` 確認 Instructions、Agents、Skills 都有載入。
+3. 從 Agent picker 選一位員工，或在 Chat 直接輸入 `@agent-name`。
+4. 第一次任務建議先從 PM 開始，讓需求、受眾與驗收標準先被定義清楚。
+
+完成後，使用者應該能做到三件事：知道 Copilot 會自動遵守哪些共識、知道該選哪位 agent、知道問題發生時去哪裡檢查載入狀態。
 
 ## 安裝
 
@@ -43,37 +33,134 @@ git submodule add https://github.com/MarkovChenITRI/.github.git .github
 git commit -m "chore: add .github submodule (VS Code Copilot runtime)"
 ```
 
-掛載後，VS Code Copilot 會偵測：
-- `.github/copilot-instructions.md`（全域常駐，公司憲法）
-- `.github/instructions/*.instructions.md`（依 `applyTo` 或語意匹配注入）
-- `.github/agents/*.agent.md`（員工 custom agents，透過 agent picker、`@`、handoff 或 subagent 使用）
-- `.github/skills/*/SKILL.md`（深度 playbook，先讀 metadata，任務相關時按需載入全文）
+掛載後，VS Code Copilot 會偵測 `.github/copilot-instructions.md`、`.github/instructions/`、`.github/agents/` 與 `.github/skills/`，讓 Copilot 自動取得 Connect AI 的協作規範與員工角色。
 
-## VS Code 1.99+ 載入行為
+## 可用 Agent 與責任範圍
 
-| 機制 | 來源路徑 | 預設行為 |
-|------|----------|---------|
-| 全域指令 | `.github/copilot-instructions.md` | 自動載入 |
-| 條件式 SOP | `.github/instructions/` | `applyTo` 比對後注入 |
-| 員工 Agent | `.github/agents/` | `@agent-name` 呼叫 |
-| 深度 Skill | `.github/skills/` | 依 `name` / `description` 按需載入 |
-| 跨工作流 handoffs | agent frontmatter 的 `handoffs:` | 對話結束後顯示按鈕 |
+| 可用 Agent | 部門 | 適合交給他處理的事 | 不適合交給他的事 |
+|-----------|------|----------------------|------------------|
+| `product-strategy-manager` | PM | 釐清使用者、商務目標、MVP、驗收標準、交付形式 | 寫程式、決定技術實作細節 |
+| `tech-stack-curator` | PM | 評估開源依賴、授權相容性、商用風險、LICENSE 草案 | 整合套件到程式碼 |
+| `architecture-research-developer` | RD | 設計模組邊界、依賴方向、public API、不變式與架構藍圖 | 寫函式內部實作 |
+| `senior-software-engineer` | RD | 依架構藍圖實作、重構、命名、unit test、Clean Code | 決定商務範圍或驗收標準 |
+| `testing-quality-engineer` | QE | 設計測試策略、CI/CD、整合測試、E2E、驗收驗證 | 直接修改 RD 程式碼或決定架構 |
+| `skill-talent-acquisition` | HR | 需要新增或擴充 AI 協作能力、萃取新的 skill / persona | 評分既有 skill 或做品質稽核 |
+| `skill-quality-auditor` | HR | 回顧協作品質、記錄規範落差、檢查 skill 是否貼近實際決策 | 招募新角色或直接改業務/技術決策 |
+
+## 常見任務該找誰
+
+| 使用者現在想做 | 建議入口 | 第一個提示詞可以這樣寫 |
+|----------------|----------|--------------------------|
+| 需求還很模糊，不確定要做成什麼 | `@product-strategy-manager` | `@product-strategy-manager 幫我把這個想法整理成目標使用者、MVP 與驗收標準` |
+| 想引用新套件、框架或模型 | `@tech-stack-curator` | `@tech-stack-curator 審查這個依賴是否適合商用與目前授權` |
+| 不確定模組邊界或依賴方向 | `@architecture-research-developer` | `@architecture-research-developer 先幫我定義模組邊界與依賴方向` |
+| 已有架構藍圖，要開始改程式 | `@senior-software-engineer` | `@senior-software-engineer 依照這份藍圖實作，並保持 Clean Code` |
+| 想確認怎麼驗證這次變更 | `@testing-quality-engineer` | `@testing-quality-engineer 幫我設計這次變更的測試與驗收方式` |
+| 需要新增一種 AI 協作能力 | `@skill-talent-acquisition` | `@skill-talent-acquisition 幫我判斷是否需要蒸餾新的 skill 或 agent` |
+| 發現 AI 協作方式和實際期待有落差 | `@skill-quality-auditor` | `@skill-quality-auditor 回顧這次對話，找出值得記錄的規範落差` |
+
+## 第一次啟用檢查
+
+掛載後請在 VS Code 執行以下檢查，確認 Copilot 真的讀到本模組：
+
+1. 執行 `Chat: Open Customizations`，在 Instructions、Agents、Skills 分頁確認來源包含 `.github/`。
+2. 在 Chat 輸入 `/`，確認可搜尋到七個 Connect AI skills。
+3. 打開 Agent picker，確認可選七位員工 agent。
+4. 在 Chat 視窗右鍵開啟 Diagnostics，確認沒有載入錯誤。
+
+若 VS Code 只開啟 monorepo 的子資料夾，Copilot 預設只找目前 workspace 內的 customization。此時請打開 repo root，或啟用 `chat.useCustomizationsInParentRepositories` 讓 VS Code 往父層 repo 尋找 `.github/`。
+
+## 日常工作流
+
+### 1. 讓全域規範自動生效
+
+一般聊天、改程式、寫文件時不用特別指定；`.github/copilot-instructions.md` 會自動提供 Connect AI 的全域原則，例如繁體中文、Clean Architecture、Rollback first、Self-verification、YAGNI、部門分工邊界。
+
+如果你的子專案有自己的技術棧或啟動方式，請只在子專案層補充：
+
+```markdown
+## 本專案補充規範
+技術棧：Python 3.12 + FastAPI + PostgreSQL
+測試指令：pytest tests/ -v
+部署環境：Docker + GCP Cloud Run
+```
+
+不要把七位員工的角色定義複製到子專案文件；角色與 SOP 由本 `.github/` runtime 統一提供。
+
+### 2. 選擇正確員工
+
+需要特定職能時，請直接從 Agent picker 選員工，或在 Chat 使用 `@agent-name`：
+
+```text
+@product-strategy-manager 幫我把這個需求拆成 MVP 與驗收標準
+@architecture-research-developer 先定義模組邊界與依賴方向
+@senior-software-engineer 依照架構藍圖實作
+@testing-quality-engineer 針對這次變更設計驗證策略
+@tech-stack-curator 審查這個 npm 套件的授權風險
+```
+
+建議順序是 PM 先定義 What / Why，RD 架構師定義藍圖，RD 工程師實作，QE 驗證。跨 agent 的 handoff 會在回覆後出現建議按鈕；使用者可檢查上一階段結果後再交棒，不會被迫自動跳下一步。
+
+### 3. 使用深度 skill
+
+Skills 是按需載入的 playbook。當任務描述符合 `SKILL.md` 的 `description` 時，Copilot 可能自動載入；你也可以輸入 slash command 明確觸發：
+
+```text
+/architecture-research-developer 分析目前服務拆分是否違反 Clean Architecture
+/senior-software-engineer 重構這段程式並補 unit test
+/testing-quality-engineer 檢查這個 PR 的測試金字塔是否合理
+```
+
+Skill body 載入後會進入目前對話 context；如果只是想讓某個角色持續處理整段任務，優先選 custom agent。如果是要啟動一段可重複程序或深度 checklist，優先用 skill。
+
+### 4. 檢查 Copilot 實際用了哪些規範
+
+Copilot 回覆底部的 References 可能顯示使用到的 instruction / skill。若行為不如預期：
+
+- 用 `Chat: Open Customizations` 查看來源檔案是否存在。
+- 用 Chat Diagnostics 查看載入錯誤。
+- 確認目前提問是否明確提到想使用的員工、部門或工作類型。
+- 若 skill 沒有出現在 `/` 選單，重啟 VS Code 或重新開啟 workspace 後再確認。
+
+## 使用者檢查清單
+
+- [ ] 子專案已掛載 `.github/`。
+- [ ] `Chat: Open Customizations` 能看到 Instructions、Agents、Skills。
+- [ ] Agent picker 能看到七位員工。
+- [ ] `/` 選單能找到需要的 skill。
+- [ ] 已用一個真實任務測試 agent 是否能被選用。
+- [ ] 子專案已補技術棧、測試指令、部署限制。
+
+## 使用者會看到的檔案
+
+```
+.github/
+├── README.md                       # 本檔
+├── copilot-instructions.md         # 公司憲法（VS Code Copilot 全域常駐）
+├── instructions/                   # 部門 SOP（依任務或檔案自動載入）
+│   ├── cross-team.instructions.md
+│   ├── pm-sop.instructions.md
+│   ├── rd-sop.instructions.md
+│   ├── qe-sop.instructions.md
+│   └── hr-sop.instructions.md
+├── agents/                         # 員工 custom agents（角色、可用工具、handoffs）
+│   ├── product-strategy-manager.agent.md
+│   ├── tech-stack-curator.agent.md
+│   ├── architecture-research-developer.agent.md
+│   ├── senior-software-engineer.agent.md
+│   ├── testing-quality-engineer.agent.md
+│   ├── skill-talent-acquisition.agent.md
+│   └── skill-quality-auditor.agent.md
+└── skills/                         # 深度 playbook（按需載入）
+    ├── product-strategy-manager/SKILL.md
+    ├── tech-stack-curator/SKILL.md
+    ├── architecture-research-developer/SKILL.md
+    ├── senior-software-engineer/SKILL.md
+    ├── testing-quality-engineer/SKILL.md
+    ├── skill-talent-acquisition/SKILL.md
+    └── skill-quality-auditor/SKILL.md
+```
 
 ## 邊緣情境：同時使用 VS Code Copilot 與 Claude Code
 
-若子專案同時需要兩個工具，可分別掛載兩個 repo：
-
-```bash
-git submodule add https://github.com/MarkovChenITRI/.github.git .github
-git submodule add https://github.com/MarkovChenITRI/.claude.git .claude
-git commit -m "chore: add both runtime submodules"
-```
-
-兩個 repo 互為內容等效鏡像，各自為自己工具的單一真相源。決策指南詳見 [docs/dual-repo-workflow.md](docs/dual-repo-workflow.md)。
-
-## 維護注意
-
-- 修改 `instructions/` 時注意 `applyTo` glob 寬度，避免污染所有對話 context。
-- 修改 `agents/` 的 `tools` 白名單需明確權衡：寬鬆容易越權，過嚴 agent 無法工作。
-- 修改 `skills/` 時保持 `name` 與資料夾名稱一致，並把高頻規則留在 instructions，避免 skill 變成常駐憲法。
-- 本 repo 不應作為 nested submodule 出現在 `.claude/` 內，反之亦然。
+一般 Copilot 使用者只需要掛 `.github/`。若同一個子專案同時使用 VS Code Copilot 與 Claude Code，請先閱讀 [docs/dual-repo-workflow.md](docs/dual-repo-workflow.md)，確認是否真的需要雙掛，以及如何避免重複載入規範。
