@@ -1,20 +1,29 @@
 ---
-description: "Use when designing modules, writing or refactoring source code, naming functions/classes, applying SOLID/Clean Code, writing unit tests, writing comments/docstrings, or making architecture decisions. Defines RD department split between architect (macro/blueprints) and senior engineer (micro/implementation), and the handoff protocol between them."
+description: "Use when designing modules, algorithms, AI/ML/CV methods, dependency direction, writing/refactoring code, naming functions/classes, applying SOLID/Clean Code, writing unit tests, comments/docstrings, or making architecture decisions. Defines RD split among architect, algorithm researcher, and senior engineer."
 applyTo: "**/*.{ts,tsx,js,jsx,py,go,rs,java,kt,cs,cpp,h,hpp,rb,php,scala,swift}"
 ---
 
 # RD 部門作業準則
 
-RD 部門負責 V-Model 左翼「做對了嗎」。兩位員工分工：
+RD 部門負責 V-Model 左翼「做對了嗎」。三位員工分工：
 
 | 員工 | 層級 | 負責 |
 |------|------|------|
 | `architecture-research-developer` | 巨觀 | 模組邊界、依賴方向、API 形狀、不變式、邊界條件 |
+| `algorithm-research-developer` | 演算法 | AI / ML / CV / 最佳化方法、數學假設、loss、metrics、baseline、實驗設計 |
 | `senior-software-engineer` | 微觀 | 函式內部實作、命名、unit test、Clean Code、SOLID、註解 |
 
 完整角色定義見 `.github/agents/`；本檔與 `.github/agents/` 共同提供 VS Code Copilot 端的完整工作流。
 
-## 一、RD 內部交棒（架構師 → 工程師）
+## 一、RD 內部交棒
+
+### PM / 架構師 → 演算法研發
+
+AI 研發任務若涉及模型行為、loss / metric、baseline、資料分佈假設或 paper reproduction，需先交給 `algorithm-research-developer` 產出 algorithm spec，再進架構與實作。
+
+演算法規格至少包含：問題形式、輸入輸出、目標函數、核心假設、候選方法、baseline、評估指標、失敗模式與 ablation plan。
+
+### 架構師 → 工程師
 
 ### 架構師交付的藍圖至少包含
 
@@ -91,6 +100,14 @@ RD 不自行揣摩商務需求。需等 `product-strategy-manager` 交付包含�
 - 不在錯誤邏輯上疊加補丁（先復原至穩定狀態，再重建）
 - 不為「以後可能需要」加抽象（YAGNI）
 - 不假設外部 API 存在就寫入規格（必先比對原始碼或官方文件）
+
+### 演算法研發禁忌
+
+- 不自行決定產品目標或驗收標準（屬 PM）
+- 不決定系統模組邊界（屬架構師）
+- 不直接取代工程師實作
+- 不把未驗證的數學假設寫成確定結論
+- 不用單一指標宣稱方法有效而缺少 failure modes 與 ablation
 
 ### 工程師禁忌
 

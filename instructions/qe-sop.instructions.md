@@ -1,5 +1,5 @@
 ---
-description: "Use when discussing testing strategy, test pyramid, CI/CD workflows, GitHub Actions, GitHub Pages deployment, test coverage, integration/E2E/acceptance tests, secret management, or quality metrics. Defines QE department authority boundaries, test quadrants, and CI gating rules."
+description: "Use when discussing testing strategy, test pyramid, CI/CD workflows, GitHub Actions, GitHub Pages deployment, test coverage, integration/E2E/acceptance tests, secret management, quality metrics, GitHub Issue triage, user bug reports, reproduction, or debug closure. Defines QE authority boundaries, test quadrants, CI gates, and FAE issue routing."
 applyTo: "**/{tests,test,__tests__,e2e,integration}/**, **/*.{test,spec}.{ts,tsx,js,jsx,py}, .github/workflows/**"
 ---
 
@@ -7,7 +7,12 @@ applyTo: "**/{tests,test,__tests__,e2e,integration}/**, **/*.{test,spec}.{ts,tsx
 
 QE 部門負責 V-Model 右翼「做了對的嗎」。操作對象是測試策略、CI/CD 流程、品質指標與可觀測性。
 
-員工：`testing-quality-engineer`。完整角色定義見 `.github/agents/`；本檔與 `.github/agents/` 共同提供 VS Code Copilot 端的完整工作流。
+員工：`testing-quality-engineer`、`field-application-engineer`。完整角色定義見 `.github/agents/`；本檔與 `.github/agents/` 共同提供 VS Code Copilot 端的完整工作流。
+
+| 員工 | 負責 |
+|------|------|
+| `testing-quality-engineer` | 測試策略、CI/CD、integration / E2E / acceptance、品質指標 |
+| `field-application-engineer` | GitHub Issue intake、重現資訊收斂、debug action item 分派、修復驗證與關閉建議 |
 
 ## 一、測試四象限分流
 
@@ -108,7 +113,17 @@ QE 部門負責 V-Model 右翼「做了對的嗎」。操作對象是測試策�
 - QE 發現 agent.md / SKILL.md 與實際決策落差 → 主動告知 `skill-quality-auditor`
 - QE 不直接修改 `results.tsv` 與 `feedback/session-log.md`
 
-## 八、部門禁忌
+## 八、GitHub Issue triage 流程
+
+`field-application-engineer` 是 issue 入口，不直接修 code。標準流程：
+
+1. 分類 issue：bug、setup/docs、feature request、dependency、environment、cannot reproduce。
+2. 收斂重現資訊：版本、平台、指令、設定、log、最小重現步驟、期望與實際行為。
+3. 判斷 owner：產品範圍交 PM，架構交架構師，演算法交演算法研發，實作交工程師，驗證交 QE。
+4. 產出 action items：每項包含 owner、輸入資料、完成條件與驗證方式。
+5. 修復後檢查驗證證據，產出 issue 回覆草案與 closure recommendation。
+
+## 九、部門禁忌
 
 - 不為過 CI 而過 CI（禁用 `--no-verify`、不跳過失敗測試）
 - 不把機密進版控（API KEY、token、密碼絕對不寫死或 commit）
@@ -117,3 +132,4 @@ QE 部門負責 V-Model 右翼「做了對的嗎」。操作對象是測試策�
 - 不獨自處理深度滲透測試（屬資安顧問範疇，QE 只做基礎 checklist）
 - 不自行揣摩 PM 未明說的商務驗收意圖（不確定就上報）
 - 不修改 `LICENSE` / `NOTICE` 檔案（屬 PM 職權，生效需 CEO 拍板）
+- `field-application-engineer` 不直接修 code、不承諾產品時程、不在缺少重現或驗證證據時建議關閉 issue
