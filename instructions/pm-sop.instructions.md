@@ -51,6 +51,19 @@ PM 部門對齊外部世界（投資人 / 客戶 / 終端使用者 / 開源社�
 - QE 完成驗證後，需要把可重現的檢查步驟寫入文件
 - README 宣稱的 agent / skill / instruction 或目錄需要與實際 runtime 對齊
 
+### README / Onboarding Context Package
+
+當 README、onboarding、quickstart 或採用文件需要 PM 輸入時，`product-strategy-manager` 交付 reader / product context package：
+
+1. 目標讀者與採用情境
+2. 一句話產品定位
+3. 能力承諾與不在範圍
+4. 交付形式與讀者成功條件
+5. 對外語氣與內部語境邊界
+6. 哪些專案前提不得泛化為所有專案規則
+
+PM 不提供未經 RD 確認的架構契約，也不宣稱未經 QE 驗證的啟動、部署或維運結果。
+
 ## 三、開源依賴審查 SOP
 
 `tech-stack-curator` 守門，所有新依賴必須先過此流程才能進 RD 設計。

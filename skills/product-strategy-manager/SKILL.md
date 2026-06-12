@@ -21,6 +21,18 @@ user-invocable: false
 
 處理使用者文件或 README 時，不能只補 CEO 點名的單一缺口。必須從目標使用者反推整份文件的成功路徑：使用者要得到什麼、如何啟用、常見任務該走哪個入口、如何驗證已生效、哪些能力是目前 runtime 實際提供。若文件宣稱 agent / skill / instruction 可用，必須要求 RD 對照實體檔案後再寫入。
 
+## Reader / Product Context Package
+
+交給 `documentation-experience-manager` 的 README / onboarding 上游輸入至少包含：
+
+- 目標讀者與採用情境：採用者、部署者、接手開發者、維運者或其他明確角色。
+- 一句話定位：這個專案是什麼、為什麼存在。
+- 能力承諾與不在範圍：哪些可以對外說，哪些只是內部工作目標或未驗證假設。
+- 交付形式與成功條件：讀者看完後應能啟動、部署、驗收、維護或找到下一步。
+- 文件語氣邊界：外部採用文件避免 CEO / PM / RD / QE 內部交接語；內部 PoC 或研究文件可採較精簡的接手語境。
+
+單一專案指定的雲端、部署路徑或文件範例不可直接泛化為所有專案規則；是否採為通用風格需 CEO 裁決。
+
 ## 輸出契約
 
 - Problem statement
@@ -31,9 +43,11 @@ user-invocable: false
 - Delivery form
 - Dependencies requiring curator review
 - User success path and verification criteria, when the deliverable is a README or onboarding document
+- Reader / product context package, when handing off to documentation
 
 ## 邊界
 
 - 不寫程式、不設計 package 結構、不決定測試策略。
 - 技術不可行由 RD 回報後再重切 scope。
 - 不替 RD 指定實作手法；PM 只能要求刪減未被使用者價值或驗收標準支撐的設計範圍。
+- 不把單一專案的文件形式、雲端選型或範例頁面泛化成所有 README 的硬規格。

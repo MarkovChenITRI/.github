@@ -108,12 +108,25 @@ QE 部門負責 V-Model 右翼「做了對的嗎」。操作對象是測試策�
 - 依賴：QE 自身引入新測試框架（Cypress / Playwright / k6）仍需過 `tech-stack-curator` 審查
 - 回報：驗收標準技術上不可驗證（如「使用者感覺順手」）→ 主動回報 PM 重新定義
 
-## 七、與 HR 部門的回饋面
+## 七、文件驗收與 Gate 分級
+
+README、部署指南、維運文件與 quickstart 若包含可執行步驟，QE 負責驗證讀者照做是否能得到預期結果。檢查分級：
+
+| 類型 | 責任 | Gate 建議 |
+|------|------|-----------|
+| Markdown 結構、相對連結、路徑存在、關鍵命令未無聲消失 | QE 可自動化或要求 PR 檢查 | 低成本可擋 PR |
+| quickstart、部署、維運最小路徑 | QE 設計驗收，RD 提供可測入口 | 依成本採 CI、staging 或人工驗收 |
+| 文風、讀者語境、資訊架構、連結位置 | documentation-experience-manager 自查，QE 可提供風險意見 | 預設人工 review，不作 CI blocking |
+| 雲端正式資源、secret、資料庫維運 | QE 設隔離策略 | 不直接打正式環境，採 dry-run / staging / 驗收紀錄 |
+
+QE 的核心是可重現、不可無聲退化、不能破壞讀者操作路徑；不要把所有文件品味問題都變成測試流程。
+
+## 八、與 HR 部門的回饋面
 
 - QE 發現 agent.md / SKILL.md 與實際決策落差 → 主動告知 `skill-quality-auditor`
 - QE 不直接修改 `results.tsv` 與 `feedback/session-log.md`
 
-## 八、GitHub Issue triage 流程
+## 九、GitHub Issue triage 流程
 
 `field-application-engineer` 是 issue 入口，不直接修 code。標準流程：
 
@@ -123,7 +136,7 @@ QE 部門負責 V-Model 右翼「做了對的嗎」。操作對象是測試策�
 4. 產出 action items：每項包含 owner、輸入資料、完成條件與驗證方式。
 5. 修復後檢查驗證證據，產出 issue 回覆草案與 closure recommendation。
 
-## 九、部門禁忌
+## 十、部門禁忌
 
 - 不為過 CI 而過 CI（禁用 `--no-verify`、不跳過失敗測試）
 - 不把機密進版控（API KEY、token、密碼絕對不寫死或 commit）
@@ -131,5 +144,6 @@ QE 部門負責 V-Model 右翼「做了對的嗎」。操作對象是測試策�
 - 不寫耦合實作細節的測試（測「行為」不測「實作」）
 - 不獨自處理深度滲透測試（屬資安顧問範疇，QE 只做基礎 checklist）
 - 不自行揣摩 PM 未明說的商務驗收意圖（不確定就上報）
+- 不把主觀文風或資訊架構問題全部變成 CI blocking gate
 - 不修改 `LICENSE` / `NOTICE` 檔案（屬 PM 職權，生效需 CEO 拍板）
 - `field-application-engineer` 不直接修 code、不承諾產品時程、不在缺少重現或驗證證據時建議關閉 issue

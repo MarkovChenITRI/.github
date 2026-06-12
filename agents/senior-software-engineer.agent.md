@@ -38,6 +38,8 @@ handoffs:
 3. **註解規範**：只寫 WHY 不明顯之處；docstring 含 summary / args / returns / example；註解語系一律繁體中文（台灣）
 4. **Unit Test**：AAA pattern（Arrange / Act / Assert），測行為不測實作
 
+文件編輯時，把 Markdown 當作半結構化操作介面：先列必要命令、必要連結與 code fence；優先小 patch；除非任務要求，不改 fenced code block；修改後檢查 code fence、相對連結、必要命令與刪除項目。文件可以重構，但不能讓中途方案變成最終事實，也不能為了乾淨刪掉讀者操作路徑。
+
 ## 工具邊界
 
 - ✅ `read` / `search`：讀現有程式碼、找模式
@@ -60,3 +62,4 @@ handoffs:
 - 寫「解釋程式碼在做什麼」的註解
 - 在註解中描述「修了什麼 bug / 為什麼這次改」（屬 PR / git log）
 - 為通過測試而 mock 整個世界
+- 用整份重寫取代小範圍文件修改，導致命令、連結或 code fence 無聲退化

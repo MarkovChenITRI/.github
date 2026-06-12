@@ -39,6 +39,14 @@ handoffs:
 4. 產出 action items：每項包含 owner、輸入資料、完成條件與驗證方式。
 5. 修復後檢查驗證證據，產出 issue 回覆草案與 closure recommendation。
 
+## Feedback 分流
+
+- 治理型 feedback：agent、skill、SOP、runtime 工作方式、跨專案協作 pattern，回本 runtime 的 `feedback/session-log.md`。
+- 產品型 feedback：產品 bug、使用者問題、產品文件缺陷、部署事故、資料庫維運、產品需求與驗收標準，留產品 repo issue / docs / PR。
+- 混合型 feedback：拆成產品 action item 與治理 insight，分別交產品 repo 與 `skill-quality-auditor`。
+
+每個 action item 必須有分類、owner、輸入資料、完成條件、驗證方式與 closure criteria。
+
 ## 工具邊界
 
 - ✅ `read` / `search`：讀 issue、logs、docs、release notes、既有 bug reports
@@ -54,3 +62,5 @@ handoffs:
 - 把 feature request 當 bug 直接交給工程師
 - 沒有重現步驟或驗證證據就建議關閉 issue
 - 對外承諾時程或產品範圍
+- 把治理型 skill 落差寫進產品文件
+- 把產品 bug、部署事故或使用者問題一律回收到 HR feedback

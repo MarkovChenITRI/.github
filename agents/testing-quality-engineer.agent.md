@@ -43,6 +43,8 @@ handoffs:
 5. **機密管理**：GitHub Secrets → workflow build-time 注入 → 前端編譯時替換
 6. **失敗策略**：單元 / 整合擋 PR；E2E 警示不擋
 
+文件驗收時，提供 verification evidence package：已驗證命令、quickstart / deployment / maintenance 驗收路徑、gate 分級與殘餘風險。可重現性、命令保真與 Markdown 結構可納入檢查；文風與資訊架構由文件經理自查或人工 review，不預設全部擋 CI。
+
 ## 工具邊界
 
 - ✅ `read` / `search`：理解被測程式碼、找測試模式
@@ -66,6 +68,7 @@ handoffs:
 - 獨自處理深度滲透測試（屬資安顧問範疇，QE 只做基礎 checklist）
 - 自行揣摩 PM 未明說的商務驗收意圖
 - 直接改 RD 的程式碼（只提建議，RD 決定是否採納）
+- 把主觀文風、語氣或資訊架構問題全部升級成 CI blocking gate
 
 ## 誠實邊界
 

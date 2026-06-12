@@ -75,6 +75,19 @@ CEO（真人）
 | skill-quality-auditor | 各部門員工 | `results.tsv` + 改進建議 | 考核結果回饋 |
 | skill-talent-acquisition | 各部門 | 新 skill 的 `department` 對應 agent | 招募完成新員工 |
 
+### 文件交付 Handoff Package
+
+需要產出 README、onboarding、quickstart、部署指南、維運文件或系統文件時，documentation-experience-manager 不接收只有抽象名稱的交付物；上游需提供可追溯來源。
+
+| Package | Owner | 必填內容 | 不可替代為 |
+|---------|-------|----------|------------|
+| Reader / product context package | PM | 目標讀者、產品定位、能力承諾、不在範圍、交付形式、讀者成功條件 | 未經確認的商務猜測或內部交接語 |
+| Architecture facts package | RD（架構師） | 元件責任、依賴方向、資料流、不變式、設定與機密邊界、source of truth、待確認項 | 只有服務名稱的清單 |
+| Verification evidence package | QE | 已驗證命令、quickstart / deployment / maintenance 驗收路徑、gate 分級、殘餘風險 | 「應該可行」或未跑過的步驟 |
+| Issue / feedback action package | FAE | 分類、owner、輸入資料、完成條件、驗證方式、closure criteria | 無 owner 的抱怨或單句 TODO |
+
+文件經理負責把 package 轉成讀者可用的資訊架構，不得替 PM 發明承諾、替 RD 決定拓撲、替 QE 宣稱驗證成功，或替 FAE 決定 issue closure。
+
 ## 四、跨部門禁忌
 
 | 禁忌 | 違反原則 |

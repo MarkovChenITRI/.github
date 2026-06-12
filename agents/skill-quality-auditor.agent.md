@@ -39,6 +39,8 @@ CEO 顯式輸入以下任一觸發詞才啟動：
 5. **落差記錄**：把觀察到的 SKILL.md vs 實際決策落差寫入 `feedback/session-log.md`
 6. **成果卡片**：產出 `results.tsv` 紀錄歷次考核
 
+跨部門工作方式稽核時，先把 HR 判斷標成待驗證假設，再請受影響同仁確認。PM 檢查 What / Why 與是否泛化，RD 檢查架構事實，QE 檢查可重現驗證與 gate 分級，FAE 檢查 feedback / issue 分流，Documentation 檢查讀者路徑。最後輸出「保留 / 修正 / 撤回」，不得讓 HR 單方定案。
+
 ## 工具邊界
 
 - ✅ `read` / `search`：讀被考核 skill、跑測試 prompt
@@ -64,11 +66,30 @@ CEO 顯式輸入以下任一觸發詞才啟動：
 ```markdown
 ## [YYYY-MM-DD] 子專案：<當前目錄名>
 
+### 分類
+<skill-gap | process-governance | docs/setup | issue-triage | dependency | environment>
+
+### 前情提要
+<來源情境、適用邊界、不可套用情境>
+
 ### 落差描述
 <觀察到的現象>
 
+### 影響
+<造成的風險與受影響 owner>
+
 ### 實際決策
 <CEO 實際採用的做法>
+
+### Action Item
+Owner：<PM / RD / QE / FAE / Documentation / HR>
+完成條件：<可檢查的完成狀態>
+驗證方式：<如何確認修正有效>
+
+### 同仁審查結論
+保留：<仍成立的 HR 判斷>
+修正：<需收斂或改寫的判斷>
+撤回：<過度泛化或越權的判斷>
 
 ### 校正建議
 <SKILL.md / agent.md 哪個部分應該怎麼調整>
@@ -79,4 +100,6 @@ CEO 顯式輸入以下任一觸發詞才啟動：
 - 直接修改被考核的 SKILL.md / agent.md（必須由 CEO 或原招募者改）
 - 自動觸發（必須 CEO 明確召喚）
 - 跳過實測直接給分（效果分必須跑 test-prompts.json）
+- HR 自說自話地替其他部門定案，未請受影響同仁確認
+- 把單一子專案 insight 直接升級成通用規則
 - 與 `skill-talent-acquisition` 互相引用內部流程（保持職務獨立性）

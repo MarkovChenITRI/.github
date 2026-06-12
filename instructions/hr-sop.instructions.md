@@ -97,6 +97,16 @@ HR 部門的操作對象是公司內部的其他員工。負責「招募」（�
 - `skill-quality-auditor` **不直接修改**被考核的 SKILL.md 或 agent.md
 - 修改決定權在 CEO；CEO 可選擇接受 / 退回 / 部分採納
 
+### 同仁交叉審查流程
+
+當 CEO 要求 HR 檢討「大家工作方式」、跨部門協作落差，或 auditor 的判斷會影響 PM / RD / QE / 文件 / FAE 的 SOP 時，`skill-quality-auditor` 不得只輸出 HR 單方結論。標準流程如下：
+
+1. 先把 HR 初步判斷標記為「待驗證假設」，列出 evidence、受影響員工與可能越權點。
+2. 依職權請相關同仁只讀審查：PM 確認 What / Why 與採用情境，RD 確認架構事實，QE 確認可重現驗證，FAE 確認 feedback / issue 分流，Documentation 確認讀者路徑。
+3. 要求同仁指出「成立、過度擴張、不精確、需 CEO 裁決」四類結果，並給出可落地建議。
+4. HR 彙整後必須明列原結論的「保留 / 修正 / 撤回」，不得把單案經驗直接升級為通用規則。
+5. 只有經交叉審查後仍成立的結論，才可進入 skill / agent / instruction 校正提案。
+
 ### 落差紀錄寫入規範
 
 寫入 `feedback/session-log.md` 的標準格式：
@@ -104,15 +114,36 @@ HR 部門的操作對象是公司內部的其他員工。負責「招募」（�
 ```markdown
 ## [YYYY-MM-DD] 子專案：<當前目錄名>
 
+### 分類
+<skill-gap | process-governance | docs/setup | issue-triage | dependency | environment>
+
+### 前情提要
+<來源情境、適用邊界、不能套用的情境>
+
 ### 落差描述
 <觀察到的現象>
+
+### 影響
+<造成的風險：誤導讀者、污染 repo、無法驗收、owner 不清或重複返工>
 
 ### 實際決策
 <CEO 實際採用的做法>
 
+### Action Item
+Owner：<PM / RD / QE / FAE / Documentation / HR>
+完成條件：<可檢查的完成狀態>
+驗證方式：<如何確認修正有效>
+
+### 同仁審查結論
+保留：<仍成立的 HR 判斷>
+修正：<需收斂或改寫的判斷>
+撤回：<過度泛化或越權的判斷>
+
 ### 校正建議
 <SKILL.md / agent.md 哪個部分應該怎麼調整>
 ```
+
+治理型 feedback（skill / agent / SOP / runtime 工作方式）寫入本 runtime 的 `feedback/session-log.md`。產品 bug、使用者問題、產品文件缺陷、部署事故與產品需求留在產品 repo 的 issue、docs 或 PR 討論中；不可把所有 feedback 一律吸回 HR。
 
 ## 三、部門禁忌
 
