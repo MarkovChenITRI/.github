@@ -1,6 +1,6 @@
 # `.github` —— Connect AI 的 VS Code Copilot Runtime
 
-本 repo 是 Connect AI 公司化開發規範的 **VS Code Copilot 端自足 runtime**。子專案只需掛載本 repo，即可在 VS Code Copilot 取得完整的九位員工 agent、部門 SOP、深度 skill playbook 與公司憲法。
+本 repo 是 Connect AI 公司化開發規範的 **VS Code Copilot 端自足 runtime**。子專案只需掛載本 repo，即可在 VS Code Copilot 取得完整的十位員工 agent、部門 SOP、深度 skill playbook 與公司憲法。
 
 > 使用 Claude Code 的使用者，請掛載 `.claude/` 並閱讀 `.claude/README.md`。兩個 repo 各自服務自己的 AI 工具，使用時不要把一邊的檔案複製到另一邊。
 
@@ -41,6 +41,7 @@ git commit -m "chore: add .github submodule (VS Code Copilot runtime)"
 |-----------|------|----------------------|------------------|
 | `product-strategy-manager` | PM | 釐清使用者、商務目標、MVP、驗收標準、交付形式 | 寫程式、決定技術實作細節 |
 | `tech-stack-curator` | PM | 評估開源依賴、授權相容性、商用風險、LICENSE 草案 | 整合套件到程式碼 |
+| `documentation-experience-manager` | PM | 規劃 README、onboarding、quickstart、系統文件與接手文件的讀者成功路徑 | 發明產品承諾、架構契約或未驗證步驟 |
 | `architecture-research-developer` | RD | 設計模組邊界、依賴方向、public API、不變式與架構藍圖 | 寫函式內部實作 |
 | `algorithm-research-developer` | RD | 設計 AI / ML / CV / 最佳化演算法、數學假設、loss、metrics、baseline | 決定產品目標或直接取代工程實作 |
 | `senior-software-engineer` | RD | 依架構藍圖實作、重構、命名、unit test、Clean Code | 決定商務範圍或驗收標準 |
@@ -55,6 +56,7 @@ git commit -m "chore: add .github submodule (VS Code Copilot runtime)"
 |----------------|----------|--------------------------|
 | 需求還很模糊，不確定要做成什麼 | `@product-strategy-manager` | `@product-strategy-manager 幫我把這個想法整理成目標使用者、MVP 與驗收標準` |
 | 想引用新套件、框架或模型 | `@tech-stack-curator` | `@tech-stack-curator 審查這個依賴是否適合商用與目前授權` |
+| 需要整理 README、quickstart 或系統文件 | `@documentation-experience-manager` | `@documentation-experience-manager 幫我規劃這份文件的讀者成功路徑與文件架構` |
 | 不確定模組邊界或依賴方向 | `@architecture-research-developer` | `@architecture-research-developer 先幫我定義模組邊界與依賴方向` |
 | 需要設計 AI 演算法、loss、metric 或 baseline | `@algorithm-research-developer` | `@algorithm-research-developer 幫我把這個 AI 問題整理成演算法規格與評估指標` |
 | 已有架構藍圖，要開始改程式 | `@senior-software-engineer` | `@senior-software-engineer 依照這份藍圖實作，並保持 Clean Code` |
@@ -68,8 +70,8 @@ git commit -m "chore: add .github submodule (VS Code Copilot runtime)"
 掛載後請在 VS Code 執行以下檢查，確認 Copilot 真的讀到本模組：
 
 1. 執行 `Chat: Open Customizations`，在 Instructions、Agents、Skills 分頁確認來源包含 `.github/`。
-2. 在 Chat 輸入 `/`，確認可搜尋到九個 Connect AI skills。
-3. 打開 Agent picker，確認可選九位員工 agent。
+2. 在 Chat 輸入 `/`，確認可搜尋到十個 Connect AI skills。
+3. 打開 Agent picker，確認可選十位員工 agent。
 4. 在 Chat 視窗右鍵開啟 Diagnostics，確認沒有載入錯誤。
 
 若 VS Code 只開啟 monorepo 的子資料夾，Copilot 預設只找目前 workspace 內的 customization。此時請打開 repo root，或啟用 `chat.useCustomizationsInParentRepositories` 讓 VS Code 往父層 repo 尋找 `.github/`。
@@ -89,7 +91,7 @@ git commit -m "chore: add .github submodule (VS Code Copilot runtime)"
 部署環境：Docker + GCP Cloud Run
 ```
 
-不要把九位員工的角色定義複製到子專案文件；角色與 SOP 由本 `.github/` runtime 統一提供。
+不要把十位員工的角色定義複製到子專案文件；角色與 SOP 由本 `.github/` runtime 統一提供。
 
 ### 2. 選擇正確員工
 
@@ -97,6 +99,7 @@ git commit -m "chore: add .github submodule (VS Code Copilot runtime)"
 
 ```text
 @product-strategy-manager 幫我把這個需求拆成 MVP 與驗收標準
+@documentation-experience-manager 規劃 README 與 quickstart 的讀者成功路徑
 @architecture-research-developer 先定義模組邊界與依賴方向
 @senior-software-engineer 依照架構藍圖實作
 @testing-quality-engineer 針對這次變更設計驗證策略
@@ -130,7 +133,7 @@ Copilot 回覆底部的 References 可能顯示使用到的 instruction / skill�
 
 - [ ] 子專案已掛載 `.github/`。
 - [ ] `Chat: Open Customizations` 能看到 Instructions、Agents、Skills。
-- [ ] Agent picker 能看到九位員工。
+- [ ] Agent picker 能看到十位員工。
 - [ ] `/` 選單能找到需要的 skill。
 - [ ] 已用一個真實任務測試 agent 是否能被選用。
 - [ ] 子專案已補技術棧、測試指令、部署限制。
@@ -150,6 +153,7 @@ Copilot 回覆底部的 References 可能顯示使用到的 instruction / skill�
 ├── agents/                         # 員工 custom agents（角色、可用工具、handoffs）
 │   ├── product-strategy-manager.agent.md
 │   ├── tech-stack-curator.agent.md
+│   ├── documentation-experience-manager.agent.md
 │   ├── architecture-research-developer.agent.md
 │   ├── algorithm-research-developer.agent.md
 │   ├── senior-software-engineer.agent.md
@@ -160,6 +164,7 @@ Copilot 回覆底部的 References 可能顯示使用到的 instruction / skill�
 └── skills/                         # 深度 playbook（按需載入）
     ├── product-strategy-manager/SKILL.md
     ├── tech-stack-curator/SKILL.md
+    ├── documentation-experience-manager/SKILL.md
     ├── architecture-research-developer/SKILL.md
     ├── algorithm-research-developer/SKILL.md
     ├── senior-software-engineer/SKILL.md

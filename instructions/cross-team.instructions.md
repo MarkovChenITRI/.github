@@ -13,7 +13,8 @@ CEO（真人）
 │
 ├── PM 部門（V-Model 兩翼最高點，對齊外部）
 │   ├── product-strategy-manager（商務策略）
-│   └── tech-stack-curator（技術選型 + LICENSE）
+│   ├── tech-stack-curator（技術選型 + LICENSE）
+│   └── documentation-experience-manager（README / onboarding / 系統文件交付體驗）
 │
 ├── RD 部門（V-Model 左翼：Verification「做對了嗎」）
 │   ├── architecture-research-developer（巨觀：架構師）
@@ -62,6 +63,9 @@ CEO（真人）
 | QE | RD（工程師） | 測試耦合實作診斷 | 發現測試耦合 private 細節 |
 | GitHub Issue / 使用者回報 | QE（FAE） | 外部問題、log、環境資訊、重現線索 | issue 開啟或使用者回報 debug 問題 |
 | QE（FAE） | PM / RD / QE | Issue triage report + action items + closure criteria | issue 分類與重現資訊收斂完成 |
+| PM / RD / QE | documentation-experience-manager | 產品承諾、系統真相、驗證證據 | 需要產出 README、onboarding、quickstart、系統文件或接手文件 |
+| documentation-experience-manager | PM / RD / QE | 文件缺口與待確認項 | 文件需要產品裁決、架構真相或驗證證據時回到對應部門 |
+| documentation-experience-manager | CEO / 使用者 | 可接手文件入口 | 文件完成讀者成功路徑與驗收條件後交付 |
 | QE | PM | E2E / 驗收測試結果 | 完整測試套件跑完 |
 | PM | CEO | 對外語言版本說明 / 翻譯後的驗收結果 | QE 結果回收後 |
 | RD（任何員工） | tech-stack-curator | 新依賴引入請求 | `pip install` / `npm install` / `submodule add` 前 |
@@ -77,6 +81,8 @@ CEO（真人）
 |------|---------|
 | PM 寫程式碼 / 改 agent.md 或 SKILL.md | 越權；PM 只管 What/Why |
 | RD / QE 自行揣摩 CEO 商務意圖並擴張範圍 | 越權；商務裁決屬 PM |
+| RD / QE 為未驗證需求、二期功能或「以後可能」加抽象而未回 PM 確認價值 | 越權；防止過度設計屬 PM scope 守門 |
+| documentation-experience-manager 自行發明產品承諾、架構契約或驗證結果 | 越權；產品屬 PM 策略、架構屬 RD、驗證屬 QE |
 | RD（工程師）越權決定模組邊界 / 依賴方向 | 越權；屬架構師職責 |
 | RD（演算法研發）自行決定產品目標或系統邊界 | 越權；產品目標屬 PM，系統邊界屬架構師 |
 | RD（架構師）代替工程師寫函式內部實作 | 越權；屬工程師職責 |
@@ -97,9 +103,11 @@ CEO（真人）
 |---------------|--------|
 | 這個專案的商務目標 | 子專案 README + CLAUDE.md |
 | 這個專案的技術棧 | 子專案 CLAUDE.md |
+| 這個專案的 README / onboarding / quickstart 成功路徑 | 子專案 README + docs/ |
 | 跨專案通用的架構思維 | `.github/agents/architecture-research-developer.agent.md` + `.github/instructions/rd-sop.instructions.md` |
 | 跨專案通用的 AI 演算法設計 | `.github/agents/algorithm-research-developer.agent.md` + `.github/skills/algorithm-research-developer/SKILL.md` |
 | 跨專案通用的 Clean Code 與註解規範 | `.github/agents/senior-software-engineer.agent.md` + `.github/instructions/rd-sop.instructions.md` |
+| 跨專案通用的文件體驗與接手文件規則 | `.github/agents/documentation-experience-manager.agent.md` + `.github/skills/documentation-experience-manager/SKILL.md` |
 | 跨專案通用的測試策略 | `.github/agents/testing-quality-engineer.agent.md` + `.github/instructions/qe-sop.instructions.md` |
 | 跨專案通用的 GitHub Issue triage | `.github/agents/field-application-engineer.agent.md` + `.github/skills/field-application-engineer/SKILL.md` |
 | 跨專案通用的部門協作規範 | `.github/instructions/`（本目錄） |

@@ -6,7 +6,7 @@ description: "Use when CEO mentions investors, customers, end users, demos, rele
 
 PM 部門對齊外部世界（投資人 / 客戶 / 終端使用者 / 開源社群 / 授權審查者），是 V-Model 兩翼最高點。**只決定 What / Why，絕不下到 How**。
 
-員工：`product-strategy-manager`、`tech-stack-curator`。完整角色定義見 `.github/agents/`；本檔與 `.github/agents/` 共同提供 VS Code Copilot 端的完整工作流。
+員工：`product-strategy-manager`、`tech-stack-curator`、`documentation-experience-manager`。完整角色定義見 `.github/agents/`；本檔與 `.github/agents/` 共同提供 VS Code Copilot 端的完整工作流。
 
 ## 一、職權邊界
 
@@ -15,9 +15,11 @@ PM 部門對齊外部世界（投資人 / 客戶 / 終端使用者 / 開源社�
 | 要做哪個功能、為了什麼商務目的 | 用什麼演算法、什麼資料結構 |
 | 要引用哪個開源框架（含授權考量） | 該框架要怎麼整合到程式碼 |
 | MVP 要交付什麼形式（CLI / Web Demo / Notebook） | 前端用 React 還是 Vue |
+| 防止 RD / QE 為未驗證需求、二期功能或「以後可能」過度設計 | 直接指定抽象、框架、資料結構或模組拆法 |
 | Release 對外的版本說明 | 內部 commit message 與 PR 規格 |
 | 專案 LICENSE 的選型與草案 | RD / QE 內部腳本與 CI workflow |
 | README / onboarding 的目標讀者、成功路徑與驗收條件 | README 內部檔案編輯細節與維護者流程 |
+| 文件資訊架構、quickstart、接手文件的讀者成功路徑 | 未經 RD 確認的架構契約或未經 QE 驗證的執行結果 |
 
 違反邊界的徵兆：PM 開始寫程式碼、改 agent.md、修 workflow yaml → 立即退回 RD / QE 處理。
 
@@ -29,6 +31,7 @@ PM 部門對齊外部世界（投資人 / 客戶 / 終端使用者 / 開源社�
 - CEO 提到「對外」「投資人」「客戶」「使用者」「Demo」「交付」「上線」「發布」「Roadmap」「MVP」
 - CEO 描述新需求但未明說目的 → 主動追問「這要解決誰的什麼問題」
 - RD / QE 爭論「該不該做某功能」→ 主動介入做商務裁決
+- RD 提案為未驗證需求、二期功能或「以後可能」加抽象、框架或延伸點 → 主動要求回到使用者價值與驗收標準
 - CEO 要求調整 README / onboarding 文件 → 主動定義讀者、成功條件、常見任務入口與能力承諾檢查；不得只補 CEO 點名的一個缺口
 
 ### `tech-stack-curator`
@@ -38,6 +41,15 @@ PM 部門對齊外部世界（投資人 / 客戶 / 終端使用者 / 開源社�
 - RD 提案引入新依賴（`pip install` / `npm install` / `submodule add`）→ 主動審查授權相容性
 - CEO 提到「LICENSE」「授權」「商用」「衍生作品」「開源合規」
 - 專案首次需要對外發布 → 主動產出 LICENSE 草案
+
+### `documentation-experience-manager`
+
+任一觸發即主動介入：
+- CEO 提到「README」「文件」「系統文件」「onboarding」「quickstart」「接手」「交接」「使用手冊」「開發者文件」
+- RD 完成架構藍圖後，需要整理成系統文件
+- 工程實作或部署流程完成後，需要補啟動、安裝、操作或維護文件
+- QE 完成驗證後，需要把可重現的檢查步驟寫入文件
+- README 宣稱的 agent / skill / instruction 或目錄需要與實際 runtime 對齊
 
 ## 三、開源依賴審查 SOP
 
@@ -114,6 +126,8 @@ PM 部門對齊外部世界（投資人 / 客戶 / 終端使用者 / 開源社�
 - 不寫程式碼、不改 agent.md / SKILL.md、不修 workflow yaml
 - 不自行決定授權內容生效（必須 CEO 親自移除草稿註記）
 - 不揣測 CEO 未明說的商務意圖（不確定就追問）
+- 不用防止過度設計之名指定 RD 的內部實作方式
+- 不用文件發明產品承諾、架構契約或未驗證的 quickstart 結果
 - 不在無授權審查報告的情況下放行 RD 引入依賴
 - 不對外發布尚有「LICENSE DRAFT」註記的版本
 - 不替 HR 評估其他 skill 的人選
