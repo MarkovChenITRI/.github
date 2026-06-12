@@ -1,0 +1,481 @@
+name: Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_scope:
+        description: Deployment scope override
+        required: false
+        default: full
+        type: choice
+        options:
+          - full
+          - verify-only
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+  pages: write
+
+env:
+  PYTHON_VERSION: '3.11'
+  APP_SERVICE_NAME: ${{ vars.AZURE_APP_SERVICE_NAME }}
+  RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+  AZURE_REGION: ${{ vars.AZURE_REGION }}
+  KEY_VAULT_NAME: ${{ vars.AZURE_KEY_VAULT_NAME }}
+  POSTGRES_SERVER_NAME: ${{ vars.POSTGRES_SERVER_NAME }}
+  POSTGRES_DATABASE: ${{ vars.POSTGRES_DATABASE }}
+  PAGES_SOURCE_DIR: pages
+  APP_SERVICE_URL: ${{ vars.APP_SERVICE_URL }}
+  PAGES_URL: ${{ vars.PAGES_URL }}
+
+jobs:
+  detect-changes:
+    name: Release Checklist / detect-changes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Publish detected deployment scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          scope='${{ github.event.inputs.deploy_scope || 'full' }}'
+          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+          ## Detect Changes
+
+          | Field | Value |
+          | --- | --- |
+          | Trigger | ${GITHUB_EVENT_NAME} |
+          | Scope | $scope |
+          | Commit | ${GITHUB_SHA} |
+
+          Every push runs full resource verification. Resource jobs enforce dependency order with GitHub Actions needs.
+          EOF
+
+  unit-smoke-tests:
+    name: Release Checklist / unit-smoke-tests
+    needs: detect-changes
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Compile and smoke test Flask app
+        env:
+          SECRET_KEY: ci-secret-key
+          ADMIN_DEFAULT_PASSWORD: ci-admin-password
+          FLASK_DEBUG: 'false'
+        run: |
+          python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+          python -m py_compile app.py
+          python - <<'PY'
+          from app import app
+
+          with app.test_client() as client:
+              response = client.get('/healthz')
+              assert response.status_code == 200
+              assert response.get_json()['status'] == 'ok'
+          PY
+
+  key-vault-readiness:
+    name: Azure Services / key-vault-readiness
+    needs: detect-changes
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Verify Key Vault readiness
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=()
+          [ -n "${RESOURCE_GROUP:-}" ] || missing+=(AZURE_RESOURCE_GROUP)
+          [ -n "${KEY_VAULT_NAME:-}" ] || missing+=(AZURE_KEY_VAULT_NAME)
+
+          if [ ${#missing[@]} -gt 0 ]; then
+            {
+              echo '## Key Vault Readiness'
+              echo ''
+              echo '| Field | Value |'
+              echo '| --- | --- |'
+              echo '| Resource | Azure Key Vault |'
+              echo '| Status | Not configured |'
+              echo "| Missing Inputs | ${missing[*]} |"
+              echo '| Next Step | Set AZURE_KEY_VAULT_NAME and provision Key Vault before relying on this gate. |'
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          if ! az keyvault show --resource-group "$RESOURCE_GROUP" --name "$KEY_VAULT_NAME" >/dev/null 2>/dev/null; then
+            {
+              echo '## Key Vault Readiness'
+              echo ''
+              echo '| Field | Value |'
+              echo '| --- | --- |'
+              echo '| Resource | Azure Key Vault |'
+              echo '| Status | Missing resource |'
+              echo "| Detected | $KEY_VAULT_NAME does not exist in $RESOURCE_GROUP |"
+              echo '| Next Step | Create the Key Vault and add required secret names, then rerun. |'
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          required_secrets=(SECRET-KEY AZURE-POSTGRES-PASSWORD)
+          missing_secrets=()
+          for secret_name in "${required_secrets[@]}"; do
+            if ! az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name "$secret_name" --query id -o tsv >/dev/null 2>/dev/null; then
+              missing_secrets+=("$secret_name")
+            fi
+          done
+
+          if [ ${#missing_secrets[@]} -gt 0 ]; then
+            {
+              echo '## Key Vault Readiness'
+              echo ''
+              echo '| Field | Value |'
+              echo '| --- | --- |'
+              echo '| Resource | Azure Key Vault |'
+              echo '| Status | Existing but incomplete |'
+              echo "| Missing Inputs | ${missing_secrets[*]} |"
+              echo '| Next Step | Add the missing secret names, then rerun. |'
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+          ## Key Vault Readiness
+
+          | Field | Value |
+          | --- | --- |
+          | Resource | Azure Key Vault |
+          | Status | Existing |
+          | Verification | Required secret names exist |
+          | Missing Inputs | none |
+          | Next Step | Proceed. |
+          EOF
+
+  postgresql-readiness:
+    name: Azure Services / postgresql-readiness
+    needs: detect-changes
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Verify PostgreSQL readiness
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=()
+          [ -n "${RESOURCE_GROUP:-}" ] || missing+=(AZURE_RESOURCE_GROUP)
+          [ -n "${POSTGRES_SERVER_NAME:-}" ] || missing+=(POSTGRES_SERVER_NAME)
+          [ -n "${POSTGRES_DATABASE:-}" ] || missing+=(POSTGRES_DATABASE)
+
+          if [ ${#missing[@]} -gt 0 ]; then
+            printf 'Missing PostgreSQL inputs: %s\n' "${missing[*]}" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          az postgres flexible-server show --resource-group "$RESOURCE_GROUP" --name "$POSTGRES_SERVER_NAME" >/dev/null
+          db_match=$(az postgres flexible-server db list --resource-group "$RESOURCE_GROUP" --server-name "$POSTGRES_SERVER_NAME" --query "[?name=='${POSTGRES_DATABASE}'] | [0]" -o json)
+          if [ -z "$db_match" ] || [ "$db_match" = "null" ]; then
+            echo "PostgreSQL database does not exist: $POSTGRES_DATABASE" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+          ## PostgreSQL Readiness
+
+          | Field | Value |
+          | --- | --- |
+          | Resource | Azure Database for PostgreSQL |
+          | Server | $POSTGRES_SERVER_NAME |
+          | Database | $POSTGRES_DATABASE |
+          | Verification | Server and database exist |
+          EOF
+
+  app-service-deployment:
+    name: Azure Services / app-service-deployment
+    needs:
+      - unit-smoke-tests
+      - key-vault-readiness
+      - postgresql-readiness
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Verify App Service exists
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=()
+          [ -n "${RESOURCE_GROUP:-}" ] || missing+=(AZURE_RESOURCE_GROUP)
+          [ -n "${APP_SERVICE_NAME:-}" ] || missing+=(AZURE_APP_SERVICE_NAME)
+          if [ ${#missing[@]} -gt 0 ]; then
+            printf 'Missing App Service inputs: %s\n' "${missing[*]}" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          az webapp show --resource-group "$RESOURCE_GROUP" --name "$APP_SERVICE_NAME" >/dev/null
+
+      - name: Deploy App Service package
+        if: ${{ github.event.inputs.deploy_scope != 'verify-only' }}
+        run: |
+          git archive --format=zip --output app.zip HEAD
+          az webapp deploy \
+            --resource-group "$RESOURCE_GROUP" \
+            --name "$APP_SERVICE_NAME" \
+            --src-path app.zip \
+            --type zip \
+            --clean true \
+            --restart true
+
+      - name: Verify App Service URL
+        run: |
+          python - <<'PY'
+          import os
+          import urllib.request
+
+          app_url = os.environ.get('APP_SERVICE_URL') or f"https://{os.environ['APP_SERVICE_NAME']}.azurewebsites.net"
+          url = app_url.rstrip('/') + '/healthz'
+          with urllib.request.urlopen(url, timeout=30) as response:
+              body = response.read().decode('utf-8')
+              if response.status != 200 or 'ok' not in body:
+                  raise SystemExit(f'Health check failed: {response.status} {body}')
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as summary:
+              summary.write('\n## App Service Deployment\n\n')
+              summary.write('| Field | Value |\n| --- | --- |\n')
+              summary.write('| Resource | Azure App Service |\n')
+              summary.write('| Verification | /healthz returned 200 |\n')
+          PY
+
+  github-pages-deployment:
+    name: GitHub Pages / github-pages-deployment
+    needs: app-service-deployment
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate Pages static frontend artifact
+        run: |
+          if [ ! -f "${PAGES_SOURCE_DIR}/index.html" ]; then
+            echo "${PAGES_SOURCE_DIR}/index.html does not exist."
+            exit 1
+          fi
+          if [ ! -f "${PAGES_SOURCE_DIR}/404.html" ]; then
+            echo "${PAGES_SOURCE_DIR}/404.html does not exist."
+            exit 1
+          fi
+          if grep -R -E '(PASSWORD|SECRET|TOKEN|CONNECTION_STRING)=' "${PAGES_SOURCE_DIR}"; then
+            echo 'Secret-like value found in Pages artifact.'
+            exit 1
+          fi
+
+      - name: Upload Pages artifact
+        if: ${{ github.event.inputs.deploy_scope != 'verify-only' }}
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ env.PAGES_SOURCE_DIR }}
+
+      - name: Deploy to GitHub Pages
+        if: ${{ github.event.inputs.deploy_scope != 'verify-only' }}
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Verify Pages URL
+        run: |
+          python - <<'PY'
+          import os
+          import urllib.request
+
+          url = os.environ.get('PAGES_URL') or '${{ steps.deployment.outputs.page_url }}'
+          if not url:
+              raise SystemExit('PAGES_URL is required for verification')
+          with urllib.request.urlopen(url, timeout=30) as response:
+              if response.status != 200:
+                  raise SystemExit(f'Pages check failed: {response.status}')
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as summary:
+              summary.write('\n## GitHub Pages Deployment\n\n')
+              summary.write('| Field | Value |\n| --- | --- |\n')
+              summary.write('| Resource | GitHub Pages |\n')
+              summary.write('| Verification | Pages URL returned 200 |\n')
+          PY
+
+  release-report:
+    name: Release Checklist / release-report
+    needs:
+      - detect-changes
+      - unit-smoke-tests
+      - key-vault-readiness
+      - postgresql-readiness
+      - app-service-deployment
+      - github-pages-deployment
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Publish release report
+        shell: bash
+        env:
+          DETECT_CHANGES_RESULT: ${{ needs.detect-changes.result }}
+          UNIT_SMOKE_TESTS_RESULT: ${{ needs.unit-smoke-tests.result }}
+          KEY_VAULT_READINESS_RESULT: ${{ needs.key-vault-readiness.result }}
+          POSTGRESQL_READINESS_RESULT: ${{ needs.postgresql-readiness.result }}
+          APP_SERVICE_DEPLOYMENT_RESULT: ${{ needs.app-service-deployment.result }}
+          GITHUB_PAGES_DEPLOYMENT_RESULT: ${{ needs.github-pages-deployment.result }}
+        run: |
+          set -euo pipefail
+
+          subscription_id=$(az account show --query id -o tsv 2>/dev/null || true)
+          subscription_name=$(az account show --query name -o tsv 2>/dev/null || true)
+          scope='${{ github.event.inputs.deploy_scope || 'full' }}'
+
+          markdown_escape() {
+            local value="${1:-}"
+            value=${value//$'\r'/ }
+            value=${value//$'\n'/ }
+            value=${value//|/\\|}
+            printf '%s' "$value"
+          }
+
+          azure_resource_path() {
+            printf '**ResourceGroups**: %s' "${RESOURCE_GROUP:-not configured}"
+          }
+
+          azure_display_location() {
+            local value="${1:-}"
+            case "${value,,}" in
+              southeastasia) printf 'Southeast Asia' ;;
+              *) printf '%s' "${value:-}" ;;
+            esac
+          }
+
+          kv_state="not configured"
+          kv_location="-"
+          if [ -n "${KEY_VAULT_NAME:-}" ]; then
+            kv_json=$(az keyvault show --resource-group "$RESOURCE_GROUP" --name "$KEY_VAULT_NAME" -o json 2>/dev/null || true)
+            if [ -n "$kv_json" ]; then
+              kv_state="exists"
+              kv_location=$(python -c "import json,sys; print(json.load(sys.stdin).get('location','-'))" <<< "$kv_json")
+            else
+              kv_state="missing or unauthorized"
+            fi
+          fi
+
+          pg_server_state="missing or unauthorized"
+          pg_location="-"
+          pg_json=$(az postgres flexible-server show --resource-group "$RESOURCE_GROUP" --name "$POSTGRES_SERVER_NAME" -o json 2>/dev/null || true)
+          if [ -n "$pg_json" ]; then
+            pg_server_state=$(python -c "import json,sys; print(json.load(sys.stdin).get('state','exists'))" <<< "$pg_json")
+            pg_location=$(python -c "import json,sys; print(json.load(sys.stdin).get('location','-'))" <<< "$pg_json")
+          fi
+
+          pg_db_state="missing or unauthorized"
+          pg_db_json=$(az postgres flexible-server db list --resource-group "$RESOURCE_GROUP" --server-name "$POSTGRES_SERVER_NAME" --query "[?name=='${POSTGRES_DATABASE}'] | [0]" -o json 2>/dev/null || true)
+          if [ -n "$pg_db_json" ] && [ "$pg_db_json" != "null" ]; then
+            pg_db_state="exists"
+          fi
+
+          app_state="missing or unauthorized"
+          app_location="-"
+          app_json=$(az webapp show --resource-group "$RESOURCE_GROUP" --name "$APP_SERVICE_NAME" -o json 2>/dev/null || true)
+          if [ -n "$app_json" ]; then
+            app_state=$(python -c "import json,sys; print(json.load(sys.stdin).get('state','exists'))" <<< "$app_json")
+            app_location=$(python -c "import json,sys; print(json.load(sys.stdin).get('location','-'))" <<< "$app_json")
+          fi
+
+          pages_id="github/${GITHUB_REPOSITORY}/pages"
+          pages_location="GitHub Pages"
+          pages_state="configured"
+          if [ -z "${PAGES_URL:-}" ]; then
+            pages_state="missing PAGES_URL variable"
+          fi
+
+          kv_location=$(azure_display_location "$kv_location")
+          pg_location=$(azure_display_location "$pg_location")
+          app_location=$(azure_display_location "$app_location")
+          azure_resource_group_path=$(azure_resource_path)
+
+          cat > deployment-report.md <<EOF
+          # AI Hub WebUI Deployment Report
+
+          ## Release Context
+
+          | Field | Value |
+          | --- | --- |
+          | Trigger | ${GITHUB_EVENT_NAME} |
+          | Scope | ${scope} |
+          | Commit | ${GITHUB_SHA} |
+          | Run | https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID} |
+          | Azure Subscription | ${subscription_name} / ${subscription_id} |
+          | Azure Resource Group | ${RESOURCE_GROUP} |
+
+          ## Checklist Results
+
+          | Check | Result |
+          | --- | --- |
+          | Deployment / Release Checklist / detect-changes | ${DETECT_CHANGES_RESULT} |
+          | Deployment / Release Checklist / unit-smoke-tests | ${UNIT_SMOKE_TESTS_RESULT} |
+          | Deployment / Azure Services / key-vault-readiness | ${KEY_VAULT_READINESS_RESULT} |
+          | Deployment / Azure Services / postgresql-readiness | ${POSTGRESQL_READINESS_RESULT} |
+          | Deployment / Azure Services / app-service-deployment | ${APP_SERVICE_DEPLOYMENT_RESULT} |
+          | Deployment / GitHub Pages / github-pages-deployment | ${GITHUB_PAGES_DEPLOYMENT_RESULT} |
+
+          ## Resource Verification Matrix
+
+          | Node | Post-push action | Result | Existence after push | Resource name | Location | Resource path |
+          | --- | --- | --- | --- | --- | --- | --- |
+          | Detect changes | trigger and scope recorded | ${DETECT_CHANGES_RESULT} | completed | workflow dispatch | GitHub Actions | github/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID} |
+          | Unit smoke tests | compile and /healthz test | ${UNIT_SMOKE_TESTS_RESULT} | completed | app.py | GitHub Actions | github/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID} |
+          | Key Vault / secrets boundary | verify existing vault and required Key Vault secret names: SECRET-KEY, AZURE-POSTGRES-PASSWORD | ${KEY_VAULT_READINESS_RESULT} | $(markdown_escape "$kv_state") | $(markdown_escape "${KEY_VAULT_NAME:-not configured}") | $(markdown_escape "$kv_location") | $(markdown_escape "$azure_resource_group_path") |
+          | PostgreSQL server | verify existing server | ${POSTGRESQL_READINESS_RESULT} | $(markdown_escape "$pg_server_state") | $(markdown_escape "$POSTGRES_SERVER_NAME") | $(markdown_escape "$pg_location") | $(markdown_escape "$azure_resource_group_path") |
+          | PostgreSQL database | verify existing database | ${POSTGRESQL_READINESS_RESULT} | $(markdown_escape "$pg_db_state") | $(markdown_escape "$POSTGRES_DATABASE") | $(markdown_escape "$pg_location") | $(markdown_escape "$azure_resource_group_path") |
+          | Azure App Service backend | verify existing app, deploy current commit, verify /healthz | ${APP_SERVICE_DEPLOYMENT_RESULT} | $(markdown_escape "$app_state") | $(markdown_escape "$APP_SERVICE_NAME") | $(markdown_escape "$app_location") | $(markdown_escape "$azure_resource_group_path") |
+          | GitHub Pages frontend | validate artifact, deploy current artifact, verify URL | ${GITHUB_PAGES_DEPLOYMENT_RESULT} | $(markdown_escape "$pages_state") | $(markdown_escape "${PAGES_URL:-not configured}") | $(markdown_escape "$pages_location") | $(markdown_escape "$pages_id") |
+
+          ## Outcome
+
+          Existing resources are verified on every push. Deployable surfaces are updated and verified. Secret-backed creation remains blocked until required secret values are supplied through a secure channel.
+          EOF
+
+          cat deployment-report.md >> "$GITHUB_STEP_SUMMARY"
+          cat deployment-report.md
+
+      - name: Upload deployment report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-report
+          path: deployment-report.md
