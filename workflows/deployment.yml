@@ -1,0 +1,604 @@
+name: Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_scope:
+        description: Deployment scope override
+        required: false
+        default: full
+        type: choice
+        options:
+          - full
+          - verify-only
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - 'requirements-docs.txt'
+      - '.github/workflows/docs-pages.yml'
+      - 'README.md'
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  PYTHON_VERSION: '3.11'
+  RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+  AZURE_REGION: ${{ vars.AZURE_REGION }}
+  KEY_VAULT_NAME: ${{ vars.AZURE_KEY_VAULT_NAME }}
+
+jobs:
+  detect-changes:
+    name: Release Checklist / detect-changes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Publish detected deployment scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          scope='${{ github.event.inputs.deploy_scope || 'full' }}'
+          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+          ## Detect Changes
+
+          | Field | Value |
+          | --- | --- |
+          | Trigger | ${GITHUB_EVENT_NAME} |
+          | Scope | $scope |
+          | Commit | ${GITHUB_SHA} |
+
+          Every push runs full resource verification. Resource jobs enforce dependency order with GitHub Actions needs.
+          EOF
+
+  unit-smoke-tests:
+    name: Release Checklist / unit-smoke-tests
+    needs: detect-changes
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Compile and smoke test Flask app
+        env:
+          SECRET_KEY: ci-secret-key
+          ADMIN_DEFAULT_PASSWORD: ci-admin-password
+          FLASK_DEBUG: 'false'
+        run: |
+          python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+          python -m py_compile app.py
+          python - <<'PY'
+          from app import app
+
+          with app.test_client() as client:
+              response = client.get('/healthz')
+              assert response.status_code == 200
+              assert response.get_json()['status'] == 'ok'
+          PY
+
+  key-vault-readiness:
+    name: Azure Services / key-vault-readiness
+    needs: detect-changes
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Verify Key Vault readiness
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=()
+          [ -n "${RESOURCE_GROUP:-}" ] || missing+=(AZURE_RESOURCE_GROUP)
+          [ -n "${KEY_VAULT_NAME:-}" ] || missing+=(AZURE_KEY_VAULT_NAME)
+
+          if [ ${#missing[@]} -gt 0 ]; then
+            {
+              echo '## Key Vault Readiness'
+              echo ''
+              echo '| Field | Value |'
+              echo '| --- | --- |'
+              echo '| Resource | Azure Key Vault |'
+              echo '| Status | Not configured |'
+              echo "| Missing Inputs | ${missing[*]} |"
+              echo '| Next Step | Set AZURE_KEY_VAULT_NAME and provision Key Vault before relying on this gate. |'
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          if ! az keyvault show --resource-group "$RESOURCE_GROUP" --name "$KEY_VAULT_NAME" >/dev/null 2>/dev/null; then
+            {
+              echo '## Key Vault Readiness'
+              echo ''
+              echo '| Field | Value |'
+              echo '| --- | --- |'
+              echo '| Resource | Azure Key Vault |'
+              echo '| Status | Missing resource |'
+              echo "| Detected | $KEY_VAULT_NAME does not exist in $RESOURCE_GROUP |"
+              echo '| Next Step | Create the Key Vault and add required secret names, then rerun. |'
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          required_secrets=(SECRET-KEY AZURE-SQLSERVER-PASSWORD AZURE-SQLSERVER-USER AZURE-APP-SERVICE-NAME SQLSERVER-SERVER-NAME SQLSERVER-DATABASE APP-SERVICE-URL)
+          missing_secrets=()
+          for secret_name in "${required_secrets[@]}"; do
+            if ! az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name "$secret_name" --query id -o tsv >/dev/null 2>/dev/null; then
+              missing_secrets+=("$secret_name")
+            fi
+          done
+
+          if [ ${#missing_secrets[@]} -gt 0 ]; then
+            {
+              echo '## Key Vault Readiness'
+              echo ''
+              echo '| Field | Value |'
+              echo '| --- | --- |'
+              echo '| Resource | Azure Key Vault |'
+              echo '| Status | Existing but incomplete |'
+              echo "| Missing Inputs | ${missing_secrets[*]} |"
+              echo '| Next Step | Add the missing secret names, then rerun. |'
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+          ## Key Vault Readiness
+
+          | Field | Value |
+          | --- | --- |
+          | Resource | Azure Key Vault |
+          | Status | Existing |
+          | Verification | Required secret names exist |
+          | Missing Inputs | none |
+          | Next Step | Proceed. |
+          EOF
+
+  sqlserver-readiness:
+    name: Azure Services / sqlserver-readiness
+    needs: detect-changes
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Resolve SQL Server resource names from Key Vault
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -n "${KEY_VAULT_NAME:-}" ]; then
+            sql_resource_group=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name SQLSERVER-RESOURCE-GROUP --query value -o tsv 2>/dev/null || true)
+            if [ -z "$sql_resource_group" ]; then
+              sql_resource_group="$RESOURCE_GROUP"
+            fi
+            {
+              echo "SQLSERVER_RESOURCE_GROUP=$sql_resource_group"
+              echo "SQLSERVER_SERVER_NAME=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name SQLSERVER-SERVER-NAME --query value -o tsv 2>/dev/null || true)"
+              echo "SQLSERVER_DATABASE=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name SQLSERVER-DATABASE --query value -o tsv 2>/dev/null || true)"
+            } >> "$GITHUB_ENV"
+          fi
+
+      - name: Verify SQL Server readiness
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=()
+          [ -n "${RESOURCE_GROUP:-}" ] || missing+=(AZURE_RESOURCE_GROUP)
+          [ -n "${SQLSERVER_RESOURCE_GROUP:-}" ] || missing+=(SQLSERVER_RESOURCE_GROUP)
+          [ -n "${SQLSERVER_SERVER_NAME:-}" ] || missing+=(SQLSERVER_SERVER_NAME)
+          [ -n "${SQLSERVER_DATABASE:-}" ] || missing+=(SQLSERVER_DATABASE)
+
+          if [ ${#missing[@]} -gt 0 ]; then
+            printf 'Missing SQL Server inputs: %s\n' "${missing[*]}" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          sql_server_json=$(az sql server show --resource-group "$SQLSERVER_RESOURCE_GROUP" --name "$SQLSERVER_SERVER_NAME" -o json 2>/dev/null || true)
+          if [ -z "$sql_server_json" ]; then
+            candidate_servers=$(az sql server list --resource-group "$SQLSERVER_RESOURCE_GROUP" --query '[].name' -o tsv 2>/dev/null | paste -sd ', ' - || true)
+            if [ -z "$candidate_servers" ]; then
+              candidate_servers="none"
+            fi
+            cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+          ## SQL Server Readiness
+
+          | Field | Value |
+          | --- | --- |
+          | Resource | Azure SQL Database |
+          | Status | SQL logical server not found |
+          | Resource Group | $SQLSERVER_RESOURCE_GROUP |
+          | Key Vault Secret | SQLSERVER-SERVER-NAME=$SQLSERVER_SERVER_NAME |
+          | SQL servers found in resource group | $candidate_servers |
+          | Next Step | Update Key Vault secret SQLSERVER-SERVER-NAME to an existing Azure SQL logical server, add SQLSERVER-RESOURCE-GROUP if SQL lives in another resource group, or run the provisioning script to create the configured server. |
+          EOF
+            exit 1
+          fi
+
+          db_match=$(az sql db show --resource-group "$SQLSERVER_RESOURCE_GROUP" --server "$SQLSERVER_SERVER_NAME" --name "$SQLSERVER_DATABASE" -o json 2>/dev/null || true)
+          if [ -z "$db_match" ]; then
+            candidate_databases=$(az sql db list --resource-group "$SQLSERVER_RESOURCE_GROUP" --server "$SQLSERVER_SERVER_NAME" --query '[].name' -o tsv 2>/dev/null | paste -sd ', ' - || true)
+            if [ -z "$candidate_databases" ]; then
+              candidate_databases="none"
+            fi
+            cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+          ## SQL Server Readiness
+
+          | Field | Value |
+          | --- | --- |
+          | Resource | Azure SQL Database |
+          | Status | Database not found |
+          | Resource Group | $SQLSERVER_RESOURCE_GROUP |
+          | SQL Server | $SQLSERVER_SERVER_NAME |
+          | Key Vault Secret | SQLSERVER-DATABASE=$SQLSERVER_DATABASE |
+          | Databases found on server | $candidate_databases |
+          | Next Step | Update Key Vault secret SQLSERVER-DATABASE to an existing database name, restore the database, or run the provisioning script to create the configured database. |
+          EOF
+            exit 1
+          fi
+
+          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+          ## SQL Server Readiness
+
+          | Field | Value |
+          | --- | --- |
+          | Resource | Azure SQL Database |
+          | Resource Group | $SQLSERVER_RESOURCE_GROUP |
+          | Server | $SQLSERVER_SERVER_NAME |
+          | Database | $SQLSERVER_DATABASE |
+          | Verification | Server and database exist |
+          EOF
+
+  app-service-deployment:
+    name: Azure Services / app-service-deployment
+    needs:
+      - unit-smoke-tests
+      - key-vault-readiness
+      - sqlserver-readiness
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Resolve App Service and SQL runtime info from Key Vault
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -n "${KEY_VAULT_NAME:-}" ]; then
+            sql_resource_group=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name SQLSERVER-RESOURCE-GROUP --query value -o tsv 2>/dev/null || true)
+            if [ -z "$sql_resource_group" ]; then
+              sql_resource_group="$RESOURCE_GROUP"
+            fi
+            {
+              echo "APP_SERVICE_NAME=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name AZURE-APP-SERVICE-NAME --query value -o tsv 2>/dev/null || true)"
+              echo "APP_SERVICE_URL=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name APP-SERVICE-URL --query value -o tsv 2>/dev/null || true)"
+              echo "SQLSERVER_RESOURCE_GROUP=$sql_resource_group"
+              echo "SQLSERVER_SERVER_NAME=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name SQLSERVER-SERVER-NAME --query value -o tsv 2>/dev/null || true)"
+              echo "SQLSERVER_DATABASE=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name SQLSERVER-DATABASE --query value -o tsv 2>/dev/null || true)"
+            } >> "$GITHUB_ENV"
+          fi
+
+      - name: Verify App Service exists
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=()
+          [ -n "${RESOURCE_GROUP:-}" ] || missing+=(AZURE_RESOURCE_GROUP)
+          [ -n "${APP_SERVICE_NAME:-}" ] || missing+=(AZURE-APP-SERVICE-NAME)
+          if [ ${#missing[@]} -gt 0 ]; then
+            printf 'Missing App Service inputs: %s\n' "${missing[*]}" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          az webapp show --resource-group "$RESOURCE_GROUP" --name "$APP_SERVICE_NAME" >/dev/null
+
+      - name: Configure App Service runtime settings
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=()
+          [ -n "${RESOURCE_GROUP:-}" ] || missing+=(AZURE_RESOURCE_GROUP)
+          [ -n "${KEY_VAULT_NAME:-}" ] || missing+=(AZURE_KEY_VAULT_NAME)
+          [ -n "${APP_SERVICE_NAME:-}" ] || missing+=(AZURE-APP-SERVICE-NAME)
+          [ -n "${SQLSERVER_SERVER_NAME:-}" ] || missing+=(SQLSERVER_SERVER_NAME)
+          [ -n "${SQLSERVER_DATABASE:-}" ] || missing+=(SQLSERVER_DATABASE)
+          if [ ${#missing[@]} -gt 0 ]; then
+            printf 'Missing App Service runtime inputs: %s\n' "${missing[*]}" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          az webapp identity assign \
+            --resource-group "$RESOURCE_GROUP" \
+            --name "$APP_SERVICE_NAME" \
+            --output none
+
+          az webapp config set \
+            --resource-group "$RESOURCE_GROUP" \
+            --name "$APP_SERVICE_NAME" \
+            --startup-file "gunicorn --bind=0.0.0.0:8000 app:app" \
+            --output none
+
+          az webapp config appsettings set \
+            --resource-group "$RESOURCE_GROUP" \
+            --name "$APP_SERVICE_NAME" \
+            --settings \
+              APP_ENV=production \
+              FLASK_DEBUG=false \
+              SCM_DO_BUILD_DURING_DEPLOYMENT=true \
+              ENABLE_ORYX_BUILD=true \
+              "SECRET_KEY=@Microsoft.KeyVault(VaultName=${KEY_VAULT_NAME};SecretName=SECRET-KEY)" \
+              "AZURE_SQLSERVER_HOST=${SQLSERVER_SERVER_NAME}.database.windows.net" \
+              "AZURE_SQLSERVER_DATABASE=${SQLSERVER_DATABASE}" \
+              AZURE_SQLSERVER_PORT=1433 \
+              "AZURE_SQLSERVER_USER=@Microsoft.KeyVault(VaultName=${KEY_VAULT_NAME};SecretName=AZURE-SQLSERVER-USER)" \
+              "AZURE_SQLSERVER_PASSWORD=@Microsoft.KeyVault(VaultName=${KEY_VAULT_NAME};SecretName=AZURE-SQLSERVER-PASSWORD)" \
+              ADMIN_BOOTSTRAP_ENABLED=false \
+            --output none
+
+          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+          ## App Service Runtime Settings
+
+          | Field | Value |
+          | --- | --- |
+          | Resource | Azure App Service |
+          | Startup | gunicorn app:app |
+          | Settings Source | GitHub Variables locate Key Vault; runtime values come from Key Vault |
+          | Database Host | ${SQLSERVER_SERVER_NAME}.database.windows.net |
+          EOF
+
+      - name: Migrate solution display images to SQL bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          sql_user=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name AZURE-SQLSERVER-USER --query value -o tsv)
+          sql_password=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name AZURE-SQLSERVER-PASSWORD --query value -o tsv)
+          echo "::add-mask::$sql_user"
+          echo "::add-mask::$sql_password"
+
+          python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+          AZURE_SQLSERVER_HOST="${SQLSERVER_SERVER_NAME}.database.windows.net" \
+          AZURE_SQLSERVER_DATABASE="$SQLSERVER_DATABASE" \
+          AZURE_SQLSERVER_PORT=1433 \
+          AZURE_SQLSERVER_USER="$sql_user" \
+          AZURE_SQLSERVER_PASSWORD="$sql_password" \
+          python deployment/db/migrate_solution_images.py
+
+          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+          ## Solution Image Migration
+
+          | Field | Value |
+          | --- | --- |
+          | Storage | platform_solution.image_bytes / image_mime |
+          | Source | Existing image_url references migrated when bytes are missing |
+          EOF
+
+      - name: Deploy App Service package
+        if: ${{ github.event.inputs.deploy_scope != 'verify-only' }}
+        run: |
+          git archive --format=zip --output app.zip HEAD
+          az webapp deploy \
+            --resource-group "$RESOURCE_GROUP" \
+            --name "$APP_SERVICE_NAME" \
+            --src-path app.zip \
+            --type zip \
+            --clean true \
+            --restart true
+
+      - name: Verify App Service URL
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import urllib.request
+
+          app_url = os.environ.get('APP_SERVICE_URL') or f"https://{os.environ['APP_SERVICE_NAME']}.azurewebsites.net"
+          base_url = app_url.rstrip('/')
+
+          with urllib.request.urlopen(base_url + '/healthz', timeout=30) as response:
+              health_body = response.read().decode('utf-8')
+              if response.status != 200 or 'ok' not in health_body:
+                  raise SystemExit(f'Health check failed: {response.status} {health_body}')
+
+          with urllib.request.urlopen(base_url + '/api/model-cards', timeout=30) as response:
+              cards_body = response.read().decode('utf-8')
+              if response.status != 200:
+                  raise SystemExit(f'Model Cards API failed: {response.status} {cards_body}')
+              payload = json.loads(cards_body)
+              if 'total' not in payload or 'cards' not in payload:
+                  raise SystemExit(f'Model Cards API returned unexpected payload: {cards_body}')
+
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as summary:
+              summary.write('\n## App Service Deployment\n\n')
+              summary.write('| Field | Value |\n| --- | --- |\n')
+              summary.write('| Resource | Azure App Service |\n')
+              summary.write('| Verification | /healthz and /api/model-cards returned 200 |\n')
+          PY
+
+  release-report:
+    name: Release Checklist / release-report
+    needs:
+      - detect-changes
+      - unit-smoke-tests
+      - key-vault-readiness
+      - sqlserver-readiness
+      - app-service-deployment
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Resolve resource names from Key Vault
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -n "${KEY_VAULT_NAME:-}" ]; then
+            sql_resource_group=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name SQLSERVER-RESOURCE-GROUP --query value -o tsv 2>/dev/null || true)
+            if [ -z "$sql_resource_group" ]; then
+              sql_resource_group="$RESOURCE_GROUP"
+            fi
+            {
+              echo "APP_SERVICE_NAME=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name AZURE-APP-SERVICE-NAME --query value -o tsv 2>/dev/null || true)"
+              echo "APP_SERVICE_URL=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name APP-SERVICE-URL --query value -o tsv 2>/dev/null || true)"
+              echo "SQLSERVER_RESOURCE_GROUP=$sql_resource_group"
+              echo "SQLSERVER_SERVER_NAME=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name SQLSERVER-SERVER-NAME --query value -o tsv 2>/dev/null || true)"
+              echo "SQLSERVER_DATABASE=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name SQLSERVER-DATABASE --query value -o tsv 2>/dev/null || true)"
+            } >> "$GITHUB_ENV"
+          fi
+
+      - name: Publish release report
+        shell: bash
+        env:
+          DETECT_CHANGES_RESULT: ${{ needs.detect-changes.result }}
+          UNIT_SMOKE_TESTS_RESULT: ${{ needs.unit-smoke-tests.result }}
+          KEY_VAULT_READINESS_RESULT: ${{ needs.key-vault-readiness.result }}
+          SQLSERVER_READINESS_RESULT: ${{ needs.sqlserver-readiness.result }}
+          APP_SERVICE_DEPLOYMENT_RESULT: ${{ needs.app-service-deployment.result }}
+        run: |
+          set -euo pipefail
+
+          subscription_id=$(az account show --query id -o tsv 2>/dev/null || true)
+          subscription_name=$(az account show --query name -o tsv 2>/dev/null || true)
+          scope='${{ github.event.inputs.deploy_scope || 'full' }}'
+
+          markdown_escape() {
+            local value="${1:-}"
+            value=${value//$'\r'/ }
+            value=${value//$'\n'/ }
+            value=${value//|/\\|}
+            printf '%s' "$value"
+          }
+
+          azure_resource_path() {
+            printf '**ResourceGroups**: %s' "${RESOURCE_GROUP:-not configured}"
+          }
+
+          sql_resource_path() {
+            printf '**ResourceGroups**: %s' "${SQLSERVER_RESOURCE_GROUP:-${RESOURCE_GROUP:-not configured}}"
+          }
+
+          azure_display_location() {
+            local value="${1:-}"
+            case "${value,,}" in
+              southeastasia) printf 'Southeast Asia' ;;
+              *) printf '%s' "${value:-}" ;;
+            esac
+          }
+
+          kv_state="not configured"
+          kv_location="-"
+          if [ -n "${KEY_VAULT_NAME:-}" ]; then
+            kv_json=$(az keyvault show --resource-group "$RESOURCE_GROUP" --name "$KEY_VAULT_NAME" -o json 2>/dev/null || true)
+            if [ -n "$kv_json" ]; then
+              kv_state="exists"
+              kv_location=$(python -c "import json,sys; print(json.load(sys.stdin).get('location','-'))" <<< "$kv_json")
+            else
+              kv_state="missing or unauthorized"
+            fi
+          fi
+
+          sql_server_state="missing or unauthorized"
+          sql_location="-"
+          sql_json=$(az sql server show --resource-group "$SQLSERVER_RESOURCE_GROUP" --name "$SQLSERVER_SERVER_NAME" -o json 2>/dev/null || true)
+          if [ -n "$sql_json" ]; then
+            sql_server_state=$(python -c "import json,sys; print(json.load(sys.stdin).get('state','exists'))" <<< "$sql_json")
+            sql_location=$(python -c "import json,sys; print(json.load(sys.stdin).get('location','-'))" <<< "$sql_json")
+          fi
+
+          sql_db_state="missing or unauthorized"
+          sql_db_json=$(az sql db show --resource-group "$SQLSERVER_RESOURCE_GROUP" --server "$SQLSERVER_SERVER_NAME" --name "$SQLSERVER_DATABASE" -o json 2>/dev/null || true)
+          if [ -n "$sql_db_json" ]; then
+            sql_db_state="exists"
+          fi
+
+          app_state="missing or unauthorized"
+          app_location="-"
+          app_json=$(az webapp show --resource-group "$RESOURCE_GROUP" --name "$APP_SERVICE_NAME" -o json 2>/dev/null || true)
+          if [ -n "$app_json" ]; then
+            app_state=$(python -c "import json,sys; print(json.load(sys.stdin).get('state','exists'))" <<< "$app_json")
+            app_location=$(python -c "import json,sys; print(json.load(sys.stdin).get('location','-'))" <<< "$app_json")
+          fi
+
+          kv_location=$(azure_display_location "$kv_location")
+          sql_location=$(azure_display_location "$sql_location")
+          app_location=$(azure_display_location "$app_location")
+          azure_resource_group_path=$(azure_resource_path)
+          sql_resource_group_path=$(sql_resource_path)
+
+          cat > deployment-report.md <<EOF
+          # AI Hub WebUI Deployment Report
+
+          ## Release Context
+
+          | Field | Value |
+          | --- | --- |
+          | Trigger | ${GITHUB_EVENT_NAME} |
+          | Scope | ${scope} |
+          | Commit | ${GITHUB_SHA} |
+          | Run | https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID} |
+          | Azure Subscription | ${subscription_name} / ${subscription_id} |
+          | Azure Resource Group | ${RESOURCE_GROUP} |
+
+          ## Checklist Results
+
+          | Check | Result |
+          | --- | --- |
+          | Deployment / Release Checklist / detect-changes | ${DETECT_CHANGES_RESULT} |
+          | Deployment / Release Checklist / unit-smoke-tests | ${UNIT_SMOKE_TESTS_RESULT} |
+          | Deployment / Azure Services / key-vault-readiness | ${KEY_VAULT_READINESS_RESULT} |
+          | Deployment / Azure Services / sqlserver-readiness | ${SQLSERVER_READINESS_RESULT} |
+          | Deployment / Azure Services / app-service-deployment | ${APP_SERVICE_DEPLOYMENT_RESULT} |
+
+          ## Resource Verification Matrix
+
+          | Node | Post-push action | Result | Existence after push | Resource name | Location | Resource path |
+          | --- | --- | --- | --- | --- | --- | --- |
+          | Detect changes | trigger and scope recorded | ${DETECT_CHANGES_RESULT} | completed | workflow dispatch | GitHub Actions | github/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID} |
+          | Unit smoke tests | compile and /healthz test | ${UNIT_SMOKE_TESTS_RESULT} | completed | app.py | GitHub Actions | github/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID} |
+          | Key Vault / secrets boundary | verify existing vault and required Key Vault secret names: SECRET-KEY, AZURE-SQLSERVER-PASSWORD, AZURE-SQLSERVER-USER, AZURE-APP-SERVICE-NAME, SQLSERVER-SERVER-NAME, SQLSERVER-DATABASE, APP-SERVICE-URL | ${KEY_VAULT_READINESS_RESULT} | $(markdown_escape "$kv_state") | $(markdown_escape "${KEY_VAULT_NAME:-not configured}") | $(markdown_escape "$kv_location") | $(markdown_escape "$azure_resource_group_path") |
+          | Azure SQL Database 伺服器 | verify existing server | ${SQLSERVER_READINESS_RESULT} | $(markdown_escape "$sql_server_state") | $(markdown_escape "$SQLSERVER_SERVER_NAME") | $(markdown_escape "$sql_location") | $(markdown_escape "$sql_resource_group_path") |
+          | Azure SQL Database | verify existing database | ${SQLSERVER_READINESS_RESULT} | $(markdown_escape "$sql_db_state") | $(markdown_escape "$SQLSERVER_DATABASE") | $(markdown_escape "$sql_location") | $(markdown_escape "$sql_resource_group_path") |
+          | Azure App Service backend | configure runtime settings, deploy current commit, verify /healthz and /api/model-cards | ${APP_SERVICE_DEPLOYMENT_RESULT} | $(markdown_escape "$app_state") | $(markdown_escape "$APP_SERVICE_NAME") | $(markdown_escape "$app_location") | $(markdown_escape "$azure_resource_group_path") |
+
+          ## Outcome
+
+          Existing resources are verified on every push. Deployable surfaces are updated and verified. Secret-backed creation remains blocked until required secret values are supplied through a secure channel.
+          EOF
+
+          cat deployment-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload deployment report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-report
+          path: deployment-report.md
