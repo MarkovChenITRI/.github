@@ -57,3 +57,14 @@ feedback 一律記錄在 `.github/feedback/session-log.md`，ai-hub-webui 根目
 
 ### 校正建議
 documentation-experience-manager 與 skill-quality-auditor 後續處理 README 或 feedback 時，應先確認寫入位置：產品 repo 只放產品文件、部署文件與程式碼；HR feedback、skill 落差與 session insight 一律放 `.github/feedback/`。README 編輯時需檢查三件事：必要命令是否仍存在、交叉參照是否有閱讀順序、章節導言是否只負責願景與分類。若為了修格式或檔尾問題需要大幅重建中文 Markdown，應優先停下來確認更小的編輯方式，避免造成重複段落、code fence 斷裂或把中途方案寫成最終事實。
+
+## [2026-06-22] 子專案：ai-hub-webui
+
+### 落差描述
+本次 Model Card deployment pages 修正一度過度依賴關鍵字掃描，例如只查 `驗收`、`smoke test`、`visibility` 等殘留詞，卻沒有先完整閱讀部署頁、首頁入口與 container integration 回指的語意。這導致表面上清掉了部分字詞，但文件仍可能在讀者路徑、章節承接、角色語氣與相鄰頁面引用上不順，甚至讓部署者從首頁或 provider 文件又被帶回 QE / 發布檢查語境。
+
+### 實際決策
+編輯正式文件時，關鍵字掃描只能作為最後的殘留檢查，不能取代完整閱讀。文件修正前應至少完整瀏覽目標頁全篇，並閱讀會影響同一讀者路徑的相關頁面，例如入口頁、相鄰部署頁、共通規範頁與回指段落。修正時要以「讀者從哪裡進來、看完這段要做什麼、下一頁如何承接」為主軸，確認語氣、章節順序、表格欄位、流程圖節點與跨頁連結一致；最後才用關鍵字掃描確認沒有殘留不適合的詞。
+
+### 校正建議
+documentation-experience-manager 後續修 README、GitHub Pages 文件、部署指南、資料庫維護文件或 provider 規範時，應採用「全篇閱讀 -> 相關頁語意比對 -> 最小修文 -> 建置驗證 -> 關鍵字殘留掃描」的順序。若 CEO 指出「語意不順」或「不是只查關鍵字」時，應停止擴大 grep，先逐頁閱讀並摘要目前讀者路徑，再做文案修正。skill-quality-auditor 後續評估文件類 skill 表現時，也應把「是否完整閱讀目標文件與相關語意上下文」列為檢查點；只靠關鍵字掃描完成文件修正，應視為文件體驗落差。
