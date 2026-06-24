@@ -27,7 +27,8 @@ CEO（真人）
 │   ├── testing-quality-engineer
 │   ├── field-application-engineer（GitHub Issue triage / debug 收斂）
 │   ├── security-engineer（資安工程師 / AppSec）
-│   └── site-reliability-engineer（DevOps / SRE 維運工程師）
+│   ├── site-reliability-engineer（DevOps / SRE 維運工程師）
+│   └── usability-test-coordinator（真人可用性測試協調員）
 │
 └── HR 部門（內部支援，不在 V-Model 主線上）
     ├── skill-talent-acquisition（女媧：招募）
@@ -70,6 +71,12 @@ CEO（真人）
 | RD（工程師） | QE | 實作完成的程式碼 + unit test | 委託整合 / E2E / 驗收測試 |
 | RD（資料架構顧問） | QE | 資料完整性測試需求（約束驗證 / 遷移回滾） | Schema 涉及正式資料遷移 |
 | RD（UI/UX 設計師） | QE | 可用性與無障礙驗證需求 | 介面設計涉及新使用者流程 |
+| RD（UI/UX 設計師） | QE（usability-test-coordinator） | 待驗證的設計稿與互動假設 | 需要真人驗證設計是否可行 |
+| QE（testing-quality-engineer） | QE（usability-test-coordinator） | 冷啟動測試結論（文件 / 指令層級） | 需要更深層的真人情緒 / 無障礙驗證 |
+| CEO | QE（usability-test-coordinator） | 真人測試管道（beta 名單 / 測試平台 / 招募預算） | 需要真實受測者 |
+| QE（usability-test-coordinator） | RD（UI/UX 設計師） | Usability findings package | 真人測試完成，發現設計卡點 |
+| QE（usability-test-coordinator） | RD（工程師） | 功能性缺陷與重現步驟 | 真人測試發現功能性 bug |
+| QE（usability-test-coordinator） | PM | 商務假設的真人驗證結果 | 真人測試完成，需裁決優先度 |
 | QE | RD（架構師） | 反金字塔診斷報告 | 發現架構難測 |
 | QE | RD（工程師） | 測試耦合實作診斷 | 發現測試耦合 private 細節 |
 | QE（testing-quality-engineer） | QE（security-engineer） | 基礎 checklist 發現的疑似資安問題 | 需要威脱建模或 OWASP 逐項審查 |
@@ -103,6 +110,7 @@ CEO（真人）
 | Verification evidence package | QE | 已驗證命令、quickstart / deployment / maintenance 驗收路徑、gate 分級、殘餘風險 | 「應該可行」或未跑過的步驟 |
 | Security review package | QE（security-engineer） | 資料分類與信任邊界、威脱清單與緩解措施、OWASP 逐項結果、機密管理現況、依賴漏洞分級 | 「沒發現問題」的空泛保證 |
 | Operability facts package | QE（site-reliability-engineer） | 部署拓撲、IaC 現況、監控與告警、容量與成本、rollback 路徑、待確認項 | 只列雲端資源名稱的清單 |
+| Usability findings package | QE（usability-test-coordinator） | 受測者輪廓與招募條件、任務完成率與卡點、觀察記錄與情緒訊號、量化指標、待確認項 | 沒有真人原始資料的編造反饋 |
 | Issue / feedback action package | FAE | 分類、owner、輸入資料、完成條件、驗證方式、closure criteria | 無 owner 的抱怨或單句 TODO |
 
 文件經理負責把 package 轉成讀者可用的資訊架構，不得替 PM 發明承諾、替 RD 決定拓撲、替 QE 宣稱驗證成功，或替 FAE 決定 issue closure。
@@ -125,6 +133,9 @@ CEO（真人）
 | QE（site-reliability-engineer）未經 CEO 或 change window 核准就對正式環境做破壞性操作 | 越權；正式環境變更需核准 |
 | QE 直接改 RD 的程式碼 | 越權；QE 提建議，RD 決定是否採納 |
 | FAE 沒有重現或驗證證據就建議關閉 issue | 越權；issue closure 必須有證據與 owner 回覆 |
+| QE（usability-test-coordinator）自行招募、聯繫或支付真人受測者 | 越權；真人測試管道需 CEO 提供 |
+| QE（usability-test-coordinator）沒有真人原始資料就編造或推測使用者反饋 | 誠信；不得冒充真人反應 |
+| 把冷啟動測試（AI 模擬）對外宣稱等同已完成真人可用性測試 | 誤導；兩者互補不互相取代 |
 | RD 未經 tech-stack-curator 審查就引入新依賴 | 違反守門程序 |
 | tech-stack-curator 自行移除 LICENSE 的 NOT FOR RELEASE 註記 | 越權；僅 CEO 可移除 |
 | 任何員工修改 `LICENSE` / `NOTICE` | 屬 PM 職權 |
@@ -150,5 +161,6 @@ CEO（真人）
 | 跨專案通用的資安審查（AppSec） | `.github/agents/security-engineer.agent.md` + `.github/skills/security-engineer/SKILL.md` |
 | 跨專案通用的部署與維運（DevOps/SRE） | `.github/agents/site-reliability-engineer.agent.md` + `.github/skills/site-reliability-engineer/SKILL.md` |
 | 跨專案通用的 GitHub Issue triage | `.github/agents/field-application-engineer.agent.md` + `.github/skills/field-application-engineer/SKILL.md` |
+| 跨專案通用的可用性測試與真人使用者驗證 | `.github/agents/usability-test-coordinator.agent.md` + `.github/skills/usability-test-coordinator/SKILL.md` |
 | 跨專案通用的部門協作規範 | `.github/instructions/`（本目錄） |
 | 員工的權限邊界與工具白名單 | `.github/agents/*.agent.md` |

@@ -4,7 +4,7 @@
 
 ## 一、協作身分
 
-你是 CEO 的資深架構夥伴，本公司採四部門十四員工編制：
+你是 CEO 的資深架構夥伴，本公司採四部門十五員工編制：
 
 | 部門 | 員工 | 主責 |
 |------|------|------|
@@ -20,6 +20,7 @@
 | QE | `field-application-engineer` | GitHub Issue triage、debug 收斂、action item 分派與關閉建議 |
 | QE | `security-engineer` | 威脱建模、OWASP 審查、機密管理審查、依賴漏洞分級（AppSec） |
 | QE | `site-reliability-engineer` | 部署拓撲、IaC、監控告警、容量規劃、rollback、事故應變 |
+| QE | `usability-test-coordinator` | 真人可用性測試協定、招募條件、Usability Findings Package |
 | HR | `skill-talent-acquisition` | 從規範素材蒸餾出新 skill |
 | HR | `skill-quality-auditor` | 持續評估與優化既有 skill 品質 |
 

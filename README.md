@@ -1,6 +1,6 @@
 # `.github` —— Connect AI 的 VS Code Copilot Runtime
 
-本 repo 是 Connect AI 公司化開發規範的 **VS Code Copilot 端自足 runtime**。子專案只需掛載本 repo，即可在 VS Code Copilot 取得完整的十四位員工 agent、部門 SOP、深度 skill playbook 與公司憲法。
+本 repo 是 Connect AI 公司化開發規範的 **VS Code Copilot 端自足 runtime**。子專案只需掛載本 repo，即可在 VS Code Copilot 取得完整的十五位員工 agent、部門 SOP、深度 skill playbook 與公司憲法。
 
 > 使用 Claude Code 的使用者，請掛載 `.claude/` 並閱讀 `.claude/README.md`。兩個 repo 各自服務自己的 AI 工具，使用時不要把一邊的檔案複製到另一邊。
 
@@ -51,6 +51,7 @@ git commit -m "chore: add .github submodule (VS Code Copilot runtime)"
 | `field-application-engineer` | QE | 收斂 GitHub Issue、重現問題、分派 action item、確認修復後能否關閉 | 直接修 code、承諾產品時程或自行擴張 scope |
 | `security-engineer` | QE | 威脱建模、OWASP 審查、機密管理審查、依賴漏洞（CVE）分級 | 主動攻擊性滲透測試或 exploit |
 | `site-reliability-engineer` | QE | 部署拓撲、Infrastructure as Code、監控告警、容量規劃、rollback、事故應變 | 未經核准對正式環境做破壞性操作 |
+| `usability-test-coordinator` | QE | 設計真人可用性測試協定、招募條件、彙整 Usability Findings Package | 自行招募/聯繫/支付真實受測者、編造未發生的使用者反饋 |
 | `skill-talent-acquisition` | HR | 需要新增或擴充 AI 協作能力、萃取新的 skill / persona | 評分既有 skill 或做品質稽核 |
 | `skill-quality-auditor` | HR | 回顧協作品質、記錄規範落差、檢查 skill 是否貼近實際決策 | 招募新角色或直接改業務/技術決策 |
 
@@ -70,6 +71,7 @@ git commit -m "chore: add .github submodule (VS Code Copilot runtime)"
 | 想確認怎麼驗證這次變更 | `@testing-quality-engineer` | `@testing-quality-engineer 幫我設計這次變更的測試與驗收方式` |
 | 需要威脱建模或資安審查 | `@security-engineer` | `@security-engineer 幫我審查這個功能的威脱模型與 OWASP checklist` |
 | 需要規劃部署、監控或正式環境維運 | `@site-reliability-engineer` | `@site-reliability-engineer 幫我規劃這次上線的部署拓撲與 rollback 路徑` |
+| 需要驗證真人能否完成關鍵任務 | `@usability-test-coordinator` | `@usability-test-coordinator 幫我設計這個功能的可用性測試協定與招募條件` |
 | 需要新增一種 AI 協作能力 | `@skill-talent-acquisition` | `@skill-talent-acquisition 幫我判斷是否需要蒸餾新的 skill 或 agent` |
 | 發現 AI 協作方式和實際期待有落差 | `@skill-quality-auditor` | `@skill-quality-auditor 回顧這次對話，找出值得記錄的規範落差` |
 
@@ -78,8 +80,8 @@ git commit -m "chore: add .github submodule (VS Code Copilot runtime)"
 掛載後請在 VS Code 執行以下檢查，確認 Copilot 真的讀到本模組：
 
 1. 執行 `Chat: Open Customizations`，在 Instructions、Agents、Skills 分頁確認來源包含 `.github/`。
-2. 在 Chat 輸入 `/`，確認可搜尋到十四個 Connect AI skills。
-3. 打開 Agent picker，確認可選十四位員工 agent。
+2. 在 Chat 輸入 `/`，確認可搜尋到十五個 Connect AI skills。
+3. 打開 Agent picker，確認可選十五位員工 agent。
 4. 在 Chat 視窗右鍵開啟 Diagnostics，確認沒有載入錯誤。
 
 若 VS Code 只開啟 monorepo 的子資料夾，Copilot 預設只找目前 workspace 內的 customization。此時請打開 repo root，或啟用 `chat.useCustomizationsInParentRepositories` 讓 VS Code 往父層 repo 尋找 `.github/`。
@@ -99,7 +101,7 @@ git commit -m "chore: add .github submodule (VS Code Copilot runtime)"
 部署環境：Docker + GCP Cloud Run
 ```
 
-不要把十四位員工的角色定義複製到子專案文件；角色與 SOP 由本 `.github/` runtime 統一提供。
+不要把十五位員工的角色定義複製到子專案文件；角色與 SOP 由本 `.github/` runtime 統一提供。
 
 ### 2. 選擇正確員工
 
@@ -141,7 +143,7 @@ Copilot 回覆底部的 References 可能顯示使用到的 instruction / skill�
 
 - [ ] 子專案已掛載 `.github/`。
 - [ ] `Chat: Open Customizations` 能看到 Instructions、Agents、Skills。
-- [ ] Agent picker 能看到十四位員工。
+- [ ] Agent picker 能看到十五位員工。
 - [ ] `/` 選單能找到需要的 skill。
 - [ ] 已用一個真實任務測試 agent 是否能被選用。
 - [ ] 子專案已補技術棧、測試指令、部署限制。
@@ -171,6 +173,7 @@ Copilot 回覆底部的 References 可能顯示使用到的 instruction / skill�
 │   ├── field-application-engineer.agent.md
 │   ├── security-engineer.agent.md
 │   ├── site-reliability-engineer.agent.md
+│   ├── usability-test-coordinator.agent.md
 │   ├── skill-talent-acquisition.agent.md
 │   └── skill-quality-auditor.agent.md
 └── skills/                         # 深度 playbook（按需載入）
@@ -186,6 +189,7 @@ Copilot 回覆底部的 References 可能顯示使用到的 instruction / skill�
     ├── field-application-engineer/SKILL.md
     ├── security-engineer/SKILL.md
     ├── site-reliability-engineer/SKILL.md
+    ├── usability-test-coordinator/SKILL.md
     ├── skill-talent-acquisition/SKILL.md
     └── skill-quality-auditor/SKILL.md
 ```

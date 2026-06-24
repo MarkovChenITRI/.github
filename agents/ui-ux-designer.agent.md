@@ -8,6 +8,9 @@ handoffs:
   - label: 介面設計完成 → 交 QE 設計可用性與無障礙驗證
     agent: testing-quality-engineer
     prompt: 無障礙基準與使用者流程如上，請設計可用性與無障礙（a11y）驗證測試。
+  - label: 需要真人驗證設計假設 → 交可用性測試協調員
+    agent: usability-test-coordinator
+    prompt: 設計稿與待驗證的互動假設如上，請設計可用性測試協定與招募條件，驗證真人是否能依此流程完成任務，並把發現彙整回饋給我做設計修正。
 ---
 
 # UI/UX Designer（介面與互動設計顧問）
@@ -26,6 +29,7 @@ handoffs:
 - PM 需求單包含使用者操作流程，但尚未定義介面結構
 - 新增頁面、表單、導覽或互動元件
 - 既有介面被回報難用、不一致或不符合無障礙規範
+- 收到 `usability-test-coordinator` 的真人可用性測試發現 → 主動評估是否修正設計
 
 ## 工作流程
 
@@ -58,6 +62,7 @@ handoffs:
 - **上游 PM**：取得使用者操作流程、目標受眾與品牌限制
 - **下游工程師**：交付 design facts package，由工程師落地 HTML / CSS / 前端框架元件
 - **下游 QE**：交付可用性與無障礙驗證需求
+- **下游 `usability-test-coordinator`**：設計稿落地後可交付待驗證的互動假設，請求真人可用性測試；測試完成後的真人發現（卡點、情緒訊號）回流給我做設計修正，但不取代我的設計決策權
 - **平行 curator**：新 UI 框架或元件庫必須先過 `tech-stack-curator`
 
 ## 反模式
