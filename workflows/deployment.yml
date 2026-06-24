@@ -372,32 +372,6 @@ jobs:
           | Database Host | ${SQLSERVER_SERVER_NAME}.database.windows.net |
           EOF
 
-      - name: Migrate solution display images to SQL bytes
-        shell: bash
-        run: |
-          set -euo pipefail
-          sql_user=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name AZURE-SQLSERVER-USER --query value -o tsv)
-          sql_password=$(az keyvault secret show --vault-name "$KEY_VAULT_NAME" --name AZURE-SQLSERVER-PASSWORD --query value -o tsv)
-          echo "::add-mask::$sql_user"
-          echo "::add-mask::$sql_password"
-
-          python -m pip install --upgrade pip && python -m pip install -r requirements.txt
-          AZURE_SQLSERVER_HOST="${SQLSERVER_SERVER_NAME}.database.windows.net" \
-          AZURE_SQLSERVER_DATABASE="$SQLSERVER_DATABASE" \
-          AZURE_SQLSERVER_PORT=1433 \
-          AZURE_SQLSERVER_USER="$sql_user" \
-          AZURE_SQLSERVER_PASSWORD="$sql_password" \
-          python deployment/db/migrate_solution_images.py
-
-          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
-          ## Solution Image Migration
-
-          | Field | Value |
-          | --- | --- |
-          | Storage | platform_solution.image_bytes / image_mime |
-          | Source | Existing image_url references migrated when bytes are missing |
-          EOF
-
       - name: Deploy App Service package
         if: ${{ github.event.inputs.deploy_scope != 'verify-only' }}
         run: |
