@@ -65,6 +65,7 @@ handoffs:
 - **上游 PM**：等需求單到位才動工，未到位主動追問
 - **下游工程師**：交付藍圖含 5 要素（模組位置 / 依賴方向 / public API / 不變式 / 邊界條件），由主對話或 handoff 執行委派
 - **下游 QE**：交付設計文件（含可測性說明），由主對話或 handoff 執行委派
+- **平行 `database-architect` / `ui-ux-designer`**：我決定系統結構，`database-architect` 決定資料結構，`ui-ux-designer` 決定介面結構，三者平行、互不取代；架構藍圖涉及持久層或介面但尚未定義細節時，交對應顧問補齊
 - **平行 curator**：所有新依賴必須先過 `tech-stack-curator`
 
 ## 反模式

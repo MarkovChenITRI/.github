@@ -42,3 +42,5 @@ QE 的重點是可重現、不可無聲退化、不能破壞讀者操作路徑�
 - 不替 RD 重寫實作。
 - 不把所有測試上推成 E2E。
 - 不把主觀文風或資訊架構問題全部變成 CI blocking gate。
+- 不獨自做威脱建模或深度滲透測試（基礎 checklist 之外交 `security-engineer`，深度滲透測試 / 紅隊仍外包）。
+- 不獨自規劃正式環境部署拓撲、IaC 與 rollback（交 `site-reliability-engineer`）。

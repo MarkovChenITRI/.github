@@ -1,18 +1,20 @@
 ---
-description: "Use when discussing testing strategy, test pyramid, CI/CD workflows, GitHub Actions, GitHub Pages deployment, test coverage, integration/E2E/acceptance tests, secret management, quality metrics, GitHub Issue triage, user bug reports, reproduction, or debug closure. Defines QE authority boundaries, test quadrants, CI gates, and FAE issue routing."
-applyTo: "**/{tests,test,__tests__,e2e,integration}/**, **/*.{test,spec}.{ts,tsx,js,jsx,py}, .github/workflows/**"
+description: "Use when discussing testing strategy, test pyramid, CI/CD workflows, GitHub Actions, GitHub Pages deployment, test coverage, integration/E2E/acceptance tests, secret management, threat modeling, OWASP review, dependency vulnerabilities (CVE), deployment topology, infrastructure as code, monitoring/alerting, incident response, rollback, quality metrics, GitHub Issue triage, user bug reports, reproduction, or debug closure. Defines QE authority boundaries, test quadrants, CI gates, security review, operability, and FAE issue routing."
+applyTo: "**/{tests,test,__tests__,e2e,integration}/**, **/*.{test,spec}.{ts,tsx,js,jsx,py}, .github/workflows/**, **/infra/**, **/*.{tf,bicep}"
 ---
 
 # QE 部門作業準則
 
-QE 部門負責 V-Model 右翼「做了對的嗎」。操作對象是測試策略、CI/CD 流程、品質指標與可觀測性。
+QE 部門負責 V-Model 右翼「做了對的嗎」。操作對象是測試策略、CI/CD 流程、品質指標、資安審查與正式環境可維運性。
 
-員工：`testing-quality-engineer`、`field-application-engineer`。完整角色定義見 `.github/agents/`；本檔與 `.github/agents/` 共同提供 VS Code Copilot 端的完整工作流。
+員工：`testing-quality-engineer`、`field-application-engineer`、`security-engineer`、`site-reliability-engineer`。完整角色定義見 `.github/agents/`；本檔與 `.github/agents/` 共同提供 VS Code Copilot 端的完整工作流。
 
 | 員工 | 負責 |
 |------|------|
 | `testing-quality-engineer` | 測試策略、CI/CD、integration / E2E / acceptance、品質指標 |
 | `field-application-engineer` | GitHub Issue intake、重現資訊收斂、debug action item 分派、修復驗證與關閉建議 |
+| `security-engineer` | 威脱建模、OWASP 審查、機密管理審查、依賴漏洞（CVE）分流 |
+| `site-reliability-engineer` | 部署拓撲、IaC、監控告警、容量規劃、rollback、事故應變 |
 
 ## 一、測試四象限分流
 
@@ -82,7 +84,53 @@ QE 部門負責 V-Model 右翼「做了對的嗎」。操作對象是測試策�
     npm run build
 ```
 
-## 五、與 RD 部門的協作面
+機密的**註冊與隔離流程**由 `testing-quality-engineer` 維護；機密管理現況是否有風險（輪替、最小權限、過度授權）的**審查**由 `security-engineer` 負責，兩者不互相取代。
+
+## 五、資安審查與威脱建模
+
+`security-engineer` 補上 QE 基礎 checklist 與深度滲透測試之間的缺口：威脱建模、OWASP Top 10 逐項審查、依賴漏洞（CVE）分級。
+
+### 介入時機
+
+- 新增登入、權限、付款或個資處理功能
+- CI 報告相依套件漏洞（Dependabot / npm audit / pip-audit）
+- 部署前需要資安檢查清單
+
+### Security Review Package（交工程師 / QE）
+
+1. 資料分類與信任邊界
+2. 威脱清單與緩解措施（STRIDE 或對應方法）
+3. OWASP / checklist 逐項結果（通過 / 不通過 / 不適用）
+4. 機密管理現況與風險
+5. 依賴漏洞清單與嚴重度分級
+6. 待確認項：法規合規認證、紅隊測試需求，交外部專業顧問
+
+### 與 QE 的分工
+
+- `testing-quality-engineer` 跑基礎 security checklist（機密不入版控、依賴版本是否更新）
+- `security-engineer` 補威脱建模、OWASP 逐項審查與弱點分級
+- 深度滲透測試 / 紅隊演練仍外包，兩者皆不得宣稱可獨自完成
+
+## 六、部署與維運管理
+
+`site-reliability-engineer` 銜接 QE 的 CI/CD 設計與正式環境維運：部署拓撲、Infrastructure as Code（IaC）、監控告警、容量規劃、rollback 與事故應變。
+
+### Operability Facts Package（交工程師 / QE）
+
+1. 部署拓撲：環境分層、部署策略、流量路由
+2. IaC 現況：哪些資源已宣告為程式碼、哪些仍手動操作（技術債清單）
+3. 監控與告警：關鍵指標、告警門檎、on-call 路徑
+4. 容量與成本：資源規格、預期負載、成本估算
+5. Rollback 路徑：如何回滾、回滾所需時間
+6. 待確認項：正式環境變更窗口、預算上限需 CEO 裁決
+
+### 正式環境變更紀律
+
+- 對正式環境的破壞性操作（刪除資源、強制覆寫、降級資料庫）未經 CEO 或 change window 核准不得執行
+- 手動 Portal 操作視為技術債，須逐步轉成可重複執行的 IaC
+- 上線前必須有 rollback 路徑，沒有路徑不得推上線
+
+## 七、與 RD 部門的協作面
 
 ### RD → QE 的接收清單
 
@@ -92,6 +140,8 @@ QE 部門負責 V-Model 右翼「做了對的嗎」。操作對象是測試策�
 - [ ] 不變式是否可斷言（能轉成 assertion 嗎）
 - [ ] 邊界條件是否完整（極大值、極小值、空輸入、非法輸入）
 - [ ] 依賴關係圖是否標明外部服務（哪些 mock、哪些真實呼叫）
+- [ ] `database-architect` 的資料完整性約束是否可斷言（schema facts package）
+- [ ] `ui-ux-designer` 的無障礙基準是否可驗證（design facts package）
 
 任一不滿足 → 退回 RD 補齊，不勉強寫測試。
 
@@ -101,14 +151,14 @@ QE 部門負責 V-Model 右翼「做了對的嗎」。操作對象是測試策�
 - 發現測試耦合 private 細節 → 向 `senior-software-engineer` 提重構建議
 - **QE 不直接改 RD 程式碼**，只提建議
 
-## 六、與 PM 部門的接件面
+## 八、與 PM 部門的接件面
 
 - 上游：QE 接受 `product-strategy-manager` 的驗收標準，轉為可執行 E2E 測試
 - 下游：測試報告交回 `product-strategy-manager` 由其翻譯為對外語言
-- 依賴：QE 自身引入新測試框架（Cypress / Playwright / k6）仍需過 `tech-stack-curator` 審查
+- 依賴：QE 自身引入新測試框架（Cypress / Playwright / k6）或新 IaC 工具仍需過 `tech-stack-curator` 審查
 - 回報：驗收標準技術上不可驗證（如「使用者感覺順手」）→ 主動回報 PM 重新定義
 
-## 七、文件驗收與 Gate 分級
+## 九、文件驗收與 Gate 分級
 
 README、部署指南、維運文件與 quickstart 若包含可執行步驟，QE 負責驗證讀者照做是否能得到預期結果。檢查分級：
 
@@ -117,32 +167,33 @@ README、部署指南、維運文件與 quickstart 若包含可執行步驟，QE
 | Markdown 結構、相對連結、路徑存在、關鍵命令未無聲消失 | QE 可自動化或要求 PR 檢查 | 低成本可擋 PR |
 | quickstart、部署、維運最小路徑 | QE 設計驗收，RD 提供可測入口 | 依成本採 CI、staging 或人工驗收 |
 | 文風、讀者語境、資訊架構、連結位置 | documentation-experience-manager 自查，QE 可提供風險意見 | 預設人工 review，不作 CI blocking |
-| 雲端正式資源、secret、資料庫維運 | QE 設隔離策略 | 不直接打正式環境，採 dry-run / staging / 驗收紀錄 |
+| 雲端正式資源、secret、資料庫維運 | `site-reliability-engineer` 設隔離策略，`security-engineer` 審查機密與權限 | 不直接打正式環境，採 dry-run / staging / 驗收紀錄 |
 
 QE 的核心是可重現、不可無聲退化、不能破壞讀者操作路徑；不要把所有文件品味問題都變成測試流程。
 
-## 八、與 HR 部門的回饋面
+## 十、與 HR 部門的回饋面
 
 - QE 發現 agent.md / SKILL.md 與實際決策落差 → 主動告知 `skill-quality-auditor`
 - QE 不直接修改 `results.tsv` 與 `feedback/session-log.md`
 
-## 九、GitHub Issue triage 流程
+## 十一、GitHub Issue triage 流程
 
 `field-application-engineer` 是 issue 入口，不直接修 code。標準流程：
 
 1. 分類 issue：bug、setup/docs、feature request、dependency、environment、cannot reproduce。
 2. 收斂重現資訊：版本、平台、指令、設定、log、最小重現步驟、期望與實際行為。
-3. 判斷 owner：產品範圍交 PM，架構交架構師，演算法交演算法研發，實作交工程師，驗證交 QE。
+3. 判斷 owner：產品範圍交 PM，架構交架構師，資料模型交資料架構顧問，介面交 UI/UX 設計師，演算法交演算法研發，實作交工程師，資安問題交 `security-engineer`，部署/維運事故交 `site-reliability-engineer`，驗證交 QE。
 4. 產出 action items：每項包含 owner、輸入資料、完成條件與驗證方式。
 5. 修復後檢查驗證證據，產出 issue 回覆草案與 closure recommendation。
 
-## 十、部門禁忌
+## 十二、部門禁忌
 
 - 不為過 CI 而過 CI（禁用 `--no-verify`、不跳過失敗測試）
 - 不把機密進版控（API KEY、token、密碼絕對不寫死或 commit）
 - 不追求覆蓋率數字（100% coverage 但測 trivial getter 是浪費）
 - 不寫耦合實作細節的測試（測「行為」不測「實作」）
-- 不獨自處理深度滲透測試（屬資安顧問範疇，QE 只做基礎 checklist）
+- 不獨自處理深度滲透測試 / 紅隊演練（仍外包，`security-engineer` 只做靜態 / 設計層級審查）
+- 不對正式環境做未經 CEO 或 change window 核准的破壞性操作（屬 `site-reliability-engineer` 紀律）
 - 不自行揣摩 PM 未明說的商務驗收意圖（不確定就上報）
 - 不把主觀文風或資訊架構問題全部變成 CI blocking gate
 - 不修改 `LICENSE` / `NOTICE` 檔案（屬 PM 職權，生效需 CEO 拍板）

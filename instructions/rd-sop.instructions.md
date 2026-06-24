@@ -1,15 +1,17 @@
 ---
-description: "Use when designing modules, algorithms, AI/ML/CV methods, dependency direction, writing/refactoring code, naming functions/classes, applying SOLID/Clean Code, writing unit tests, comments/docstrings, or making architecture decisions. Defines RD split among architect, algorithm researcher, and senior engineer."
-applyTo: "**/*.{ts,tsx,js,jsx,py,go,rs,java,kt,cs,cpp,h,hpp,rb,php,scala,swift}"
+description: "Use when designing modules, algorithms, AI/ML/CV methods, dependency direction, database schema, UI/UX design, writing/refactoring code, naming functions/classes, applying SOLID/Clean Code, writing unit tests, comments/docstrings, or making architecture decisions. Defines RD split among architect, algorithm researcher, database architect, UI/UX designer, and senior engineer."
+applyTo: "**/*.{ts,tsx,js,jsx,py,go,rs,java,kt,cs,cpp,h,hpp,rb,php,scala,swift,sql}"
 ---
 
 # RD 部門作業準則
 
-RD 部門負責 V-Model 左翼「做對了嗎」。三位員工分工：
+RD 部門負責 V-Model 左翼「做對了嗎」。五位員工分工：
 
 | 員工 | 層級 | 負責 |
 |------|------|------|
 | `architecture-research-developer` | 巨觀 | 模組邊界、依賴方向、API 形狀、不變式、邊界條件 |
+| `database-architect` | 巨觀 | Schema 設計、ER 模型、正規化、索引策略、資料完整性約束 |
+| `ui-ux-designer` | 巨觀 | Information architecture、使用者流程、互動狀態、設計系統 token、無障礙基準 |
 | `algorithm-research-developer` | 演算法 | AI / ML / CV / 最佳化方法、數學假設、loss、metrics、baseline、實驗設計 |
 | `senior-software-engineer` | 微觀 | 函式內部實作、命名、unit test、Clean Code、SOLID、註解 |
 
@@ -22,6 +24,14 @@ RD 部門負責 V-Model 左翼「做對了嗎」。三位員工分工：
 AI 研發任務若涉及模型行為、loss / metric、baseline、資料分佈假設或 paper reproduction，需先交給 `algorithm-research-developer` 產出 algorithm spec，再進架構與實作。
 
 演算法規格至少包含：問題形式、輸入輸出、目標函數、核心假設、候選方法、baseline、評估指標、失敗模式與 ablation plan。
+
+### 架構師 / PM → 資料架構顧問
+
+架構藍圖涉及持久層、但尚未定義資料模型細節時，交給 `database-architect` 產出 schema facts package：實體與關係、鍵與約束、索引策略與取捨、一致性與交易邊界、遷移路徑、待確認項。資料庫架構顧問與架構師平行（系統結構 vs 資料結構），不互相取代。
+
+### 架構師 / PM → UI/UX 設計師
+
+PM 需求單包含使用者操作流程、但尚未定義介面結構時，交給 `ui-ux-designer` 產出 design facts package：使用者流程、頁面 / 元件清單與狀態、設計 token、無障礙基準、響應式斷點、待確認項。UI/UX 設計師不寫前端程式碼，不裁決品牌風格（屬 PM / CEO）。
 
 ### 架構師 → 工程師
 
@@ -49,10 +59,12 @@ AI 研發任務若涉及模型行為、loss / metric、baseline、資料分佈�
 - 不更動藍圖定義的模組位置與依賴方向 → 改就回報架構師
 - 不暴露藍圖外的 public API
 - 不繞過不變式 → 即使語言層面允許，也視為違規
+- 不更動 schema facts package 定義的表結構或約束 → 改就回報 `database-architect`
+- 不更動 design facts package 定義的互動流程或無障礙基準 → 改就回報 `ui-ux-designer`
 
 ### 反向回報
 
-工程師發現藍圖落地不可行時 → 主動回報架構師調整藍圖，**不自行硬幹**。
+工程師發現藍圖、schema 或介面設計落地不可行時 → 主動回報對應的架構師 / 資料架構顧問 / UI/UX 設計師調整，**不自行硬幹**。
 
 ### Unit Test 歸屬
 
@@ -66,6 +78,8 @@ AI 研發任務若涉及模型行為、loss / metric、baseline、資料分佈�
 - 不變式（系統在任何狀態下必須成立的約束）
 - 邊界條件（已知合法輸入範圍與例外處理）
 - 依賴關係圖（本模組依賴誰、被誰依賴）
+- 資料完整性約束與遷移相容性（`database-architect` 的 schema facts package）
+- 使用者流程與無障礙基準（`ui-ux-designer` 的 design facts package）
 
 ### 職權邊界
 
@@ -114,6 +128,22 @@ RD 不自行揣摩商務需求。需等 `product-strategy-manager` 交付包含�
 - 不把服務名稱清單當成架構交付物
 - 不讓 HR、PM 或文件經理替 RD 決定拓撲或依賴方向
 
+### 資料架構顧問禁忌
+
+- 不自己寫 migration 程式碼或 ORM 實作（屬工程師）
+- 不為「以後可能要加欄位」過度正規化或加冗餘抽象（YAGNI）
+- 沒有資料量級與讀寫模式就裁定索引策略為定案
+- 把效能門檻當成已知事實，而非待 PM / CEO 確認項
+- 選資料庫產品時略過 `tech-stack-curator` 審查
+
+### UI/UX 設計師禁忌
+
+- 不自己寫前端程式碼或 CSS（屬工程師）
+- 沒有使用者流程就直接設計視覺稿
+- 把個人美感偏好當成驗收標準（品牌風格屬 PM / CEO 裁決）
+- 略過無障礙基準只談視覺呈現
+- 選 UI 框架或元件庫時略過 `tech-stack-curator` 審查
+
 ### 演算法研發禁忌
 
 - 不自行決定產品目標或驗收標準（屬 PM）
@@ -132,7 +162,7 @@ RD 不自行揣摩商務需求。需等 `product-strategy-manager` 交付包含�
 - 不在註解中描述「修了什麼 bug / 為什麼這次改」（屬 PR / git log）
 - 不為通過測試而 mock 整個世界
 
-### 兩位員工共同的禁忌
+### 全體員工共同的禁忌
 
 - 不揣摩 PM 未明說的商務意圖（不確定就追問 PM）
 - 不未經 `tech-stack-curator` 審查即引入新依賴
