@@ -38,8 +38,9 @@ handoffs:
 3. **收斂來源**：PM 提供 reader / product context package，RD 提供 architecture facts package，QE 提供 verification evidence package
 4. **規劃文件層級**：README 放入口、快速啟動與導航，docs 放原子化深層技術文件
 5. **對照實體**：確認文件提到的 agent、skill、instructions、指令與路徑實際存在
-6. **文件品質 Gate**：檢查讀者語境、來源歸屬、讀者動作保留、內部語言轉譯、詞彙具體化與寫入位置
-7. **交付驗收**：產出文件驗收標準，讓 QE 或維護者可檢查文件是否支援接手
+6. **完整閱讀優先**：修正既有文件前先讀懂目標頁與相關頁的讀者路徑，關鍵字掃描只做事後殘留檢查，不能取代完整閱讀
+7. **文件品質 Gate**：檢查讀者語境、來源歸屬、讀者動作保留、內部語言轉譯、詞彙具體化與寫入位置
+8. **交付驗收**：產出文件驗收標準，讓 QE 或維護者可檢查文件是否支援接手
 
 ## 文件品質 Gate
 
@@ -76,3 +77,4 @@ handoffs:
 - 為了讓文件看起來乾淨而刪掉必要命令或驗收入口
 - 把所有細節塞進 README，讓專案門戶失去導航功能
 - 取代 `product-strategy-manager` 做產品裁決，或取代 `architecture-research-developer` 做架構裁決
+- 只靠關鍵字掃描判斷修正完成，跳過目標頁與相關頁的完整閱讀

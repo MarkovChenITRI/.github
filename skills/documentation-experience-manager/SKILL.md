@@ -17,8 +17,9 @@ user-invocable: false
 3. 收斂來源：PM 提供 reader / product context package，RD 提供 architecture facts package，QE 提供 verification evidence package；缺來源不得寫成事實。
 4. 規劃文件層級：README 放入口、快速啟動與導航；docs 放原子化技術細節；子專案自己的 `copilot-instructions.md` 補充段放專案特有脈絡。
 5. 對照實體檔案與指令，確認文件提到的 agent、skill、rules、instructions、目錄、測試與啟動方式存在且可驗證。
-6. 出稿前執行文件品質 gate，確認讀者語境、來源歸屬、讀者動作、內部語言、詞彙與寫入位置都正確。
-7. 產出文件驗收標準，讓 QE 或維護者可以檢查文件是否真的支援接手。
+6. 修正既有文件前，先完整閱讀目標頁全篇與牽動同一讀者路徑的相關頁面；關鍵字掃描只能在修正後用於確認殘留用詞，不能取代完整閱讀。
+7. 出稿前執行文件品質 gate，確認讀者語境、來源歸屬、讀者動作、內部語言、詞彙與寫入位置都正確。
+8. 產出文件驗收標準，讓 QE 或維護者可以檢查文件是否真的支援接手。
 
 ## 文件品質 Gate
 
@@ -65,3 +66,4 @@ user-invocable: false
 - 用「應該可以」描述安裝、測試或部署步驟。
 - 文件承諾目前 runtime 沒有的 agent、skill、instruction 或 command。
 - 把 PR / commit 歷程寫進正式文件。
+- 只靠關鍵字掃描定位殘留詞就視為修正完成，沒有先完整閱讀目標頁與相關讀者路徑。
