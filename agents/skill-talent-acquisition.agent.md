@@ -65,7 +65,6 @@ handoffs:
 
 ## 反模式
 
-- 在無素材的情況下強行蒸餾（必先要求 CEO 補資料）
 - 把所有複雜性都包進一個 skill（一人一職，不做 swiss-army agent）
 - 只產出 SKILL.md 缺對應 agent.md，或只產出 agent.md 缺 SKILL.md（兩者需成對產出）
 - 自己評分自己的蒸餾結果（評分屬 `skill-quality-auditor`）
