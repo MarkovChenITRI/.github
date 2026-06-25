@@ -4,7 +4,7 @@ description: "Use when planning multi-employee tasks, designing handoffs between
 
 # 跨部門協作準則（Cross-Team SOP）
 
-本檔提供 PM / RD / QE / HR 四部門的協作邊界與交接介面定義。員工角色與工作流定義在 [`.github/agents/`](../agents/)；本 repo 是 VS Code Copilot 端自足 runtime。
+本檔提供 PM / RD / QE / HR 四部門的協作邊界與交接介面定義。員工角色與工作流定義在 [`.github/agents/`](../agents/)；本 repo 是 VS Code Copilot 自足 runtime。
 
 ## 一、組織架構
 
@@ -53,65 +53,38 @@ CEO（真人）
 
 ## 三、交接介面（Handoff Interfaces）
 
+下表只列「沒有任何單一 agent.md 自己寫過」的交接關係。其餘關係（例如架構師 → 工程師的藍圖、資料架構顧問 → QE 的完整性測試需求、curator → RD 的審查報告等）已逐字或近乎逐字寫在對應 agent.md 的「與其他部門的交接」段落，不在此重複；要查某個角色的交接細節，直接看該角色自己的 agent.md。
+
 | From | To | 交付物 | 觸發時機 |
 |------|----|----|---------|
 | CEO | PM | 商務願景、模糊需求、外部訊號 | CEO 啟動新對話 / 新需求 |
-| PM | RD（架構師） | 需求單（問題陳述 + 驗收標準 + 可用依賴清單 + 交付形式） | PM 完成 What/Why 定義 |
 | PM / RD（架構師） | RD（演算法研發） | 演算法問題定義（輸入輸出、目標、限制、評估需求） | AI 研發任務涉及 loss / metric / baseline / paper reproduction |
-| RD（演算法研發） | RD（架構師） | Algorithm spec（假設、候選方法、objective、metrics、failure modes） | 演算法規格完成，需安排系統位置 |
-| RD（演算法研發） | RD（工程師） | Algorithm spec + implementation notes | 演算法規格完成，需落地實作 |
-| RD（架構師） | RD（工程師） | 藍圖（模組位置 + 依賴方向 + public API 形狀 + 不變式 + 邊界條件） | 架構設計完成 |
-| RD（工程師） | RD（架構師） | 實作不可行回報 | 工程師發現藍圖落地不可行 |
-| RD（架構師） / PM | RD（資料架構顧問） | 持久層邊界（誰讀寫什麼、一致性要求） | 架構藍圖涉及持久層但未定義資料模型 |
-| RD（資料架構顧問） | RD（工程師） | Schema facts package（實體與關係 / 鍵與約束 / 索引策略 / 一致性與交易邊界 / 遷移路徑） | Schema 設計完成，需落地 migration |
 | RD（資料架構顧問） | RD（架構師） | Schema 與系統架構一致性確認 | Schema 設計完成，需併入整體藍圖 |
-| RD（架構師） / PM | RD（UI/UX 設計師） | 使用者操作流程、目標受眾、品牌限制 | PM 需求單含使用者流程但未定義介面結構 |
-| RD（UI/UX 設計師） | RD（工程師） | Design facts package（使用者流程 / 頁面與元件清單 / 設計 token / 無障礙基準） | 介面設計完成，需落地前端實作 |
-| RD（架構師） | QE | 設計文件（API 規格 / 不變式 / 邊界條件 / 依賴圖） | 新模組設計完成 |
-| RD（工程師） | QE | 實作完成的程式碼 + unit test | 委託整合 / E2E / 驗收測試 |
-| RD（資料架構顧問） | QE | 資料完整性測試需求（約束驗證 / 遷移回滾） | Schema 涉及正式資料遷移 |
-| RD（UI/UX 設計師） | QE | 可用性與無障礙驗證需求 | 介面設計涉及新使用者流程 |
-| RD（UI/UX 設計師） | QE（usability-test-coordinator） | 待驗證的設計稿與互動假設 | 需要真人驗證設計是否可行 |
 | QE（testing-quality-engineer） | QE（usability-test-coordinator） | 冷啟動測試結論（文件 / 指令層級） | 需要更深層的真人情緒 / 無障礙驗證 |
-| CEO | QE（usability-test-coordinator） | 真人測試管道（beta 名單 / 測試平台 / 招募預算） | 需要真實受測者 |
-| QE（usability-test-coordinator） | RD（UI/UX 設計師） | Usability findings package | 真人測試完成，發現設計卡點 |
-| QE（usability-test-coordinator） | RD（工程師） | 功能性缺陷與重現步驟 | 真人測試發現功能性 bug |
-| QE（usability-test-coordinator） | PM | 商務假設的真人驗證結果 | 真人測試完成，需裁決優先度 |
 | QE | RD（架構師） | 反金字塔診斷報告 | 發現架構難測 |
 | QE | RD（工程師） | 測試耦合實作診斷 | 發現測試耦合 private 細節 |
-| QE（testing-quality-engineer） | QE（security-engineer） | 基礎 checklist 發現的疑似資安問題 | 需要威脱建模或 OWASP 逐項審查 |
-| QE（security-engineer） | RD（工程師） | Security review package（威脱清單 / OWASP 結果 / 機密風險 / 依賴漏洞分級） | 資安審查完成，需修補 |
-| QE（testing-quality-engineer） | QE（site-reliability-engineer） | CI/CD 通過後的部署需求 | 需要規劃正式環境部署拓撲 |
-| QE（site-reliability-engineer） | RD（工程師） | Operability facts package（部署拓撲 / IaC / 監控告警 / 容量 / rollback） | 維運規劃完成，應用層需配合調整 |
 | GitHub Issue / 使用者回報 | QE（FAE） | 外部問題、log、環境資訊、重現線索 | issue 開啟或使用者回報 debug 問題 |
-| QE（FAE） | PM / RD / QE | Issue triage report + action items + closure criteria | issue 分類與重現資訊收斂完成 |
-| PM / RD / QE | documentation-experience-manager | 產品承諾、系統真相、驗證證據 | 需要產出 README、onboarding、quickstart、系統文件或接手文件 |
 | documentation-experience-manager | PM / RD / QE | 文件缺口與待確認項 | 文件需要產品裁決、架構真相或驗證證據時回到對應部門 |
-| documentation-experience-manager | CEO / 使用者 | 可接手文件入口 | 文件完成讀者成功路徑與驗收條件後交付 |
-| QE | PM | E2E / 驗收測試結果 | 完整測試套件跑完 |
 | PM | CEO | 對外語言版本說明 / 翻譯後的驗收結果 | QE 結果回收後 |
-| RD（任何員工） | tech-stack-curator | 新依賴引入請求 | `pip install` / `npm install` / `submodule add` 前 |
-| tech-stack-curator | RD | 依賴審查報告（綠燈 / 替換建議 / 拒絕） | 審查完成 |
 | tech-stack-curator | CEO | LICENSE 草案（含 NOT FOR RELEASE 註記） | 草案產出後 |
-| RD / QE / PM | skill-quality-auditor | `feedback/session-log.md` 寫入請求 | 發現 SKILL.md 與實際決策落差 |
-| skill-quality-auditor | 各部門員工 | `results.tsv` + 改進建議 | 考核結果回饋 |
-| skill-talent-acquisition | 各部門 | 新 skill 的 `department` 對應 agent | 招募完成新員工 |
+| RD / QE / PM | skill-quality-auditor | `feedback/session-log.md` 寫入請求（廣播式，非單一部門對單一部門） | 發現 SKILL.md 與實際決策落差 |
+| skill-quality-auditor | 各部門員工 | `results.tsv` + 改進建議（廣播式） | 考核結果回饋 |
+| skill-talent-acquisition | 各部門 | 新 skill 的 `department` 對應 agent（廣播式） | 招募完成新員工 |
 
 ### 文件交付 Handoff Package
 
-需要產出 README、onboarding、quickstart、部署指南、維運文件或系統文件時，documentation-experience-manager 不接收只有抽象名稱的交付物；上游需提供可追溯來源。
+需要產出 README、onboarding、quickstart、部署指南、維運文件或系統文件時，documentation-experience-manager 不接收只有抽象名稱的交付物；上游需提供可追溯來源。各 package 的必填內容已定義在對應 owner 的 agent.md，此處只列索引：
 
-| Package | Owner | 必填內容 | 不可替代為 |
-|---------|-------|----------|------------|
-| Reader / product context package | PM | 目標讀者、產品定位、能力承諾、不在範圍、交付形式、讀者成功條件 | 未經確認的商務猜測或內部交接語 |
-| Architecture facts package | RD（架構師） | 元件責任、依賴方向、資料流、不變式、設定與機密邊界、source of truth、待確認項 | 只有服務名稱的清單 |
-| Schema facts package | RD（資料架構顧問） | 實體與關係、鍵與約束、索引策略與取捨、一致性與交易邊界、遷移路徑、待確認項 | 只列資料表名稱的清單 |
-| Design facts package | RD（UI/UX 設計師） | 使用者流程、頁面 / 元件清單與狀態、設計 token、無障礙基準、待確認項 | 只有視覺稿沒有規格說明 |
-| Verification evidence package | QE | 已驗證命令、quickstart / deployment / maintenance 驗收路徑、gate 分級、殘餘風險 | 「應該可行」或未跑過的步驟 |
-| Security review package | QE（security-engineer） | 資料分類與信任邊界、威脱清單與緩解措施、OWASP 逐項結果、機密管理現況、依賴漏洞分級 | 「沒發現問題」的空泛保證 |
-| Operability facts package | QE（site-reliability-engineer） | 部署拓撲、IaC 現況、監控與告警、容量與成本、rollback 路徑、待確認項 | 只列雲端資源名稱的清單 |
-| Usability findings package | QE（usability-test-coordinator） | 受測者輪廓與招募條件、任務完成率與卡點、觀察記錄與情緒訊號、量化指標、待確認項 | 沒有真人原始資料的編造反饋 |
-| Issue / feedback action package | FAE | 分類、owner、輸入資料、完成條件、驗證方式、closure criteria | 無 owner 的抱怨或單句 TODO |
+- **Reader / product context package**（PM）：見 `product-strategy-manager.agent.md` 工作流程「交給文件經理時」段
+- **Architecture facts package**（RD 架構師）：見 `architecture-research-developer.agent.md` 的 Architecture Facts Package 段
+- **Schema facts package**（RD 資料架構顧問）：見 `database-architect.agent.md` 的 Schema Facts Package 段；不可替代為只列資料表名稱的清單
+- **Design facts package**（RD UI/UX 設計師）：見 `ui-ux-designer.agent.md` 的 Design Facts Package 段
+- **Security review package**（QE security-engineer）：見 `security-engineer.agent.md` 的 Security Review Package 段
+- **Operability facts package**（QE site-reliability-engineer）：見 `site-reliability-engineer.agent.md` 的 Operability Facts Package 段；不可替代為只列雲端資源名稱的清單
+- **Usability findings package**（QE usability-test-coordinator）：見 `usability-test-coordinator.agent.md` 的 Usability Findings Package 段
+- **Issue / feedback action package**（FAE）：見 `field-application-engineer.agent.md` 的 Feedback 分流段；不可替代為無 owner 的抱怨或單句 TODO
+
+唯一例外是 **Verification evidence package**（QE）：`testing-quality-engineer.agent.md` 目前只在工作流程內嵌一句帶欄位的提示，沒有獨立段落，必填內容在此明列：已驗證命令、quickstart / deployment / maintenance 驗收路徑、gate 分級、殘餘風險；不可替代為「應該可行」或未跑過的步驟。
 
 文件經理負責把 package 轉成讀者可用的資訊架構，不得替 PM 發明承諾、替 RD 決定拓撲、替 QE 宣稱驗證成功，或替 FAE 決定 issue closure。
 
@@ -137,6 +110,7 @@ CEO（真人）
 | QE（usability-test-coordinator）沒有真人原始資料就編造或推測使用者反饋 | 誠信；不得冒充真人反應 |
 | 把冷啟動測試（AI 模擬）對外宣稱等同已完成真人可用性測試 | 誤導；兩者互補不互相取代 |
 | RD 未經 tech-stack-curator 審查就引入新依賴 | 違反守門程序 |
+| 已達六、Blueprint 觸發門檎的規劃任務，只產出單一摘要而非各角色的 Blueprint 檔案 | 違反外部化要求；摘要不能取代逐角色可查核的 Handoff Package 檔案 |
 | tech-stack-curator 自行移除 LICENSE 的 NOT FOR RELEASE 註記 | 越權；僅 CEO 可移除 |
 | 任何員工修改 `LICENSE` / `NOTICE` | 屬 PM 職權 |
 | 任何員工直接修改 `feedback/session-log.md` 或 `results.tsv` | 屬 HR skill-quality-auditor 職權 |
@@ -144,12 +118,12 @@ CEO（真人）
 
 ## 五、子專案內容分工
 
-子專案的 `CLAUDE.md` / `AGENTS.md` 只寫「**這個專案在做什麼**」（技術棧、執行指令、專案慣例）。「**員工是誰、員工怎麼做事**」一律由本 submodule 提供：
+子專案自己的 `copilot-instructions.md` 補充段（或 `AGENTS.md`）只寫「**這個專案在做什麼**」（技術棧、執行指令、專案慣例）。「**員工是誰、員工怎麼做事**」一律由本 submodule 提供：
 
 | 子專案需要回答 | 寫在哪 |
 |---------------|--------|
-| 這個專案的商務目標 | 子專案 README + CLAUDE.md |
-| 這個專案的技術棧 | 子專案 CLAUDE.md |
+| 這個專案的商務目標 | 子專案 README |
+| 這個專案的技術棧 | 子專案 copilot-instructions.md 補充段 |
 | 這個專案的 README / onboarding / quickstart 成功路徑 | 子專案 README + docs/ |
 | 跨專案通用的架構思維 | `.github/agents/architecture-research-developer.agent.md` + `.github/instructions/rd-sop.instructions.md` |
 | 跨專案通用的資料庫 / Schema 設計 | `.github/agents/database-architect.agent.md` + `.github/skills/database-architect/SKILL.md` |
@@ -164,3 +138,62 @@ CEO（真人）
 | 跨專案通用的可用性測試與真人使用者驗證 | `.github/agents/usability-test-coordinator.agent.md` + `.github/skills/usability-test-coordinator/SKILL.md` |
 | 跨專案通用的部門協作規範 | `.github/instructions/`（本目錄） |
 | 員工的權限邊界與工具白名單 | `.github/agents/*.agent.md` |
+
+## 六、新功能規劃前置作業（Blueprint）
+
+當規劃一個新功能、且預期施工規模會超過單輪對話的處理能力時，先在 `blueprint/<feature-name>/` 建立計劃書資料夾，把跨角色的分工與查核點顯式寫成檔案，避免任何角色在實作過程中獨自發散或臆測其他角色的決定。
+
+### 觸發門檎：以「context 是否超過一輪」判斷，不以「牽動幾個部門」判斷
+
+符合下列任一項即啟動 Blueprint：
+
+| 判準 | 具體徵兆 |
+|------|---------|
+| 預測對話將被自動壓縮 | 預期討論與產出的內容量，會在完成前觸發 conversation compaction |
+| 預測需要開新 session 才能完成 | 預期工作無法在當前 session 結束前收斂，需要靠檔案而非對話記憶接續 |
+| 預測角色交接會「隔代」 | 下游角色實際拿到的不是上游角色的原始 Handoff Package，而是經過轉述、摘要過的二手敘述 |
+
+只有單一角色、單一檔案、可在當輪對話內完成的小修改，不需要 Blueprint；直接沿用三、文件交付 Handoff Package 在對話中交接即可。
+
+### Blueprint 資料夾結構
+
+```
+blueprint/<feature-name>/
+├── 00-manifest.md          # 角色 → 檔名 → Handoff Package 類型對照表，作為「規劃是否完成」的客觀判準
+├── pm-<feature-name>.md    # PM 的 Reader / product context package
+├── rd-<feature-name>.md    # RD 各角色的 Architecture / Schema / Design facts package
+├── qe-<feature-name>.md    # QE 的 Verification / Security / Operability package
+└── ...                     # 依實際牽涉角色增減
+```
+
+- `00-manifest.md` 必須列出本次規劃牽涉的每個角色、對應檔名、使用的 Handoff Package 類型（沿用三、文件交付 Handoff Package 列出的類型）。
+- 每個角色的檔案內容必須是該角色的 Handoff Package 全文，不得只放檔名或一句話摘要。
+- 規劃未完成的判準：`00-manifest.md` 列出的角色尚有檔案缺席，或檔案內容不符合對應 Package 的必填欄位。
+
+### 查核點格式（Checkpoint）
+
+每個 Blueprint 檔案的查核點沿用 `skill-quality-auditor` 既有的落差紀錄格式，不自創新格式：
+
+- **Owner**：負責完成此查核點的角色
+- **完成條件**：可驗證的具體完成狀態，不是「做好」這種模糊敘述
+- **驗證方式**：誰、用什麼方法確認此查核點已達成
+
+### 與既有 Handoff Package 的關係
+
+Blueprint 不是新的交接格式，是既有 Handoff Package（三、文件交付 Handoff Package）在「規模超過一輪對話」時的外部化版本。未達觸發門檎時，Handoff Package 在對話中交接即可，不必落地成檔案。
+
+## 七、CEO 核准事項總表
+
+四、跨部門禁忌已個別記載各項越權風險；本表把所有「需要 CEO 明確核准才能執行」的事項收斂成一份索引供查閱，不新增規則、不取代原出處的完整描述。
+
+| 事項 | 範圍 | 核准人 | 出處 |
+|------|------|--------|------|
+| 移除 LICENSE 草案的 NOT FOR RELEASE 註記 | tech-stack-curator | 僅 CEO | `tech-stack-curator.agent.md` |
+| 執行 `pip install` / `npm install` / `submodule add` 等安裝指令 | tech-stack-curator | CEO 確認後手動執行 | `tech-stack-curator.agent.md` |
+| 對正式環境做破壞性操作（刪除資源、強制覆寫、降級資料庫） | site-reliability-engineer | CEO 或 change window 核准 | `site-reliability-engineer.agent.md` |
+| 招募、聯繫或支付真實受測者 | usability-test-coordinator | CEO 提供管道（beta 名單 / 測試平台 / 招募預算） | `usability-test-coordinator.agent.md` |
+| 啟動 skill / agent 考核 | skill-quality-auditor | 僅 CEO 明確召喚（不自動觸發） | `skill-quality-auditor.agent.md` |
+| 修改被考核的 SKILL.md / agent.md | skill-quality-auditor 考核範圍 | CEO 或原招募者 | `skill-quality-auditor.agent.md` |
+| 考核優化結果是否採用、是否繼續下一輪 | skill-quality-auditor | CEO 確認（人在回路） | `skill-quality-auditor.agent.md` |
+| 修改 `LICENSE` / `NOTICE` | 全公司 | 屬 PM 職權，重大條文變更需 CEO 核准 | `copilot-instructions.md` |
+| push 到 `main` 分支 | 全公司 | 需每次重新明確授權 | `copilot-instructions.md` |

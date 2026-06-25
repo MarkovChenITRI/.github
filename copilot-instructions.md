@@ -55,11 +55,6 @@
 
 ## 六、Repo 結構共識
 
-**本 submodule 是自足的 VS Code Copilot runtime 真相源**：
+**本 submodule 是自足的 VS Code Copilot runtime 真相源**：`copilot-instructions.md`（全域憲法）+ `instructions/*.instructions.md`（部門 SOP）+ `agents/*.agent.md`（員工角色）+ `skills/*/SKILL.md`（深度 playbook）。
 
-- [`.github/`](https://github.com/MarkovChenITRI/.github)（本 repo）— VS Code Copilot 端：`copilot-instructions.md` + `instructions/*.instructions.md` + `agents/*.agent.md`
-- [`.claude/`](https://github.com/MarkovChenITRI/.claude) — Claude Code 端：`CLAUDE.md` + `rules/*.md` + `agents/*.md` + `skills/*/SKILL.md`
-
-兩 repo 為**內容等效鏡像**而非互補半身；通常子專案只需擇一掛載對應其使用的 AI 工具。若同時掛兩個，視為邊緣情境（雙重憲法載入），詳見 `.github/docs/dual-repo-workflow.md`。
-
-員工角色、權限邊界與完整工作流皆由本 repo 的 `agents/` 與 `instructions/` 提供；不得要求使用者額外掛載 `.claude/` 才能取得 VS Code Copilot 端的核心能力。
+員工角色、權限邊界與完整工作流皆由本 repo 提供；子專案只需掛載本 repo 即可取得完整能力，不依賴任何其他 repo。

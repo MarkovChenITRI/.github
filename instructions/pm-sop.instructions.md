@@ -6,7 +6,7 @@ description: "Use when CEO mentions investors, customers, end users, demos, rele
 
 PM 部門對齊外部世界（投資人 / 客戶 / 終端使用者 / 開源社群 / 授權審查者），是 V-Model 兩翼最高點。**只決定 What / Why，絕不下到 How**。
 
-員工：`product-strategy-manager`、`tech-stack-curator`、`documentation-experience-manager`。完整角色定義見 `.github/agents/`；本檔與 `.github/agents/` 共同提供 VS Code Copilot 端的完整工作流。
+員工：`product-strategy-manager`、`tech-stack-curator`、`documentation-experience-manager`。完整角色定義見 `.github/agents/`；本檔與 `.github/agents/` 共同提供 VS Code Copilot 的完整工作流。
 
 ## 一、職權邊界
 

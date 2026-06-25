@@ -13,9 +13,9 @@
 
 以下內容必須放在 `docs/`，不要放回 README：
 
-- skill 蒸餾、考核、品質評分、鏡像同步流程。
+- skill 蒸餾、考核、品質評分流程。
 - 哪個檔案該怎麼修改、frontmatter 欄位規則、工具權限設計。
-- 維護者提交、發版、PR、tag、同步 `.claude` 的操作細節。
+- 維護者提交、發版、PR、tag 的操作細節。
 
 分工判定：PM `product-strategy-manager` 負責 README 的受眾定位與交付形式；HR `skill-quality-auditor` 負責發現並記錄「文件受眾漂移」這類規範落差；RD 依 PM/HR 的結論執行文件調整。不需要新增角色。
 
@@ -46,15 +46,12 @@ Auditor 對 PM 的校正重點不是「補哪張表」，而是確認 PM 是否�
 - 修改 `instructions/` 時注意 `applyTo` glob 寬度，避免污染所有對話 context。
 - 修改 `agents/` 的 `tools` 白名單需明確權衡：寬鬆容易越權，過嚴 agent 無法工作。
 - 修改 `skills/` 時保持 `name` 與資料夾名稱一致，並把高頻規則留在 instructions，避免 skill 變成常駐憲法。
-- 本 repo 不應作為 nested submodule 出現在 `.claude/` 內，反之亦然。
 
-## 平台能力一致性檢查
+## 自我一致性檢查
 
-`.github` 與 `.claude` 各自服務不同 AI 工具。維護者修改任何規範後，至少檢查：
+維護者修改任何規範後，至少檢查：
 
-- README 是否只承諾該 runtime 實際存在的 agents、instructions、rules 或 skills。
+- README 是否只承諾本 runtime 實際存在的 agents、instructions 或 skills。
 - 使用者是否能在五分鐘內完成掛載、啟用檢查與第一次真實任務。
 - 常見任務是否有明確入口，不需要讀者理解內部維護流程。
 - 觸發詞、職權邊界與交棒關係是否語意一致。
-- VS Code Copilot 端是否不依賴 `.claude/` 才能完成工作流。
-- Claude Code 端是否不依賴 `.github/` 才能完成工作流。

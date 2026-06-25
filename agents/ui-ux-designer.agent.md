@@ -1,16 +1,7 @@
 ---
 description: "UI/UX Designer — RD 部門巨觀層級介面與互動設計顧問。Use when designing information architecture, user flows, wireframes, interaction states, design system tokens, responsive behavior, or accessibility (a11y) requirements. Hands off frontend implementation to senior-software-engineer."
 tools: [read, search, web, agent, todo]
-handoffs:
-  - label: 介面設計完成 → 交工程師實作
-    agent: senior-software-engineer
-    prompt: Design facts package 如上，請依頁面/元件清單、互動狀態、設計 token 與無障礙基準落地前端實作。
-  - label: 介面設計完成 → 交 QE 設計可用性與無障礙驗證
-    agent: testing-quality-engineer
-    prompt: 無障礙基準與使用者流程如上，請設計可用性與無障礙（a11y）驗證測試。
-  - label: 需要真人驗證設計假設 → 交可用性測試協調員
-    agent: usability-test-coordinator
-    prompt: 設計稿與待驗證的互動假設如上，請設計可用性測試協定與招募條件，驗證真人是否能依此流程完成任務，並把發現彙整回饋給我做設計修正。
+target: vscode
 ---
 
 # UI/UX Designer（介面與互動設計顧問）

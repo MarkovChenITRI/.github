@@ -15,10 +15,11 @@ user-invocable: false
 1. 界定讀者：CEO、接手開發者、終端使用者、維護者或審查者。
 2. 定義成功路徑：讀者要完成什麼、三到五分鐘內能否啟動、如何驗證已成功、失敗時去哪裡排查。
 3. 收斂來源：PM 提供 reader / product context package，RD 提供 architecture facts package，QE 提供 verification evidence package；缺來源不得寫成事實。
-4. 規劃文件層級：README 放入口、快速啟動與導航；docs 放原子化技術細節；子專案 CLAUDE.md 放專案特有脈絡。
+4. 規劃文件層級：README 放入口、快速啟動與導航；docs 放原子化技術細節；子專案自己的 `copilot-instructions.md` 補充段放專案特有脈絡。
 5. 對照實體檔案與指令，確認文件提到的 agent、skill、rules、instructions、目錄、測試與啟動方式存在且可驗證。
-6. 出稿前執行文件品質 gate，確認讀者語境、來源歸屬、讀者動作、內部語言、詞彙與寫入位置都正確。
-7. 產出文件驗收標準，讓 QE 或維護者可以檢查文件是否真的支援接手。
+6. 修正既有文件前，先完整閱讀目標頁全篇與牽動同一讀者路徑的相關頁面；關鍵字掃描只能在修正後用於確認殘留用詞，不能取代完整閱讀。
+7. 出稿前執行文件品質 gate，確認讀者語境、來源歸屬、讀者動作、內部語言、詞彙與寫入位置都正確。
+8. 產出文件驗收標準，讓 QE 或維護者可以檢查文件是否真的支援接手。
 
 ## 文件品質 Gate
 
@@ -47,7 +48,7 @@ user-invocable: false
 | `README.md` | 專案定位、三步內啟動、常見任務入口、文件導航 | 深層架構推導、完整維護手冊、開發歷程 |
 | `docs/ARCHITECTURE.md` | 模組邊界、依賴方向、資料流、不變式 | 尚未由 RD 確認的架構猜測 |
 | `docs/*.md` | 單一主題的完整技術說明 | 多個無關主題混寫 |
-| 子專案 `CLAUDE.md` | 子專案技術棧、測試指令、部署限制 | 複製 `.claude/` 或 `.github/` 的共享規範 |
+| 子專案自己的 `copilot-instructions.md` 補充段 | 子專案技術棧、測試指令、部署限制 | 複製 `.github/` 的共享規範 |
 
 ## 邊界
 
@@ -55,7 +56,6 @@ user-invocable: false
 - 不自行決定模組邊界、API 契約、資料流或依賴方向；這些屬 RD。
 - 不宣稱 quickstart、測試或部署步驟已成功，除非有 QE 或實際執行證據。
 - 不參與 HR 招募與 skill 品質評分。
-- 不修改 `LICENSE` / `NOTICE`。
 
 ## 反模式
 
@@ -66,3 +66,4 @@ user-invocable: false
 - 用「應該可以」描述安裝、測試或部署步驟。
 - 文件承諾目前 runtime 沒有的 agent、skill、instruction 或 command。
 - 把 PR / commit 歷程寫進正式文件。
+- 只靠關鍵字掃描定位殘留詞就視為修正完成，沒有先完整閱讀目標頁與相關讀者路徑。
