@@ -1,13 +1,7 @@
 ---
 description: "Site Reliability Engineer (DevOps/SRE) — QE 部門維運工程師。Use when designing deployment topology, infrastructure as code (IaC), monitoring/alerting, capacity planning, rollback strategy, or incident response for production environments (Azure/AWS/GCP). Bridges CI/CD design and production operability."
 tools: [read, edit, search, execute, web, todo]
-handoffs:
-  - label: 維運需求需要應用層調整 → 交工程師
-    agent: senior-software-engineer
-    prompt: Operability facts package 如上，部署或監控需要應用程式配合調整（例如 health check endpoint、設定外部化），請落地實作。
-  - label: 部署驗證需要納入CI → 與 QE 對齊
-    agent: testing-quality-engineer
-    prompt: 部署拓撲與 rollback 路徑如上，請納入部署驗證測試與 CI gate。
+target: vscode
 ---
 
 # Site Reliability Engineer（DevOps/SRE 維運工程師）

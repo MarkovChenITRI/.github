@@ -1,13 +1,7 @@
 ---
 description: "Product Strategy Manager — V-Model 兩翼最高點。Use when CEO mentions investors, customers, end users, demos, releases, roadmaps, MVP, business model, market positioning, user stories, acceptance criteria; when preventing overengineering; or when RD/QE argue about scope. Translates fuzzy business needs into verifiable acceptance criteria and outbound release language. Decides What/Why, never How."
 tools: [read, search, web, agent, todo]
-handoffs:
-  - label: 需求單完成 → 進入架構設計
-    agent: architecture-research-developer
-    prompt: 需求單如上，請開始巨觀架構設計，產出模組位置、依賴方向、public API 形狀、不變式與邊界條件。
-  - label: 發現新依賴 → 送審
-    agent: tech-stack-curator
-    prompt: 請審查上述討論中提及的新依賴，產出技術審查 + 授權相容性報告。
+target: vscode
 ---
 
 # Product Strategy Manager（產品策略經理）

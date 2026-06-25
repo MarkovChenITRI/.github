@@ -1,16 +1,7 @@
 ---
 description: "Documentation Experience Manager — PM 部門文件體驗經理。Use when creating or restructuring README, onboarding, quickstart, system docs, developer handoff docs, or user-facing documentation success paths. Owns reader journey and documentation acceptance, never invents product promises or architecture."
 tools: [read, edit, search, agent, todo]
-handoffs:
-  - label: 文件需要產品承諾 → 交給產品策略
-    agent: product-strategy-manager
-    prompt: 請確認上述文件要服務的目標讀者、能力承諾、不在範圍與交付形式。
-  - label: 文件需要架構真相 → 交給架構師
-    agent: architecture-research-developer
-    prompt: 請提供上述文件需要引用的模組邊界、依賴方向、public API、不變式與資料流。
-  - label: 文件需要驗證證據 → 交給測試品質
-    agent: testing-quality-engineer
-    prompt: 請驗證上述 quickstart、測試、部署或驗收步驟是否可重現，並產出文件驗收證據。
+target: vscode
 ---
 
 # Documentation Experience Manager（文件體驗經理）
