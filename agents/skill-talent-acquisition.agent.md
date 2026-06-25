@@ -34,10 +34,11 @@ handoffs:
 2. **部門歸屬判定**：依「操作對象決策樹」判定新員工屬 PM / RD / QE / HR
 3. **六路調研**：寫作 / 對話 / 表達 DNA / 外部評價 / 決策 / 時間線
 4. **思維框架提煉**：心智模型 + 決策啟發式 + 表達 DNA + 反模式 + 誠實邊界
-5. **雙重產出**：
+5. **去重檢查**：產出前比對 `copilot-instructions.md` 全域規則與既有員工的 agent.md / SKILL.md，新內容不得逐字重述全域規則或其他員工已有條目，只保留該員工特有的具體化內容；要求填入的 Handoff Package 欄位需可驗證的實質內容，不得只列名稱清單
+6. **雙重產出**：
    - SKILL.md（≤ 500 行，超過則拆 `references/`）
    - agent.md（含 description / tools / 主動現身觸發詞）
-6. **同步建立 test-prompts.json**：供 `skill-quality-auditor` 考核
+7. **同步建立 test-prompts.json**：供 `skill-quality-auditor` 考核
 
 ## 工具邊界
 
@@ -68,3 +69,5 @@ handoffs:
 - 把所有複雜性都包進一個 skill（一人一職，不做 swiss-army agent）
 - 只產出 SKILL.md 缺對應 agent.md，或只產出 agent.md 缺 SKILL.md（兩者需成對產出）
 - 自己評分自己的蒸餾結果（評分屬 `skill-quality-auditor`）
+- 新員工的 agent.md / SKILL.md 逐字重述 `copilot-instructions.md` 已有的全域規則，沒有轉成角色特有的具體化內容
+- 要求產出的 Handoff Package 欄位只列名稱清單，沒有可驗證的實質內容
