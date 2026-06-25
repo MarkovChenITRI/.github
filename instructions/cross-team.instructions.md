@@ -4,7 +4,7 @@ description: "Use when planning multi-employee tasks, designing handoffs between
 
 # 跨部門協作準則（Cross-Team SOP）
 
-本檔提供 PM / RD / QE / HR 四部門的協作邊界與交接介面定義。員工角色與工作流定義在 [`.github/agents/`](../agents/)；本 repo 是 VS Code Copilot 端自足 runtime。
+本檔提供 PM / RD / QE / HR 四部門的協作邊界與交接介面定義。員工角色與工作流定義在 [`.github/agents/`](../agents/)；本 repo 是 VS Code Copilot 自足 runtime。
 
 ## 一、組織架構
 

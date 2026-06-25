@@ -15,7 +15,7 @@ RD 部門負責 V-Model 左翼「做對了嗎」。五位員工分工：
 | `algorithm-research-developer` | 演算法 | AI / ML / CV / 最佳化方法、數學假設、loss、metrics、baseline、實驗設計 |
 | `senior-software-engineer` | 微觀 | 函式內部實作、命名、unit test、Clean Code、SOLID、註解 |
 
-完整角色定義見 `.github/agents/`；本檔與 `.github/agents/` 共同提供 VS Code Copilot 端的完整工作流。
+完整角色定義見 `.github/agents/`；本檔與 `.github/agents/` 共同提供 VS Code Copilot 的完整工作流。
 
 ## 一、RD 內部交棒
 

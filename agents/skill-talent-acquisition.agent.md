@@ -26,7 +26,7 @@ handoffs:
 
 ## 工作流程
 
-本 agent 內文與 `.github/instructions/hr-sop.instructions.md` 已內嵌 VS Code Copilot 端所需的等效 playbook；不依賴其他 repo。
+本 agent 內文與 `.github/instructions/hr-sop.instructions.md` 已內嵌 VS Code Copilot 所需的完整 playbook；不依賴其他 repo。
 
 關鍵步驟：
 

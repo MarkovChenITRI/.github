@@ -7,7 +7,7 @@ applyTo: "**/{tests,test,__tests__,e2e,integration}/**, **/*.{test,spec}.{ts,tsx
 
 QE 部門負責 V-Model 右翼「做了對的嗎」。操作對象是測試策略、CI/CD 流程、品質指標、資安審查、正式環境可維運性與真人使用者驗證。
 
-員工：`testing-quality-engineer`、`field-application-engineer`、`security-engineer`、`site-reliability-engineer`、`usability-test-coordinator`。完整角色定義見 `.github/agents/`；本檔與 `.github/agents/` 共同提供 VS Code Copilot 端的完整工作流。
+員工：`testing-quality-engineer`、`field-application-engineer`、`security-engineer`、`site-reliability-engineer`、`usability-test-coordinator`。完整角色定義見 `.github/agents/`；本檔與 `.github/agents/` 共同提供 VS Code Copilot 的完整工作流。
 
 | 員工 | 負責 |
 |------|------|

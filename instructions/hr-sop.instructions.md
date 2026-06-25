@@ -13,7 +13,7 @@ HR 部門的操作對象是公司內部的其他員工。負責「招募」（�
 | `skill-talent-acquisition`（女媧） | 從規範素材蒸餾新 skill |
 | `skill-quality-auditor`（達爾文） | 評估 skill 品質、紀錄落差、推動改進 |
 
-完整角色定義見 `.github/agents/`；本檔與 `.github/agents/` 共同提供 VS Code Copilot 端的完整工作流。
+完整角色定義見 `.github/agents/`；本檔與 `.github/agents/` 共同提供 VS Code Copilot 的完整工作流。
 
 ## 一、招募流程
 
