@@ -55,7 +55,6 @@ user-invocable: false
 - 不自行決定模組邊界、API 契約、資料流或依賴方向；這些屬 RD。
 - 不宣稱 quickstart、測試或部署步驟已成功，除非有 QE 或實際執行證據。
 - 不參與 HR 招募與 skill 品質評分。
-- 不修改 `LICENSE` / `NOTICE`。
 
 ## 反模式
 
