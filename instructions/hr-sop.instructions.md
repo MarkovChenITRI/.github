@@ -48,23 +48,17 @@ HR 部門的操作對象是公司內部的其他員工。負責「招募」（�
 
 ### 新員工上線檢查清單
 
-依子專案所掛載的 runtime 分別產出：
-
-**VS Code Copilot 端（必需）**
 - [ ] `.github/agents/<name>.agent.md`（runtime 員工定義）
   - [ ] frontmatter 含 `description`、`tools`（最小工具白名單）
   - [ ] 主動現身觸發詞涵蓋於 description
-- [ ] `.github/instructions/<name>.instructions.md`（SOP 規範）
-  - [ ] 內文足以獨立說明工作流、邊界與交接，不依賴其他 repo
-
-**Claude Code 端（維護鏡像時同步產出）**
-- [ ] `.claude/skills/<name>/SKILL.md`（Claude Code skill body）
+- [ ] `.github/skills/<name>/SKILL.md`（深度 playbook）
   - [ ] frontmatter 含 `name`、`description`
   - [ ] H1 標題與職稱一致
   - [ ] ≤ 500 行（超過則拆 `references/`）
   - [ ] 已標註誠實邊界（這個 skill 做不到什麼）
   - [ ] 同步建立 `test-prompts.json`（供 `skill-quality-auditor` 考核）
-- [ ] `.claude/agents/<name>.md`（Claude Code subagent 定義）
+- [ ] 若新增部門或既有部門 SOP 需更新：`.github/instructions/<dept>-sop.instructions.md`
+  - [ ] 內文足以獨立說明工作流、邊界與交接，不依賴其他 repo
 
 ## 二、考核流程
 
@@ -89,7 +83,7 @@ HR 部門的操作對象是公司內部的其他員工。負責「招募」（�
 | 7 | 整體架構 | 15 | 效果 |
 | 8 | 實測表現 | 25 | 效果 |
 
-評分規則以本檔 rubric 與 `.github/agents/skill-quality-auditor.agent.md` 為 VS Code Copilot 端真相源；`.claude/skills/skill-quality-auditor/SKILL.md` 是 Claude Code 端等效鏡像。
+評分規則以本檔 rubric 與 `.github/agents/skill-quality-auditor.agent.md` 為真相源。
 
 ### 考核獨立性原則
 

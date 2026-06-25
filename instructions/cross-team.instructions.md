@@ -144,12 +144,12 @@ CEO（真人）
 
 ## 五、子專案內容分工
 
-子專案的 `CLAUDE.md` / `AGENTS.md` 只寫「**這個專案在做什麼**」（技術棧、執行指令、專案慣例）。「**員工是誰、員工怎麼做事**」一律由本 submodule 提供：
+子專案自己的 `copilot-instructions.md` 補充段（或 `AGENTS.md`）只寫「**這個專案在做什麼**」（技術棧、執行指令、專案慣例）。「**員工是誰、員工怎麼做事**」一律由本 submodule 提供：
 
 | 子專案需要回答 | 寫在哪 |
 |---------------|--------|
-| 這個專案的商務目標 | 子專案 README + CLAUDE.md |
-| 這個專案的技術棧 | 子專案 CLAUDE.md |
+| 這個專案的商務目標 | 子專案 README |
+| 這個專案的技術棧 | 子專案 copilot-instructions.md 補充段 |
 | 這個專案的 README / onboarding / quickstart 成功路徑 | 子專案 README + docs/ |
 | 跨專案通用的架構思維 | `.github/agents/architecture-research-developer.agent.md` + `.github/instructions/rd-sop.instructions.md` |
 | 跨專案通用的資料庫 / Schema 設計 | `.github/agents/database-architect.agent.md` + `.github/skills/database-architect/SKILL.md` |

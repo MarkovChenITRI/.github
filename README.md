@@ -1,8 +1,6 @@
 # `.github` —— Connect AI 的 VS Code Copilot Runtime
 
-本 repo 是 Connect AI 公司化開發規範的 **VS Code Copilot 端自足 runtime**。子專案只需掛載本 repo，即可在 VS Code Copilot 取得完整的十五位員工 agent、部門 SOP、深度 skill playbook 與公司憲法。
-
-> 使用 Claude Code 的使用者，請掛載 `.claude/` 並閱讀 `.claude/README.md`。兩個 repo 各自服務自己的 AI 工具，使用時不要把一邊的檔案複製到另一邊。
+本 repo 是 Connect AI 公司化開發規範的 **VS Code Copilot 自足 runtime**。子專案只需掛載本 repo，即可在 VS Code Copilot 取得完整的十五位員工 agent、部門 SOP、深度 skill playbook 與公司憲法。
 
 ## 你會得到的能力
 
@@ -193,7 +191,3 @@ Copilot 回覆底部的 References 可能顯示使用到的 instruction / skill�
     ├── skill-talent-acquisition/SKILL.md
     └── skill-quality-auditor/SKILL.md
 ```
-
-## 邊緣情境：同時使用 VS Code Copilot 與 Claude Code
-
-一般 Copilot 使用者只需要掛 `.github/`。若同一個子專案同時使用 VS Code Copilot 與 Claude Code，請先閱讀 [docs/dual-repo-workflow.md](docs/dual-repo-workflow.md)，確認是否真的需要雙掛，以及如何避免重複載入規範。
