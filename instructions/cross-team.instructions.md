@@ -137,6 +137,7 @@ CEO（真人）
 | QE（usability-test-coordinator）沒有真人原始資料就編造或推測使用者反饋 | 誠信；不得冒充真人反應 |
 | 把冷啟動測試（AI 模擬）對外宣稱等同已完成真人可用性測試 | 誤導；兩者互補不互相取代 |
 | RD 未經 tech-stack-curator 審查就引入新依賴 | 違反守門程序 |
+| 已達六、Blueprint 觸發門檎的規劃任務，只產出單一摘要而非各角色的 Blueprint 檔案 | 違反外部化要求；摘要不能取代逐角色可查核的 Handoff Package 檔案 |
 | tech-stack-curator 自行移除 LICENSE 的 NOT FOR RELEASE 註記 | 越權；僅 CEO 可移除 |
 | 任何員工修改 `LICENSE` / `NOTICE` | 屬 PM 職權 |
 | 任何員工直接修改 `feedback/session-log.md` 或 `results.tsv` | 屬 HR skill-quality-auditor 職權 |
@@ -164,3 +165,62 @@ CEO（真人）
 | 跨專案通用的可用性測試與真人使用者驗證 | `.github/agents/usability-test-coordinator.agent.md` + `.github/skills/usability-test-coordinator/SKILL.md` |
 | 跨專案通用的部門協作規範 | `.github/instructions/`（本目錄） |
 | 員工的權限邊界與工具白名單 | `.github/agents/*.agent.md` |
+
+## 六、新功能規劃前置作業（Blueprint）
+
+當規劃一個新功能、且預期施工規模會超過單輪對話的處理能力時，先在 `blueprint/<feature-name>/` 建立計劃書資料夾，把跨角色的分工與查核點顯式寫成檔案，避免任何角色在實作過程中獨自發散或臆測其他角色的決定。
+
+### 觸發門檎：以「context 是否超過一輪」判斷，不以「牽動幾個部門」判斷
+
+符合下列任一項即啟動 Blueprint：
+
+| 判準 | 具體徵兆 |
+|------|---------|
+| 預測對話將被自動壓縮 | 預期討論與產出的內容量，會在完成前觸發 conversation compaction |
+| 預測需要開新 session 才能完成 | 預期工作無法在當前 session 結束前收斂，需要靠檔案而非對話記憶接續 |
+| 預測角色交接會「隔代」 | 下游角色實際拿到的不是上游角色的原始 Handoff Package，而是經過轉述、摘要過的二手敘述 |
+
+只有單一角色、單一檔案、可在當輪對話內完成的小修改，不需要 Blueprint；直接沿用三、文件交付 Handoff Package 在對話中交接即可。
+
+### Blueprint 資料夾結構
+
+```
+blueprint/<feature-name>/
+├── 00-manifest.md          # 角色 → 檔名 → Handoff Package 類型對照表，作為「規劃是否完成」的客觀判準
+├── pm-<feature-name>.md    # PM 的 Reader / product context package
+├── rd-<feature-name>.md    # RD 各角色的 Architecture / Schema / Design facts package
+├── qe-<feature-name>.md    # QE 的 Verification / Security / Operability package
+└── ...                     # 依實際牽涉角色增減
+```
+
+- `00-manifest.md` 必須列出本次規劃牽涉的每個角色、對應檔名、使用的 Handoff Package 類型（沿用三、文件交付 Handoff Package 表的類型）。
+- 每個角色的檔案內容必須是該角色的 Handoff Package 全文，不得只放檔名或一句話摘要。
+- 規劃未完成的判準：`00-manifest.md` 列出的角色尚有檔案缺席，或檔案內容不符合對應 Package 的必填欄位。
+
+### 查核點格式（Checkpoint）
+
+每個 Blueprint 檔案的查核點沿用 `skill-quality-auditor` 既有的落差紀錄格式，不自創新格式：
+
+- **Owner**：負責完成此查核點的角色
+- **完成條件**：可驗證的具體完成狀態，不是「做好」這種模糊敘述
+- **驗證方式**：誰、用什麼方法確認此查核點已達成
+
+### 與既有 Handoff Package 的關係
+
+Blueprint 不是新的交接格式，是既有 Handoff Package（三、文件交付 Handoff Package）在「規模超過一輪對話」時的外部化版本。未達觸發門檎時，Handoff Package 在對話中交接即可，不必落地成檔案。
+
+## 七、CEO 核准事項總表
+
+四、跨部門禁忌已個別記載各項越權風險；本表把所有「需要 CEO 明確核准才能執行」的事項收斂成一份索引供查閱，不新增規則、不取代原出處的完整描述。
+
+| 事項 | 範圍 | 核准人 | 出處 |
+|------|------|--------|------|
+| 移除 LICENSE 草案的 NOT FOR RELEASE 註記 | tech-stack-curator | 僅 CEO | `tech-stack-curator.agent.md` |
+| 執行 `pip install` / `npm install` / `submodule add` 等安裝指令 | tech-stack-curator | CEO 確認後手動執行 | `tech-stack-curator.agent.md` |
+| 對正式環境做破壞性操作（刪除資源、強制覆寫、降級資料庫） | site-reliability-engineer | CEO 或 change window 核准 | `site-reliability-engineer.agent.md` |
+| 招募、聯繫或支付真實受測者 | usability-test-coordinator | CEO 提供管道（beta 名單 / 測試平台 / 招募預算） | `usability-test-coordinator.agent.md` |
+| 啟動 skill / agent 考核 | skill-quality-auditor | 僅 CEO 明確召喚（不自動觸發） | `skill-quality-auditor.agent.md` |
+| 修改被考核的 SKILL.md / agent.md | skill-quality-auditor 考核範圍 | CEO 或原招募者 | `skill-quality-auditor.agent.md` |
+| 考核優化結果是否採用、是否繼續下一輪 | skill-quality-auditor | CEO 確認（人在回路） | `skill-quality-auditor.agent.md` |
+| 修改 `LICENSE` / `NOTICE` | 全公司 | 屬 PM 職權，重大條文變更需 CEO 核准 | `copilot-instructions.md` |
+| push 到 `main` 分支 | 全公司 | 需每次重新明確授權 | `copilot-instructions.md` |
