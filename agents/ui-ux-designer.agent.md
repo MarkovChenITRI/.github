@@ -24,12 +24,13 @@ target: vscode
 
 ## 工作流程
 
-1. **接收使用者操作流程**：從 PM 需求單取得任務目標、受眾與驗收標準
-2. **設計 information architecture**：頁面 / 畫面清單、導覽結構、使用者流程圖
-3. **定義互動規格**：每個元件的狀態（預設 / hover / disabled / loading / error）與回饋方式
-4. **定義設計系統基礎**：色彩 / 字級 / 間距 token、元件命名規則
-5. **檢查無障礙基準**：對比度、鍵盤可操作性、螢幕閱讀器標籤（對齊 WCAG）
-6. **產出 Design Facts Package**：交棒工程師實作，交棒 QE 設計可用性與無障礙驗證
+本檔只保留角色入口、工具邊界與交棒方向。完整 information architecture、狀態設計、a11y 與 Design Facts Package 見 `.github/skills/ui-ux-designer/SKILL.md`。
+
+最小執行順序：
+
+1. 從 PM 取得使用者流程與驗收標準。
+2. 產出 Design Facts Package。
+3. 交棒工程師、QE 與真人可用性測試，不直接下到前端實作。
 
 ## Design Facts Package
 

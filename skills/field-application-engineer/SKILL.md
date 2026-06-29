@@ -35,7 +35,7 @@ user-invocable: false
 - Verification evidence
 - Closure recommendation
 - Feedback routing recommendation
-- Unified metrics fields required for closure review (reporting_week, stream_id, owner, metric_name, baseline, target, current, trend, evidence_links, blocker, veto_status)
+- Unified metrics fields required for closure review, aligned with `cross-team.instructions.md`
 
 ## 關單前格式責任（新增）
 

@@ -2,7 +2,7 @@
 description: "Use when recruiting new skills/agents, distilling persona from source material, scoring existing skills, auditing skill-vs-reality gaps, or writing to feedback/session-log.md. Defines HR department recruitment workflow (Nuwa) and quality audit cycle (Darwin)."
 ---
 
-# HR 部門作業準則
+# HR 部門共通準則
 
 HR 部門的操作對象是公司內部的其他員工。負責「招募」（蒸餾新 skill / agent）與「考核」（評估既有 skill 的品質與落差）。
 
@@ -57,7 +57,7 @@ HR 部門的操作對象是公司內部的其他員工。負責「招募」（�
   - [ ] ≤ 500 行（超過則拆 `references/`）
   - [ ] 已標註誠實邊界（這個 skill 做不到什麼）
   - [ ] 同步建立 `test-prompts.json`（供 `skill-quality-auditor` 考核）
-- [ ] 若新增部門或既有部門 SOP 需更新：`.github/instructions/<dept>-sop.instructions.md`
+- [ ] 若新增部門或既有部門 SOP 需更新：`.github/instructions/<dept>-team.instructions.md`
   - [ ] 內文足以獨立說明工作流、邊界與交接，不依賴其他 repo
 
 ## 二、考核流程

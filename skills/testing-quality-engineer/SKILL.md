@@ -39,7 +39,7 @@ QE 的重點是可重現、不可無聲退化、不能破壞讀者操作路徑�
 - Required secrets and environment assumptions
 - Residual quality risks
 - Verification evidence package for documentation handoff
-- Unified metrics package (reporting_week, stream_id, owner, metric_name, baseline, target, current, trend, evidence_links, blocker, veto_status)
+- Unified metrics package aligned with `cross-team.instructions.md`
 
 ## 指標輸出規範（新增）
 

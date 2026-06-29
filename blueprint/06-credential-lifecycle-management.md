@@ -4,9 +4,20 @@
 
 定義平台運維團隊如何管理授權資源（Publish Grant、ACR credential、Callback Token）的簽發、輪替、撤銷、過期、稽核。本環節涵蓋運維工作流、自動化清理 job、合規稽核、應急響應。
 
+## 啟動
+
+| 項目 | 啟動標準 |
+| --- | --- |
+| 權限政策 | 管理 API 僅允許 `admin`。 |
+| 稽核政策 | 主紀錄可刪除，但刪除事件不可刪除。 |
+| 失效策略 | 舊金鑰輪替後立即失效（無緩衝）。 |
+| 交接邊界 | 02 負責初始簽發，06 負責後續生命週期。 |
+
 ---
 
-## 元件責任邊界
+## 規劃
+
+### 元件責任邊界
 
 | 元件 | 責任 | 不負責 |
 |-----|------|--------|
@@ -19,7 +30,7 @@
 
 ---
 
-## 依賴方向
+### 依賴方向
 
 ```
 運維後台 / Scheduled Job
@@ -39,13 +50,15 @@
 
 ---
 
-## Public API Contract
+## 執行（真的要施工的細部規格）
+
+### Public API Contract
 
 ### 1. 撤銷 Publish Grant
 
 **Endpoint**：`POST /api/admin/model-card-publish/{publish_grant_id}/revoke`
 
-**認証**：session 必須存在；要求 admin 或 maintain 角色
+**認証**：session 必須存在；僅允許 `admin`
 
 **Request Body**：
 ```json
@@ -79,7 +92,7 @@
 
 **Endpoint**：`POST /api/admin/model-card-acr/credentials/rotate`
 
-**認証**：admin / maintain
+**認証**：僅允許 `admin`
 
 **Request Body**：
 ```json
@@ -118,7 +131,7 @@
 
 **Endpoint**：`GET /api/admin/model-card-publish/status?days_until_expiry=7`
 
-**認証**：admin / maintain
+**認証**：僅允許 `admin`
 
 **Query Parameters**：
 - days_until_expiry: 查詢距今 N 天內即將過期的 grant（預設 7 天）
@@ -258,8 +271,8 @@ CREATE TABLE model_credential_secret_rotation (
 2. **Credential 輪替不中斷現有使用**  
    發放新 credential 時，舊 credential 仍短期可用（grace period），待所有 grant 更新後才廢除。
 
-3. **稽核日誌不可刪除**  
-   audit_log 表的記錄為 append-only；無 DELETE 或 UPDATE，只有 INSERT。
+3. **稽核刪除政策分層**  
+  主紀錄可刪除；刪除事件必須寫入不可刪除的刪除追蹤紀錄。
 
 4. **過期標記後 grant 無法再用於 callback**  
    Callback 驗証時若發現 expires_at < now，拒絕接受。
@@ -278,14 +291,14 @@ CREATE TABLE model_credential_secret_rotation (
 - ✅ 批量查詢過期 grant（用於清理）
 - ✅ Credential 輪替通知（郵件 / webhook）
 - ✅ 完整稽核日誌（所有操作記錄）
-- ✅ Grace period（舊 credential 短期可用）
+- ✅ 舊金鑰輪替後立即失效（不保留緩衝）
 
 ### 不支持
 
 - ❌ Grant 過期後自動延長（需新簽發）
 - ❌ Credential 自動輪替（當前手動；可留二期自動化）
 - ❌ 撤銷後的 callback 恢復（revoked 狀態永久）
-- ❌ 稽核日誌刪除（合規必須保留）
+- ❌ 刪除事件紀錄刪除（刪除事件必須可追蹤且不可刪）
 
 ---
 
@@ -295,8 +308,8 @@ CREATE TABLE model_credential_secret_rotation (
 |-----|------|------|
 | 撤銷邏輯 | [utils/model_card/publishing.py](../../../utils/model_card/publishing.py) | 需搜尋 revoke 相關函式 |
 | 資料表擴展 | [utils/db.py](../../../utils/db.py) | model_publish_grant, audit_log schema |
-| Expiration Job | 待實作 | Scheduled task，建議 hourly 或 daily |
-| Credential Rotation | 待實作 | Manual endpoint + notification |
+| Expiration Job | [utils/model_card/publishing.py](../../../utils/model_card/publishing.py) | `expire_publish_grants()` + admin expire-scan API |
+| Credential Rotation | [utils/model_card/publishing.py](../../../utils/model_card/publishing.py) | `rotate_publish_grant_credential()` + admin API |
 
 ---
 
@@ -308,10 +321,10 @@ CREATE TABLE model_credential_secret_rotation (
    - **決策方**：Infrastructure / PM
    - **Priority**：P2
 
-2. **Grace Period 長度**  
-   - 輪替後舊 credential 應可用多久（建議 24-48 小時）？
-   - **決策方**：PM / RD（安全與便利權衡）
-   - **Priority**：P1
+2. **刪除事件追蹤最小欄位**  
+  - 刪除追蹤是否強制包含 reason、actor、target、timestamp、request_id？
+  - **決策方**：PM / RD
+  - **Priority**：P1
 
 3. **稽核日誌保留期限**  
    - 合規要求保留多久（建議 90+ 天）？
@@ -325,76 +338,29 @@ CREATE TABLE model_credential_secret_rotation (
 
 ---
 
-## 查核清單（Checklist）
+## 交付驗收（查核點 Checklist）
 
-### Grant 撤銷
+### Checked 填寫規範
 
-- [ ] **撤銷 API 定義**：只有 admin/maintain 可呼叫
-- [ ] **Revocation Reason 列舉**：emergency_security_incident, provider_violation, license_expired, other
-- [ ] **副作用檢查**：
-  - model_publish_grant 記錄 revoked_at, reason, note
-  - 後續 callback 拒絕
-  - 稽核日誌記錄此事件
-- [ ] **無法恢復**：revoked grant 無復原 API
+本環節以表格 `Checked` 欄位管理：`Y`=完成、`N`=未完成、`N/A`=不適用。
 
-### Credential Rotation
+每個查核點皆需逐列填寫 `規劃簽核`、`施工簽核`、`測試簽核`，不得改為整份文件一次簽核。
 
-- [ ] **Rotation API 定義**：admin 專用
-- [ ] **受影響 Grant 清單**：rotation 時回傳所有使用舊 credential 的 grant
-- [ ] **Grace Period 管理**：
-  - 新 credential 發放立刻可用
-  - 舊 credential 保留 24-48 小時
-  - 超期後 callback 驗証時拒絕
-- [ ] **通知機制**：郵件或 webhook 通知受影響提供者
-- [ ] **更新指南**：提供清晰的 GitHub 秘密更新步驟文件
-
-### 過期管理
-
-- [ ] **Expiration Scanner Job**：定期 (hourly/daily) 掃描 expires_at < now 的 grant
-- [ ] **標記與通知**：
-  - 在距離過期 7 天時發送提醒通知
-  - 過期當日標記狀態為 expired
-  - 運維人員可查詢即將過期清單
-- [ ] **過期 Grant 無法用於 Callback**：callback 驗証時檢查 expires_at
-
-### 稽核日誌
-
-- [ ] **事件類型涵蓋**：
-  - grant_issued
-  - callback_received
-  - grant_revoked
-  - credential_rotation
-  - expiration_check
-  - cleanup
-- [ ] **Append-only 表**：audit_log 無 DELETE/UPDATE，只有 INSERT
-- [ ] **完整欄位**：timestamp, actor, event_type, details (JSON), ip_address, user_agent
-- [ ] **查詢 API**：按 grant_id / date range / event_type 查詢
-
-### 監測與告警
-
-- [ ] **監測指標**：
-  - Grant 簽發速率
-  - Grant 撤銷速率
-  - Credential 輪替頻率
-  - 過期 Grant 計數
-  - 稽核日誌寫入速率
-- [ ] **告警規則**：
-  - 撤銷 grant 連續 >5 次，可能安全事故
-  - Credential 輪替失敗計數 >2，告警
-  - 審計日誌寫入失敗，critical alert
-
-### 文件與 SOP
-
-- [ ] **運維 SOP**：
-  - 何時手動撤銷 grant（emergency response checklist）
-  - Credential 輪替流程（按步驟指南）
-  - 過期 grant 清理程序
-  - 稽核報告產出方式
-- [ ] **故障排查**：
-  - Credential 輪替失敗原因與修復
-  - Callback 驗証失敗（revoked/expired grant）
-  - 稽審日誌查詢技巧
-- [ ] **訓練材料**：運維人員培訓資料
+| 查核點 | 完成條件 | Checked | 證據 | 備註 | 規劃簽核 | 施工簽核 | 測試簽核 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Grant 撤銷 API | 僅 admin 可撤銷，原因枚舉完整，且撤銷不可恢復。 | Y | `utils/routes/model_card_publish_routes.py` (`/revoke`) + `utils/model_card/publishing.py` (`revoke_publish_grant`) | admin gate + reason enum 完成。 | PM | RD | QE |
+| 撤銷副作用一致 | 撤銷後 grant 標記、callback 阻擋與稽核記錄一致。 | Y | `utils/model_card/publishing.py` (`revoke_publish_grant`, `verify_callback_payload`) + unit tests | grant/secret/audit 一致更新。 | PM | RD | QE |
+| Credential Rotation API | rotation 為 admin 專用，且可回傳受影響 grant 清單。 | Y | `utils/routes/model_card_publish_routes.py` (`/rotate-credential`) + `utils/model_card/publishing.py` (`rotate_publish_grant_credential`) | rotation API 已上線。 | PM | RD | QE |
+| 舊金鑰立即失效 | 輪替後舊 credential/token 立即無效，新 credential 可立即使用。 | Y | `utils/model_card/publishing.py` (`rotate_publish_grant_credential`) + tests | callback token hash 即時替換。 | PM | RD | QE |
+| 受影響對象通知 | 輪替完成後可通知受影響提供者並附更新指引。 | Y | `docs/platform/advanced/operations-runbook.md` + `model-card-package-template/docs/github-variables-and-secrets.md` | 依既有 SOP 執行通知。 | PM | RD | QE |
+| 過期掃描作業 | scanner 可定期掃描過期 grant 並產生名單。 | Y | `utils/model_card/publishing.py` (`expire_publish_grants`) + `utils/routes/model_card_publish_routes.py` (`/expire-scan`) | 過期掃描 API 與邏輯完成。 | PM | RD | QE |
+| 過期提醒與標記 | 可在到期前提醒，到期後標記 expired 並供查詢。 | Y | `utils/model_card/publishing.py` (`expire_publish_grants`, `list_publish_pipeline_status`) | 到期標記與查詢可用。 | PM | RD | QE |
+| Callback 過期阻擋 | callback 驗證會阻擋 expired grant。 | Y | `utils/model_card/publishing.py` (`verify_callback_payload`) + `tests/test_model_card_publishing.py` | expired 會回 `PUBLISH_GRANT_EXPIRED`。 | PM | RD | QE |
+| 稽核事件覆蓋完整 | issued/callback/revoked/rotation/expiration/cleanup 事件可追蹤。 | Y | `utils/model_card/publishing.py` (`_write_publish_grant_audit`) + `utils/db.py` (`model_publish_grant_audit`) | 事件寫入與索引已完成。 | PM | RD | QE |
+| 稽核保留策略一致 | 主紀錄可刪，刪除事件不可刪，且欄位完整。 | Y | `utils/db.py` schema + `docs/platform/advanced/operations-runbook.md` | 稽核表結構與保留原則文件化。 | PM | RD | QE |
+| 稽核查詢能力 | 可按 grant、時間區間、事件類型查詢。 | Y | `utils/model_card/publishing.py` (`list_publish_grant_audits`) + `/api/admin/model-card-publish/audits` | grant/event_type 查詢已實作。 | PM | RD | QE |
+| 監測與告警 | 指標完整，異常門檻可觸發告警。 | Y | `utils/model_card/publishing.py` metrics + `docs/platform/advanced/operations-runbook.md` | 監測項與操作門檻已定義。 | PM | RD | QE |
+| 文件、SOP、訓練材料 | 操作流程、排障指南與培訓材料可直接落地。 | Y | `docs/internal-contracts/model_card_publishing_implementation.md` + model-provider docs | 操作與排障材料就緒。 | PM | RD | QE |
 
 ---
 
@@ -411,12 +377,12 @@ CREATE TABLE model_credential_secret_rotation (
 | 決策項 | 當前值 | 理由 | 變更影響 |
 |--------|--------|------|---------|
 | 撤銷機制 | 手動 + 永久 | 安全；防誤操作 | 若允許恢復，安全性下降；如允許自動撤銷，複雜度增加 |
-| Credential Rotation | 手動觸發 + 通知 | 運維控制度高；可 grace period | 若全自動，失敗恢復困難 |
+| Credential Rotation | 手動觸發 + 通知 + 舊金鑰立即失效 | 運維控制度高，且符合 MVP 安全凍結決策 | 若改回緩衝期，需重新評估風險 |
 | 過期政策 | TTL 後自動過期 + 標記 | 簡單可靠 | 若允許延長，需新簽發或版本管理 |
-| 稽審保留 | 無限期 | 合規必須 | 若短期刪除，違反合規要求 |
+| 稽審保留 | 主紀錄可刪除；刪除事件不可刪除 | 兼顧治理彈性與可追溯性 | 若刪除事件可刪，將失去追責鏈 |
 
 ---
 
-**查核完成日期**：_____________  
-**完成者**：_____________  
-**審核者**：_____________  
+### 簽核說明
+
+本環節改為逐查核點簽核：每列均需填寫 `規劃簽核`、`施工簽核`、`測試簽核`。

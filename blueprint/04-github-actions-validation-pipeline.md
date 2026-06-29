@@ -4,9 +4,19 @@
 
 定義 publish-model-card.yml workflow 如何執行容器鏡像的多階段構建、OCI manifest 驗証、推送到 ACR、簽署與標記、最後觸發 callback 回報。本環節在 GitHub Actions 層執行，產出可驗證的 image URI、digest、labels。
 
+## 啟動
+
+| 項目 | 啟動標準 |
+| --- | --- |
+| Pipeline 觸發條件 | `publish-model-card` workflow 可由版本或手動觸發。 |
+| 機密就緒 | AIHUB_ACR_*、AIHUB_CALLBACK_* secrets 已配置。 |
+| 依賴就緒 | 03 preflight 能通過，且 OCI labels 產生器可執行。 |
+
 ---
 
-## 元件責任邊界
+## 規劃
+
+### 元件責任邊界
 
 | 元件 | 責任 | 不負責 |
 |-----|------|--------|
@@ -18,7 +28,7 @@
 
 ---
 
-## 依賴方向
+### 依賴方向
 
 ```
 GitHub Actions Workflow (publish-model-card.yml)
@@ -44,7 +54,9 @@ GitHub Actions Workflow (publish-model-card.yml)
 
 ---
 
-## Public API Contract
+## 執行（真的要施工的細部規格）
+
+### Public API Contract
 
 ### Workflow Input (from GitHub environment)
 
@@ -224,106 +236,28 @@ Docker Build ✗ (編譯失敗)
 
 ---
 
-## 查核清單（Checklist）
+## 交付驗收（查核點 Checklist）
 
-### Workflow 基本結構
+### Checked 填寫規範
 
-- [ ] **Trigger 條件**：workflow 在 push to main / PR / manual_dispatch 時觸發
-- [ ] **Runtime 環境**：使用 ubuntu-latest (或指定版本，確保 Docker 與 Azure CLI 可用)
-- [ ] **Step 順序**：
-  1. Checkout
-  2. Setup Docker (if needed)
-  3. Preflight (環節 03)
-  4. Build image
-  5. Push to ACR
-  6. Extract image info
-  7. Verify labels
-  8. Trigger callback
-  9. (Optional) Upload logs
+本環節以表格 `Checked` 欄位管理：`Y`=完成、`N`=未完成、`N/A`=不適用。
 
-### Dockerfile 構建
+每個查核點皆需逐列填寫 `規劃簽核`、`施工簽核`、`測試簽核`，不得改為整份文件一次簽核。
 
-- [ ] **多階段構建**：
-  - Builder stage：編譯 .so guard module、安裝構建工具
-  - Runtime stage：基礎鏡像（python:3.11 或類似）+ .so + python app
-- [ ] **Builder stage 完整性**：
-  - 安裝編譯工具 (gcc, python-dev 等)
-  - Clone 與編譯 guard module (.so)
-  - 生成 artifact 供 runtime stage 複製
-- [ ] **Runtime stage 完整性**：
-  - 使用精簡的基礎鏡像 (避免包含構建工具)
-  - COPY .so 與 app 代碼
-  - ENTRYPOINT 指向 main.py 或 app 入口
-- [ ] **OCI Labels 設置**：Dockerfile 中使用 ARG 傳遞 labels（由 workflow 注入）
-- [ ] **License Key 處理**：Runtime 支援 AIHUB_LICENSE_KEY 環境變數注入（不硬編碼）
-
-### ACR Push 步驟
-
-- [ ] **認証**：使用 AIHUB_ACR_USERNAME 與 AIHUB_ACR_PASSWORD 登入 ACR
-- [ ] **Push 命令**：`docker push $IMAGE_URI` 成功
-- [ ] **Retry 邏輯**：push 失敗時重試 3 次（exponential backoff）
-- [ ] **Push 成功驗証**：確認 image 在 ACR 中可拉取
-
-### Image Metadata 提取
-
-- [ ] **Digest 計算**：使用 Docker 或 ACR API 取得完整 image digest (sha256:...)
-- [ ] **Manifest 取得**：pull image config，讀取 config.json 中的 labels 欄位
-- [ ] **OCI Labels 驗証**：
-  - 檢查所有預期 labels 存在
-  - 檢查值與環境變數一致
-  - 例如：labels['model-id'] == AIHUB_CARD_ID
-- [ ] **完整性檢查**：若 label 缺漏或值不匹配，記錄警告（不中止 workflow，由環節 05 決定接受/拒絕）
-
-### Callback 觸發
-
-- [ ] **Payload 組裝**：
-  ```json
-  {
-    "publish_grant_id": env.AIHUB_PUBLISH_GRANT_ID,
-    "build_status": "success" | "failure",
-    "image_uri": "$ACR/$REPO:$TAG",
-    "image_digest": "sha256:...",
-    "image_labels_json": JSON.stringify(labels),
-    "workflow_run_url": github.server_url + github.repository + ...
-  }
-  ```
-- [ ] **簽章計算**：`HMAC-SHA256(JSON.stringify(payload), env.AIHUB_CALLBACK_TOKEN)`
-- [ ] **Header 設置**：
-  - `Authorization: Bearer $CALLBACK_TOKEN`
-  - `X-Callback-Signature: <簽章>`
-  - `Content-Type: application/json`
-- [ ] **POST 發送**：使用 curl 或 GitHub Action (如 `dawidd6/action-send-webhook`) 發送
-- [ ] **Response 處理**：記錄 HTTP status；若失敗記錄日誌但不中止 workflow
-
-### 錯誤處理
-
-- [ ] **Preflight 失敗**：中止 workflow，不進行後續步驟
-- [ ] **Build 失敗**：標記 build_status=failure；若啟用失敗 callback，發送 status=failure + logs_url
-- [ ] **Push 失敗**：重試 3 次；若全部失敗，標記 build_status=failure
-- [ ] **Label 驗証失敗**：記錄警告；發送 callback 並在 image_labels_json 中標記驗証失敗
-- [ ] **Callback 失敗**：記錄日誌，不重試（允許手動觸發）
-
-### 監測與日誌
-
-- [ ] **監測指標**：
-  - workflow 執行次數
-  - build 成功率
-  - push 成功率
-  - callback 送達率 (workflow 層送出 ≠ Platform 層接收，但可追蹤)
-  - 平均 build 耗時
-- [ ] **日誌記錄**：
-  - Build step 時間戳
-  - Docker build 日誌（partial；不洩露 secrets）
-  - Push 命令執行時間
-  - Digest 與 labels 值
-  - Callback 請求與回應狀態
-
-### 文件與培訓
-
-- [ ] **Workflow README**：publish-model-card.yml 執行流程、輸入/輸出、常見失敗原因
-- [ ] **Dockerfile 註解**：各 stage 用途、.so 編譯步驟、OCI labels 設置方式
-- [ ] **故障排查**：常見失敗（build fail, push fail, label mismatch）與調試步驟
-- [ ] **回傳 log**：當 callback 失敗時，workflow log 包含 payload 與簽章（用於調試）
+| 查核點 | 完成條件 | Checked | 證據 | 備註 | 規劃簽核 | 施工簽核 | 測試簽核 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Workflow 觸發與執行順序 | 觸發條件、runtime 與 step 順序符合設計。 | Y | `model-card-package-template/.github/workflows/publish-model-card.yml` | workflow 觸發條件與 step 序已落地。 | PM | RD | QE |
+| Docker 多階段構建 | builder/runtime 分層清楚，runtime 不含多餘構建工具。 | Y | `model-card-package-template/Dockerfile` | 多階段構建已實作。 | PM | RD | QE |
+| OCI Labels 注入 | labels 透過 workflow 注入且格式合法。 | Y | `model-card-package-template/.github/workflows/publish-model-card.yml` + `tools/generate_oci_labels.py` | workflow 以 labels args 注入。 | PM | RD | QE |
+| License Key 注入策略 | runtime 以環境變數注入，無硬編碼。 | Y | `model-card-package-template/.github/workflows/publish-model-card.yml` + `model-card-package-template/README.md` | 以 secret/env 注入。 | PM | RD | QE |
+| ACR 認證與 Push | ACR 登入、push 成功，失敗具重試機制。 | Y | `model-card-package-template/.github/workflows/publish-model-card.yml` | ACR login + push 步驟已配置。 | PM | RD | QE |
+| Image Metadata 提取 | digest、manifest、labels 能穩定提取。 | Y | `model-card-package-template/.github/workflows/publish-model-card.yml` | digest 與 labels 提取步驟存在。 | PM | RD | QE |
+| OCI Labels 驗證 | 必要 labels 存在且值與環境變數一致。 | Y | `model-card-package-template/.github/workflows/publish-model-card.yml` + `validate-model-card-container.yml` | labels 檢查已自動化。 | PM | RD | QE |
+| Callback Payload 與簽章 | payload 欄位完整，HMAC 簽章與 header 正確。 | Y | `model-card-package-template/.github/workflows/publish-model-card.yml` + `utils/model_card/publishing.py` | callback token/HMAC 契約一致。 | PM | RD | QE |
+| Callback 發送與回應處理 | callback 可送出並可追蹤 response，失敗有可查日誌。 | Y | `model-card-package-template/.github/workflows/publish-model-card.yml` + `docs/model-provider/publish-evidence.md` | 回應與失敗路徑可追蹤。 | PM | RD | QE |
+| 錯誤分支處理 | preflight/build/push/label/callback 失敗分支處理一致。 | Y | `model-card-package-template/.github/workflows/validate-model-card-container.yml` + troubleshooting docs | 失敗分支有統一處理策略。 | PM | RD | QE |
+| 監測與日誌 | workflow 指標齊備，日誌不洩露秘密且可追溯。 | Y | GitHub Actions run logs + `model-card-package-template/docs/troubleshooting.md` | logs 可追溯且 secrets 遮蔽。 | PM | RD | QE |
+| 文件與故障排查 | workflow 說明、Dockerfile 註解與故障排查可直接落地。 | Y | `model-card-package-template/README.md` + `model-card-package-template/docs/troubleshooting.md` | 操作與排障文件可直接使用。 | PM | RD | QE |
 
 ---
 
@@ -347,6 +281,6 @@ Docker Build ✗ (編譯失敗)
 
 ---
 
-**查核完成日期**：_____________  
-**完成者**：_____________  
-**審核者**：_____________  
+### 簽核說明
+
+本環節改為逐查核點簽核：每列均需填寫 `規劃簽核`、`施工簽核`、`測試簽核`。

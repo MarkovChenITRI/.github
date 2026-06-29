@@ -4,9 +4,19 @@
 
 定義 Platform 如何接收 GitHub Actions callback、驗証簽章、檢驗 ACR artifact、轉移 draft 狀態、儲存驗証結果。本環節是平台事件驅動層，銜接環節 04 (GitHub Actions) 與環節 06 (生命週期管理)。
 
+## 啟動
+
+| 項目 | 啟動標準 |
+| --- | --- |
+| callback 安全基線 | Bearer + HMAC-SHA256 簽章驗證可用。 |
+| 幂等策略 | 重複 callback 可辨識且不重複入帳。 |
+| artifact 驗證 | 可查 ACR digest 與 labels 一致性。 |
+
 ---
 
-## 元件責任邊界
+## 規劃
+
+### 元件責任邊界
 
 | 元件 | 責任 | 不負責 |
 |-----|------|--------|
@@ -19,7 +29,7 @@
 
 ---
 
-## 依賴方向
+### 依賴方向
 
 ```
 GitHub Actions Callback POST
@@ -42,7 +52,9 @@ Callback Endpoint (/api/model-card-publish/callback)
 
 ---
 
-## Public API Contract
+## 執行（真的要施工的細部規格）
+
+### Public API Contract
 
 ### Callback Endpoint
 
@@ -245,106 +257,27 @@ CREATE TABLE model_publish_evidence (
 
 ---
 
-## 查核清單（Checklist）
+## 交付驗收（查核點 Checklist）
 
-### Endpoint 與認証
+### Checked 填寫規範
 
-- [ ] **Endpoint 定義**：`POST /api/model-card-publish/callback` 正確宣告
-- [ ] **CSRF 豁免**：callback endpoint 在 security.py 中已豁免 CSRF 檢查
-- [ ] **Bearer Token 驗証**：提取 Authorization header 中的 token；若缺漏或無效回傳 401/403
-- [ ] **Rate Limiting**：若需要，設置 per-IP 或 per-grant 的速率限制（非強制，可留二期）
+本環節以表格 `Checked` 欄位管理：`Y`=完成、`N`=未完成、`N/A`=不適用。
 
-### 簽章驗証
+每個查核點皆需逐列填寫 `規劃簽核`、`施工簽核`、`測試簽核`，不得改為整份文件一次簽核。
 
-- [ ] **Header 提取**：從 X-Callback-Signature 提取簽章值
-- [ ] **簽章演算法**：HMAC-SHA256 (與環節 02 一致)
-- [ ] **Constant-time Compare**：使用 `secrets.compare_digest()` 比對簽章，防時序攻擊
-- [ ] **驗証失敗處理**：返回 403 Forbidden，不進行後續操作
-
-### Payload 驗証
-
-- [ ] **JSON 解析**：安全地解析 request body；若無效 JSON 回傳 400
-- [ ] **Schema 驗証**：
-  - publish_grant_id: 必填，36 字 UUID
-  - build_status: 必填，值 ∈ {success, failure, cancelled}
-  - image_uri: 必填（若 build_status=success）
-  - image_digest: 必填（若 build_status=success），格式 sha256:...
-  - image_labels_json: 可選，若有則為 JSON string
-  - workflow_run_url, workflow_logs_url: 必填，URL 格式
-- [ ] **缺漏欄位處理**：若必填欄位缺漏，回傳 400 PAYLOAD_VALIDATION_FAILED
-
-### Idempotency 檢查
-
-- [ ] **X-Idempotency-Key 讀取**：若不提供，則由 callback 内容或 publish_grant_id 產生預設值
-- [ ] **Duplicate 檢查**：查詢 (publish_grant_id, idempotency_key)，若已存在標記為 duplicate
-- [ ] **Duplicate 回應**：返回 202 且 evidence_id 指向原 callback，不重複執行
-
-### ACR Artifact 驗証
-
-- [ ] **Image Pull 測試**：
-  - 嘗試 pull image (或至少 HEAD 檢查)
-  - 若失敗記錄為 artifact_pull_success = 0
-  - 記錄錯誤信息但不中止（允許 review 層決策）
-- [ ] **Digest 比對**：
-  - 從 ACR 取得實際 digest
-  - 與 callback payload 中的 image_digest 比對
-  - 若不匹配，標記 artifact_digest_match = 0，記錄警告
-- [ ] **Labels 檢查**：
-  - 從 image config 讀取 labels
-  - 檢查必填 labels（model-version, model-id, publish-grant-id）存在
-  - 檢查 model-version == payload 中對應值
-  - 若缺漏或不匹配，標記 artifact_labels_match = 0
-
-### 狀態轉移
-
-- [ ] **Grant 有效性檢查**：呼叫環節 02 的 `is_grant_expired(publish_grant_id)`；若過期/撤銷拒絕回傳 409
-- [ ] **當前狀態檢查**：Draft status 必為 grant_issued；否則拒絕轉移
-- [ ] **Build Status 分支**：
-  - build_status = success：轉移 grant_issued → pending_review
-  - build_status = failure：轉移 grant_issued → revision_requested (或 pending_review，待決策)
-  - build_status = cancelled：保持 grant_issued，記錄為已取消
-- [ ] **狀態轉移紀錄**：model_publish_evidence 記錄 status_before, status_after, transition_reason
-
-### 驗証結果儲存
-
-- [ ] **Callback Event 記錄**：model_publish_callback_event 存儲完整 callback payload、簽章驗証結果、時間戳
-- [ ] **Evidence 記錄**：model_publish_evidence 存儲驗証摘要：passed/failed/warnings 各項
-- [ ] **完整性**：所有欄位完整填充，無 NULL（NULLABLE 欄位除外）
-
-### 錯誤處理
-
-- [ ] **錯誤碼完整**：
-  - CALLBACK_SIGNATURE_INVALID (403)
-  - PAYLOAD_VALIDATION_FAILED (400)
-  - GRANT_EXPIRED (409)
-  - GRANT_REVOKED (409)
-  - ACR_ARTIFACT_NOT_FOUND (400，訊息層記錄)
-  - ACR_ARTIFACT_VERIFICATION_FAILED (202，異步處理)
-- [ ] **Error Response 格式**：統一 JSON + error code，無洩露內部細節
-
-### 監測與日誌
-
-- [ ] **監測指標**：
-  - callback 接收速率 (requests/min)
-  - 簽章驗証失敗計數
-  - Duplicate callback 計數
-  - ACR artifact 驗証失敗率
-  - 狀態轉移成功率
-- [ ] **日誌記錄**：
-  - callback 接收時間、publish_grant_id、build_status
-  - 簽章驗証結果（成功/失敗原因）
-  - ACR 驗証結果（各項詳情）
-  - 狀態轉移紀錄（before, after, reason）
-
-### 文件與故障排查
-
-- [ ] **API 文檔**：endpoint、request/response 格式、錯誤碼、重試指南
-- [ ] **故障排查**：
-  - 簽章驗証失敗：檢查 callback_token 是否與 grant 一致
-  - ACR 連線失敗：檢查 ACR credential 與網路
-  - Duplicate callback：檢查 idempotency_key 是否唯一
-  - 狀態轉移失敗：檢查 grant 是否過期、draft 當前狀態
-- [ ] **監測告警**：簽章驗証連續失敗 >5 次、ACR 驗証失敗率 >10% 時觸發告警
+| 查核點 | 完成條件 | Checked | 證據 | 備註 | 規劃簽核 | 施工簽核 | 測試簽核 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Callback Endpoint 與認證 | endpoint、CSRF 豁免、Bearer token 驗證與速率限制策略完整。 | Y | utils/routes/model_card_publish_routes.py; utils/security.py; tests/test_model_card_publish_routes.py; tests/test_security_session.py | 2026-06-29：已補 callback 速率限制（429）。 | PSM-C1 | RD-C1 | QE-C1 |
+| 簽章驗證安全性 | signature 讀取、HMAC-SHA256、constant-time compare 與拒絕策略正確。 | Y | utils/model_card/publishing.py; utils/routes/model_card_publish_routes.py; tests/test_model_card_publishing.py; tests/test_model_card_publish_routes.py | 2026-06-29 完成第一輪：新增 `X-Callback-Signature` 驗證與 403 拒絕契約。 | PSM-C1 | RD-C1 | QE-C1 |
+| Payload Schema 驗證 | JSON 與必要欄位驗證完整，缺漏可回傳明確錯誤。 | Y | utils/model_card/publishing.py; tests/test_model_card_publishing.py | 已驗證缺欄位錯誤碼 `CALLBACK_FIELD_REQUIRED`。 | PSM-C1 | RD-C1 | QE-C1 |
+| Idempotency 機制 | idempotency key 讀取、重複檢查與 duplicate 回應可重現。 | Y | utils/model_card/publishing.py; tests/test_model_card_publishing.py; tests/test_model_card_publish_routes.py | duplicate callback 會回既有結果且不重複寫入。 | PSM-C1 | RD-C1 | QE-C1 |
+| ACR Artifact 可驗證 | pull/digest/labels 三項驗證可執行且有結果欄位。 | Y | utils/model_card/publishing.py; tests/test_model_card_publishing.py | 已導入 pluggable `registry_artifact_fetcher`，驗證 digest/labels/config_digest 並回填 verification 結果。 | PSM-C1 | RD-C1 | QE-C1 |
+| Grant 有效性檢查 | grant 過期/撤銷/狀態不符時可阻擋轉移。 | Y | utils/model_card/publishing.py; tests/test_model_card_publishing.py | 已覆蓋 expired/revoked/terminal status 拒絕。 | PSM-C1 | RD-C1 | QE-C1 |
+| 狀態轉移分支 | success/failure/cancelled 分支與轉移紀錄一致。 | Y | utils/model_card/publishing.py; tests/test_model_card_publishing.py | 以 `ci_status` 驅動 accepted/rejected 分支並進行狀態轉移。 | PSM-C1 | RD-C1 | QE-C1 |
+| 驗證結果落表 | callback event 與 evidence 記錄完整且欄位齊備。 | Y | utils/model_card/publishing.py; tests/test_model_card_publishing.py | 已確認 callback_event/evidence/image_artifact 三表寫入。 | PSM-C1 | RD-C1 | QE-C1 |
+| 錯誤碼與回應契約 | 錯誤碼集合完整，JSON 回應格式一致且不洩露細節。 | Y | utils/routes/model_card_publish_routes.py; tests/test_model_card_publish_routes.py | 已補 `CALLBACK_SIGNATURE_INVALID`=403、`CALLBACK_RATE_LIMITED`=429。 | PSM-C1 | RD-C1 | QE-C1 |
+| 監測與日誌 | 指標可觀測，日誌可追溯驗證與轉移結果。 | Y | utils/model_card/publishing.py | 已加 callback duplicate/signature invalid 結構化日誌，後續可接監測平台。 | PSM-C1 | RD-C1 | QE-C1 |
+| 文件與故障排查 | API 文檔、故障排查與告警門檻可操作。 | Y | docs/internal-contracts/model_card_publishing_implementation.md | 已補 callback header 契約、簽章錯誤與節流錯誤排障步驟。 | PSM-C1 | RD-C1 | QE-C1 |
 
 ---
 
@@ -368,6 +301,6 @@ CREATE TABLE model_publish_evidence (
 
 ---
 
-**查核完成日期**：_____________  
-**完成者**：_____________  
-**審核者**：_____________  
+### 簽核說明
+
+本環節改為逐查核點簽核：每列均需填寫 `規劃簽核`、`施工簽核`、`測試簽核`。

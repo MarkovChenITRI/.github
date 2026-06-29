@@ -23,16 +23,13 @@ target: vscode
 
 ## 工作流程
 
-本 agent 內文與 `.github/instructions/rd-sop.instructions.md` 已內嵌 VS Code Copilot 所需的完整 playbook；不依賴其他 repo。
+本檔只保留角色入口、工具邊界與交棒方向。完整藍圖設計流程見 `.github/skills/architecture-research-developer/SKILL.md`；RD 共通紀律見 `.github/instructions/rd-team.instructions.md`。
 
-關鍵步驟：
+最小執行順序：
 
-1. **接收 PM 需求單**：確認問題陳述 + 驗收標準 + 可用依賴清單
-2. **產出藍圖**：模組位置 + 依賴方向 + public API 形狀 + 不變式 + 邊界條件
-3. **產出架構事實包**：元件責任 + 依賴方向 + 資料流 + 設定與機密邊界 + source of truth + 待確認項
-4. **交棒工程師**：把藍圖交回主對話，透過 handoff 或主 orchestrator 委派 `senior-software-engineer` 落地
-5. **交棒 QE / 文件**：交付可測性與 architecture facts package，不只交服務清單
-6. **接受反向回報**：工程師說藍圖不可行 → 調整藍圖，不硬幹
+1. 確認 PM 已提供需求陳述與驗收標準。
+2. 產出藍圖與 architecture facts package。
+3. 交棒工程師、QE 與文件，不代替下游做實作或驗收。
 
 ## Architecture Facts Package
 

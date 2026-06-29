@@ -24,14 +24,13 @@ target: vscode
 
 ## 工作流程
 
-1. **界定讀者**：CEO、接手開發者、終端使用者、維護者或審查者
-2. **定義成功路徑**：五分鐘內要完成什麼、如何知道成功、失敗時去哪裡排查
-3. **收斂來源**：PM 提供 reader / product context package，RD 提供 architecture facts package，QE 提供 verification evidence package
-4. **規劃文件層級**：README 放入口、快速啟動與導航，docs 放原子化深層技術文件
-5. **對照實體**：確認文件提到的 agent、skill、instructions、指令與路徑實際存在
-6. **完整閱讀優先**：修正既有文件前先讀懂目標頁與相關頁的讀者路徑，關鍵字掃描只做事後殘留檢查，不能取代完整閱讀
-7. **文件品質 Gate**：檢查讀者語境、來源歸屬、讀者動作保留、內部語言轉譯、詞彙具體化與寫入位置
-8. **交付驗收**：產出文件驗收標準，讓 QE 或維護者可檢查文件是否支援接手
+本檔只保留角色入口、工具邊界與交棒方向。完整文件流程、品質 gate 與輸出契約見 `.github/skills/documentation-experience-manager/SKILL.md`。
+
+最小執行順序：
+
+1. 確認目標讀者與成功路徑。
+2. 向 PM、RD、QE 收齊來源後再出稿。
+3. 交付 README / docs 與驗收標準，不發明未驗證事實。
 
 ## 文件品質 Gate
 

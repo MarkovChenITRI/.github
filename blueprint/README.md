@@ -1,12 +1,48 @@
 # 模型授權流程架構藍圖總覽
 
-## 文件概述
+本檔只做 blueprint 索引與閱讀導航，不承擔凍結決策、施工工單或驗收結論。那些內容應回各環節 blueprint、對應 instruction，或另立 decision log。
 
-本目錄包含**平台模型授權流程**的完整架構規劃，由 7 個獨立但相互依賴的環節組成。每個環節各自定義元件責任、公開 API、資料表映射、不變式與邊界條件。
+**目標讀者**：Platform 工程團隊、RD、QE、PM  
+**用途**：知道有哪些 blueprint、它們彼此怎麼依賴、該從哪一份開始看
 
-**目標讀者**：Platform 工程團隊、RD、QE、Product Manager  
-**用途**：架構設計、實作藍圖、交付驗收、跨部門溝通  
-**狀態**：MVP 階段；二期升級（多版本管理、自動 rotation）未納入
+---
+
+## Blueprint 必備結構（強制）
+
+自本版起，每一份環節 blueprint 必須包含以下四段，順序不可顛倒：
+
+1. `啟動`：目標、前置條件、邊界與凍結決策。
+2. `規劃`：元件責任邊界、依賴方向、資料流與約束。
+3. `執行（真的要施工的細部規格）`：可直接實作的 API、資料表、狀態機、不變式與錯誤碼。
+4. `交付驗收（查核點 Checklist）`：可簽核的驗收清單與 checked 規範。
+
+Checklist 格式規範：
+
+- Checklist 一律使用表格，不再使用 Markdown checkbox。
+- 每個查核點都必須是一列，且至少包含欄位：`查核點 | 完成條件 | Checked | 證據 | 備註 | 規劃簽核 | 施工簽核 | 測試簽核`。
+- `Checked` 可接受值需在每份文件明確定義（建議 `Y/N/N/A`）。
+- 三方簽核必須逐查核點填寫，不可改為整份文件一次簽核。
+
+---
+
+## 四階段與三份 SOP 指南
+
+本專案的四個階段仍是 `啟動`、`規劃`、`執行`、`交付驗收`，但詳細規範不再集中在此檔，而是拆成三份獨立 instruction 檔，避免在任一 blueprint 內把三段流程一起載入。
+
+| 階段 | 主要用途 | 應參考的 instruction |
+|-----|---------|-------------------|
+| 開始 | 問題定義、範圍、凍結前提 | `.github/instructions/start-to-planning.instructions.md` |
+| 規劃 | blueprint package、查核點、交接 | `.github/instructions/start-to-planning.instructions.md` |
+| 執行 | work orders、施工簽核、偏差回寫 | `.github/instructions/planning-to-execution.instructions.md` |
+| 驗證 | 驗收證據、blocking gate、回寫 | `.github/instructions/execution-to-verification.instructions.md` |
+
+### 文件分工
+
+- `instructions/cross-team.instructions.md`：只放共通協作原則與 SOP 索引。
+- `instructions/start-to-planning.instructions.md`：只放開始 → 規劃。
+- `instructions/planning-to-execution.instructions.md`：只放規劃 → 執行。
+- `instructions/execution-to-verification.instructions.md`：只放執行 → 驗證。
+- `blueprint/[01-07].md`：各自的 blueprint 詳細內容。
 
 ---
 
@@ -136,112 +172,6 @@ graph TD
 
 ---
 
-## 檔案修改歷史
-
-| 日期 | 版本 | 作者 | 異動摘要 |
-|-----|------|------|---------|
-| 2026-06-29 | 0.1 | Architecture RD | 初版發布；7 個環節完整架構藍圖 |
-| 2026-06-29 | 0.2 | Product Strategy Manager | 發布 CEO 決策凍結版，啟動 RD/QE 實作與驗收 |
-
----
-
-## 決策凍結版（PM 發布）
-
-本節為 PM 依 CEO 指示發布的「凍結決策」，即日起作為 MVP 執行基準。未經 CEO 新裁決，不得回退或擴張範圍。
-
-### 已凍結決策（全部已解完）
-
-1. 稽核紀錄保留 1 年。
-2. 稽核紀錄允許平台維運工程師手動刪除。
-3. 刪除行為本身不可刪，必須保留可追蹤紀錄。
-4. 開發者流程公開於 Pages；維運細節放在 Repository 文件，並由 README 導引。
-5. 文件主要語言為繁體中文，寫作風格參照 Azure Learn 中文文件。
-6. MVP 採基本安全；進階反破譯（含 .so compile 強化）移至下一階段。
-7. 季授權只套用部署授權金鑰（供部署者運行容器），不套用發布流程金鑰。
-8. 舊金鑰輪替不保留緩衝，立即失效。
-
-### 影響範圍與約束
-
-- 影響文件：01、02、04、06、07。
-- 影響實作：金鑰語意切分、稽核刪除軌跡、文件公開邊界、MVP 安全範圍。
-- 約束：不得在 MVP 宣稱已提供 .so 反破譯強化。
-
----
-
-## RD 進入實作（立即生效）
-
-### RD 組長（architecture-research-developer）
-
-1. 在 `06-credential-lifecycle-management.md` 將「稽核日誌不可刪除」修訂為「主紀錄可刪除，但刪除事件不可刪除」。
-2. 在 `01-portal-model-onboarding.md` 與 `02-publish-grant-issuance-engine.md` 明確切分：
-    - 發布流程金鑰（上架流程用）
-    - 部署授權金鑰（季授權）
-3. 在 `04-github-actions-validation-pipeline.md` 註記進階反破譯為下一階段，避免 MVP 超額承諾。
-
-### RD 實作者（senior-software-engineer）
-
-1. 實作舊金鑰立即失效路徑：
-    - 失效後任何部署授權驗證均拒絕。
-    - API 回應附可操作訊息（請回 Portal 重新申請）。
-2. 實作稽核刪除事件追蹤：
-    - 記錄誰刪除、何時刪除、刪除原因、刪除對象識別。
-    - 追蹤事件不可再刪除。
-3. 將季授權邏輯僅綁定部署授權金鑰，不影響發布流程金鑰。
-
-### RD 演算法/安全（algorithm-research-developer）
-
-1. 檢查基本加解密與簽章驗證路徑在 MVP 是否一致且可解釋。
-2. 產出下一階段反破譯技術備忘錄（不進入本期實作）。
-
----
-
-## QE 進入驗收（RD 提交後立即啟動）
-
-### QE 組長（testing-quality-engineer）
-
-1. 建立 P0 驗收案例：
-    - 過期部署授權金鑰拒絕。
-    - 部署者可在 Portal 重申請並成功恢復部署。
-    - 舊金鑰立即失效且不可用。
-2. 建立稽核刪除案例：
-    - 主紀錄可刪除。
-    - 刪除事件可查且不可刪除。
-3. 建立文件邊界案例：
-    - Pages 僅暴露開發者流程。
-    - 維運細節僅在 Repository 文件可見。
-4. 建立承諾一致性案例：
-    - MVP 文件不得宣稱已提供 .so 反破譯強化。
-
-### 驗收 Gate（不得放寬）
-
-- Gate A（授權可用性）：季授權過期、重申請、立即失效三路徑全通過。
-- Gate B（稽核可追溯）：主紀錄可刪除但刪除事件不可刪除且可查詢。
-- Gate C（文件邊界）：公開內容與內部內容分層正確。
-- Gate D（對外承諾）：文件與實作能力一致。
-
----
-
-## 責任分派與交付時間
-
-| 部門 | 責任人 | 本輪交付物 | 狀態 |
-|-----|--------|-----------|------|
-| PM | product-strategy-manager | 決策凍結版發布與範圍凍結 | 已發布 |
-| RD | architecture-research-developer | 藍圖修訂與依賴/語意切分 | 進行中 |
-| RD | senior-software-engineer | 功能實作（立即失效、重申請、刪除追蹤） | 待啟動 |
-| RD | algorithm-research-developer | MVP 安全一致性檢查 + 下一階段備忘錄 | 待啟動 |
-| QE | testing-quality-engineer | P0 驗收、Gate A-D 測試報告 | 待啟動 |
-
----
-
-## 完成定義（DoD）
-
-1. RD 完成藍圖修訂並與程式碼一致。
-2. QE Gate A-D 全數通過。
-3. 文件公開邊界與實際部署內容一致。
-4. MVP 對外聲明未超出已實作能力。
-
----
-
 ## 相關資源連結
 
 **GitHub 倉庫**：
@@ -272,4 +202,4 @@ graph TD
 ---
 
 **最後更新**：2026-06-29  
-**狀態**：MVP 架構 + 實作準備；二期功能（多版本、自動 rotation）納入時需更新
+**狀態**：Blueprint 索引與閱讀導航

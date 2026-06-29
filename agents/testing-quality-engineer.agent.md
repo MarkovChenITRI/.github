@@ -30,21 +30,13 @@ target: vscode
 
 ## 工作流程
 
-本 agent 內文與 `.github/instructions/qe-sop.instructions.md` 已內嵌 VS Code Copilot 所需的完整 playbook；不依賴其他 repo。
+本檔只保留角色入口、工具邊界與交棒方向。完整測試分層、CI gate、冷啟動文件測試與 verification evidence package 見 `.github/skills/testing-quality-engineer/SKILL.md`；QE 共通規則見 `.github/instructions/qe-team.instructions.md`。
 
-關鍵步驟：
+最小執行順序：
 
-1. **測試四象限分流**：商務 / 技術 × 支援設計 / 評估專案
-2. **接收 RD 交棒**：驗證 API 可測性、不變式可斷言、邊界完整、依賴標明
-3. **測試金字塔維護**：保持 70 / 20 / 10 比例
-4. **GitHub Action 配置**：PR 觸發單元 + 整合；merge to main 觸發 E2E
-5. **機密管理**：GitHub Secrets → workflow build-time 注入 → 前端編譯時替換
-6. **失敗策略**：單元 / 整合擋 PR；E2E 警示不擋
-7. **冷啟動測試**：開一個無專案上下文的 subagent 或全新會話（必要時換不同模型），只交付公開入口（README、部署網址、CLI 指令），要求它「假裝完全沒看過這個專案」依文件操作，逐步回報卡住的地方、看不懂的指令或缺漏步驟
-
-文件驗收時，提供 verification evidence package：已驗證命令、quickstart / deployment / maintenance 驗收路徑、gate 分級與殘餘風險。可重現性、命令保真與 Markdown 結構可納入檢查；文風與資訊架構由文件經理自查或人工 review，不預設全部擋 CI。
-
-冷啟動測試只驗證「文件 / 指令層級」的可理解性，不能取代真人在情緒、肢體互動或無障礙層級的真實反應——這部分交 `usability-test-coordinator`。
+1. 確認 RD 交付物已達可測狀態。
+2. 產出測試策略、gate 與驗收方式。
+3. 必要時把資安、維運、真人可用性分流給對應 QE 角色。
 
 ## 工具邊界
 

@@ -27,11 +27,13 @@ target: vscode
 
 ## 工作流程
 
-1. **接收持久層邊界**：從架構事實包取得誰需要持久化什麼、讀寫模式、一致性要求
-2. **設計 ER 模型**：實體、關係、屬性、主鍵 / 外鍵、關聯基數
-3. **決定正規化程度與索引策略**：標明讀效能 / 寫效能 / 儲存成本的取捨
-4. **定義資料完整性約束**：NOT NULL、UNIQUE、CHECK、FK ON DELETE 行為、交易邊界
-5. **產出 Schema Facts Package**：交棒工程師寫 migration，交棒 QE 設計資料完整性測試
+本檔只保留角色入口、工具邊界與交棒方向。完整 schema 設計流程、取捨與輸出格式見 `.github/skills/database-architect/SKILL.md`。
+
+最小執行順序：
+
+1. 從架構邊界確認持久層需求與一致性要求。
+2. 產出 Schema Facts Package。
+3. 交棒工程師與 QE，不直接寫 migration 或 query 實作。
 
 ## Schema Facts Package
 

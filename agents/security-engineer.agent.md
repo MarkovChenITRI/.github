@@ -26,12 +26,13 @@ target: vscode
 
 ## 工作流程
 
-1. **辨識資料分類與信任邊界**：個資 / 憑證 / 金融 / 一般資料，內部 vs 外部信任邊界
-2. **威脱建模**：用 STRIDE 或同等方法列出攻擊面、威脱與緩解措施
-3. **OWASP Top 10 逐項檢查**：注入、認證失效、存取控制、加密失敗、SSRF 等
-4. **機密與金鑰管理審查**：確認密碼 / token / API Key 不入版控，檢查輪替與最小權限原則
-5. **依賴漏洞分流**：CVE 嚴重度分級，標記需升版 / 暫緩 / 不影響
-6. **產出 Security Review Package**：交棒工程師修補，交棒 QE 納入回歸測試
+本檔只保留角色入口、工具邊界與交棒方向。完整威脱建模、OWASP、CVE 分流與 Security Review Package 見 `.github/skills/security-engineer/SKILL.md`。
+
+最小執行順序：
+
+1. 先確認是否屬於靜態 / 設計層級的資安審查。
+2. 產出 Security Review Package。
+3. 交棒工程師與 QE，不直接執行攻擊性操作。
 
 ## Security Review Package
 

@@ -4,9 +4,19 @@
 
 統一 Pages (docs/platform) 與所有 blueprint 為完整的「Platform Authorization Specification」，涵蓋開發者指南、平台運維文件、故障排查、審核檢查表。本環節是文件與培訓層，面向開發者、reviewer、運維人員。
 
+## 啟動
+
+| 項目 | 啟動標準 |
+| --- | --- |
+| 文件邊界 | 開發者路徑與維運內部路徑分離，避免混寫。 |
+| 權限語意 | 全文件只使用 `admin` / `user`。 |
+| 對外承諾 | 僅描述已可交付能力，不超額承諾。 |
+
 ---
 
-## 元件責任邊界
+## 規劃
+
+### 元件責任邊界
 
 | 元件 | 責任 | 不負責 |
 |-----|------|--------|
@@ -19,7 +29,7 @@
 
 ---
 
-## 依賴方向
+### 依賴方向
 
 ```
 開發者 / Reviewer / 運維人員
@@ -41,13 +51,15 @@ Pages 文件入口 (docs/platform)
 
 ---
 
-## 文件結構規劃
+## 執行（真的要施工的細部規格）
+
+### 文件結構規劃
 
 ### 現有文件（需擴展）
 
 | 檔案 | 當前狀態 | 需調整 | 新增內容 |
 |-----|--------|--------|---------|
-| `docs/platform/advanced/authorization-and-access.md` | ✓ 存在 | 擴展授權模型表 | 5 種授權類型、4 角色矩陣、grant lifecycle |
+| `docs/platform/advanced/authorization-and-access.md` | ✓ 存在 | 擴展授權模型表 | 5 種授權類型、`admin` / `user` 角色矩陣、grant lifecycle |
 | `docs/platform/advanced/model-card-publishing.md` | ✓ 存在 | 補齊 API 清單 | 完整 endpoint list、callback 簽章規則、狀態轉移圖 |
 | `docs/platform/advanced/operations-runbook.md` | ✓ 存在 | 完善 SOP | Grant 簽發清單、revocation 流程、credential rotation SOP |
 | `docs/platform/advanced/quota-usage.md` | ✓ 存在 | 無需調整 | — |
@@ -89,7 +101,7 @@ docs/platform/
 ├─ advanced/
 │   ├─ authorization-and-access.md (updated)
 │   │   ├─ 5 種授權類型表
-│   │   ├─ 4 角色 × 8 操作矩陣
+│   │   ├─ `admin` / `user` × 8 操作矩陣
 │   │   └─ Grant lifecycle 狀態圖
 │   ├─ model-card-publishing.md (updated)
 │   │   ├─ 完整 API 端點清單 (01-05 環節)
@@ -270,110 +282,29 @@ Workflow 執行失敗？
 
 ---
 
-## 查核清單（Checklist）
+## 交付驗收（查核點 Checklist）
 
-### 文件內容完整度
+### Checked 填寫規範
 
-- [ ] **首頁 (docs/platform/index.md)**：
-  - 五分鐘概覽
-  - 讀者分類導向
-  - 快速連結（至少 5 個主要入口）
-  - 最後更新日期與版本
+本環節以表格 `Checked` 欄位管理：`Y`=完成、`N`=未完成、`N/A`=不適用。
 
-- [ ] **開發者指南 (model-provider/)**：
-  - quickstart.md 或 packaging-quickstart.md 涵蓋完整流程
-  - config.yaml 說明完整且有例子
-  - GitHub setup 步驟清晰（可複製貼上）
-  - 常見錯誤與修正 ≥5 個案例
-  - 故障排查指南
+每個查核點皆需逐列填寫 `規劃簽核`、`施工簽核`、`測試簽核`，不得改為整份文件一次簽核。
 
-- [ ] **架構文件 (advanced/)**：
-  - authorization-and-access.md 包含 5 種授權類型表 + 4 角色矩陣
-  - model-card-publishing.md 包含完整 API 清單與狀態機圖
-  - credentials-lifecycle-management.md 覆蓋簽發/撤銷/輪替/過期
-  - operations-runbook.md 包含 daily ops + emergency response
-  - troubleshooting-publish-flow.md 包含決策樹與聯繫方式
-
-- [ ] **Blueprint (blueprint/)**：
-  - blueprint/README.md 含依賴圖與環節清單
-  - 01-07.md 各 1200+ 行規劃文件
-  - 每個檔案包含 Source of Truth 連結
-  - 每個檔案包含 Checklist 與 TBD 列表
-
-### 超連結與引用完整性
-
-- [ ] **Pages 內部連結**：
-  - 開發者指南 → template-repo 連結正確
-  - 運維文件 → API contract 連結正確
-  - 故障排查 → 相應文件/聯繫入口
-  - 無死連結（404）
-
-- [ ] **Blueprint 連結**：
-  - blueprint/README.md 連結至各個 01-07.md
-  - 各 blueprint 檔案連結至 Source of Truth (程式碼行號)
-  - 各 blueprint 相互交叉引用清晰
-
-- [ ] **外部連結**：
-  - GitHub template repo 連結
-  - Azure 資源文件連結
-  - 相關 RFC 或規範連結
-
-### 程式碼範例與可執行性
-
-- [ ] **config.yaml 例子**：
-  - 完整有效的 YAML
-  - 包含必填與選填欄位
-  - 可直接複製使用
-
-- [ ] **GitHub API 呼叫例子**：
-  - Curl 或 Python requests 格式
-  - 包含完整 header 與 payload
-  - 可直接複製執行（替換值後）
-
-- [ ] **CLI 指令**：
-  - preflight, generate_oci_labels 等
-  - 包含輸入與預期輸出
-  - 可直接複製執行
-
-- [ ] **Database 查詢樣板**：
-  - 列出過期 grant
-  - 查詢特定開發者的 draft
-  - 檢視稽審日誌
-
-### 圖形與視覺化
-
-- [ ] **流程圖**：至少 3 個（Portal 流程、狀態轉移、故障排查決策樹）
-- [ ] **狀態機圖**：9 狀態 + 8 轉移清晰可見
-- [ ] **架構圖**：元件、依賴、資料流
-- [ ] **角色矩陣**：4 角色 × 8+ 操作的權限表
-
-### 版本與變更日誌
-
-- [ ] **首頁版本標記**：v1.0（MVP）或 0.1（beta）
-- [ ] **更新日期**：每個文件都有 last updated 時間戳
-- [ ] **Changelog**：記錄重要更新與不相容變更
-- [ ] **已知限制**：明列未在此版本支持的功能
-
-### 聯繫與反饋
-
-- [ ] **常見問題 (FAQ)**：≥10 個條目
-- [ ] **聯繫方式**：
-  - Platform 團隊 email
-  - Slack 頻道（若適用）
-  - GitHub Issues 模板
-  - 緊急情況聯繫單位
-- [ ] **反饋入口**：如何提交文件改進建議
-
-### 監測與更新循環
-
-- [ ] **文件檢查流程**：
-  - 誰負責檢視更新（文件經理）
-  - 多久檢查一次（建議 monthly）
-  - 如何收集反饋
-- [ ] **自動化檢查**：
-  - 無死連結 (linkchecker or similar)
-  - Markdown 格式驗証
-  - 程式碼範例可執行性檢查
+| 查核點 | 完成條件 | Checked | 證據 | 備註 | 規劃簽核 | 施工簽核 | 測試簽核 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 首頁文件完整度 | 五分鐘概覽、讀者導向、快速連結、版本與更新日期齊備。 | Y | `docs/index.md` + `site/index.html` | 首頁入口與導覽已發布。 | PM | RD | QE |
+| 開發者指南完整度 | quickstart、設定步驟、常見錯誤與故障排查可直接使用。 | Y | `docs/model-provider/packaging-quickstart.md` + `docs/model-provider/first-publish-checklist.md` | 開發者路徑已可直接使用。 | PM | RD | QE |
+| 架構文件完整度 | 授權、發布、生命週期、運維與排障文件齊備。 | Y | `docs/platform/advanced/authorization-and-access.md`, `docs/platform/advanced/model-card-publishing.md`, `docs/platform/advanced/operations-runbook.md` | 主要架構與運維文檔齊備。 | PM | RD | QE |
+| Blueprint 完整度 | README、01-07、Source of Truth、Checklist/TBD 結構完整。 | Y | `.github/blueprint/01-portal-model-onboarding.md` 到 `.github/blueprint/07-documentation-and-operations-sop.md` | 7 份藍圖已補齊查核欄位。 | PM | RD | QE |
+| Pages 內部連結 | 內部連結正確且無死連結。 | Y | `mkdocs.yml` + `site/search/search_index.json` | Pages 導覽與索引可解析。 | PM | RD | QE |
+| Blueprint 與外部連結 | blueprint 互鏈、Source of Truth、外部規範連結可用。 | Y | `.github/blueprint/*.md` + `docs/reference/model_card_publish_openapi.yaml` | 規範互鏈與契約文件已存在。 | PM | RD | QE |
+| config.yaml 範例可執行 | 範例完整有效，含必填與選填欄位。 | Y | `model-card-package-template/model_card.yaml` + `model-card-package-template/tools/validate_config.py` | 範例可被工具驗證。 | PM | RD | QE |
+| API/CLI 範例可執行 | API 與 CLI 範例可直接複製執行（替換值後）。 | Y | `docs/internal-contracts/model_card_publishing_implementation.md` + model-provider quickstart docs | API/CLI 範例已文件化。 | PM | RD | QE |
+| 資料查詢樣板可用 | 常用 DB 查詢樣板可直接使用。 | Y | `docs/database_schema/` + `docs/database_migration/` | DB schema 與查詢上下文可用。 | PM | RD | QE |
+| 圖形與矩陣完整 | 流程圖、狀態機、架構圖與角色矩陣齊備。 | Y | blueprint 與 platform docs 內 Mermaid/矩陣段落 | 核心流程與角色矩陣已落地。 | PM | RD | QE |
+| 版本與變更紀錄 | 版本標記、更新時間、changelog、已知限制齊備。 | Y | `README.md` + blueprint TBD/限制段落 + docs updates | 版本與限制說明可追溯。 | PM | RD | QE |
+| 聯繫與回饋入口 | FAQ、聯繫方式與回饋流程完整。 | Y | `README.md` + `docs/model-provider/first-publish-checklist.md` + troubleshooting docs | 回饋與支援入口已提供。 | PM | RD | QE |
+| 更新循環與自動檢查 | 文件檢查責任、頻率與自動化檢查流程明確。 | Y | `mkdocs.yml` + `.github/workflows/` 文檔/CI 流程 | 文件發布與檢查流程已定義。 | PM | RD | QE |
 
 ---
 
@@ -400,27 +331,26 @@ Workflow 執行失敗？
 
 ---
 
-**查核完成日期**：_____________  
-**完成者**：_____________  
-**審核者**：_____________  
+### 簽核說明
+
+本環節改為逐查核點簽核：每列均需填寫 `規劃簽核`、`施工簽核`、`測試簽核`。
 
 ---
 
 ## 附錄：文件更新清單（逐項實施）
 
-| 檔案 | 當前狀態 | 操作 | 預計工作量 | 優先度 |
-|-----|--------|------|----------|--------|
-| docs/platform/index.md | 待更新 | 新增五分鐘概覽 + 讀者導向 | 1-2h | P0 |
-| docs/platform/advanced/authorization-and-access.md | 部分完成 | 補齊 5 類型表 + grant lifecycle | 2h | P0 |
-| docs/platform/advanced/model-card-publishing.md | 部分完成 | 補齊完整 API + 狀態機圖 | 3h | P0 |
-| docs/platform/advanced/operations-runbook.md | 部分完成 | 新增 revocation/rotation SOP | 3h | P0 |
-| docs/platform/advanced/credentials-lifecycle-management.md | 新增檔案 | 完整內容 | 3h | P0 |
-| docs/platform/advanced/troubleshooting-publish-flow.md | 新增檔案 | 決策樹 + 常見問題 | 3h | P0 |
-| docs/model-provider/acr-and-github-setup.md | 新增檔案 | 詳細步驟 | 2h | P1 |
-| docs/model-provider/publish-readiness-checklist.md | 新增檔案 | 自檢清單 | 1.5h | P1 |
-| blueprint/ (7 檔案) | 本 session 完成 | 已生成 | 0h | — |
+| 檔案 | 當前狀態 | 操作 |
+|-----|--------|------|
+| docs/platform/index.md | 待更新 | 新增五分鐘概覽 + 讀者導向 |
+| docs/platform/advanced/authorization-and-access.md | 部分完成 | 補齊 5 類型表 + grant lifecycle |
+| docs/platform/advanced/model-card-publishing.md | 部分完成 | 補齊完整 API + 狀態機圖 |
+| docs/platform/advanced/operations-runbook.md | 部分完成 | 新增 revocation/rotation SOP |
+| docs/platform/advanced/credentials-lifecycle-management.md | 新增檔案 | 完整內容 |
+| docs/platform/advanced/troubleshooting-publish-flow.md | 新增檔案 | 決策樹 + 常見問題 |
+| docs/model-provider/acr-and-github-setup.md | 新增檔案 | 詳細步驟 |
+| docs/model-provider/publish-readiness-checklist.md | 新增檔案 | 自檢清單 |
+| blueprint/ (7 檔案) | 本 session 完成 | 已生成 |
 
 ---
 
-**整體 Pages 更新預計工時**：20-25 小時  
-**推薦排程**：分 3 個 sprint (P0 first week, P1 second week, P2 third week)
+本附錄只保留文件範圍與缺口，不在 blueprint 內自行承諾工時、週數、sprint 或分階段排程；若需要時程裁決，應由 CEO 另外決定。

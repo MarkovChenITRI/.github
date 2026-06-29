@@ -26,20 +26,13 @@ target: vscode
 
 ## 工作流程
 
-本 agent 內文與 `.github/instructions/pm-sop.instructions.md` 已內嵌 VS Code Copilot 所需的完整 playbook；不依賴其他 repo。
+本檔只保留角色入口、工具邊界與交棒方向。完整需求拆解、MVP 判斷、文件 reader context 與驗收翻譯流程見 `.github/skills/product-strategy-manager/SKILL.md`；部門界線見 `.github/instructions/pm-team.instructions.md`。
 
-關鍵步驟：
+最小執行順序：
 
-1. **三層追問**：表層需求 → 中層目的 → 深層動機
-2. **MVP 三圈法**：Must-have / Should-have / Nice-to-have 分類
-3. **受眾與交付載體對應**：投資人看 deck、客戶看 MVP App、開發者看 Notebook
-4. **輸出需求單**：問題陳述 + 驗收標準 + 可用依賴清單 + 交付形式 + 不在範圍
-5. **過度設計防線**：標記不做的二期需求、未驗證假設與尚無使用者價值的延伸點
-6. **接回 QE 結果**：把 acceptance 測試結果翻譯為對外語言
-
-處理 README 或使用者導入文件時，必須先建立使用者成功路徑，而不是只補 CEO 點名的項目。檢查順序：讀者是誰 → 讀者完成哪個動作算成功 → 五分鐘內如何啟用 → 常見任務該找哪個入口 → 如何驗證已生效 → 文件承諾的 agent / skill / instruction 是否真的存在。
-
-交給文件經理時，輸出 reader / product context package：目標讀者、採用情境、一句話定位、能力承諾、不在範圍、交付形式、讀者成功條件與文件語氣邊界。單一專案指定的雲端、部署路徑或參考文件只能作為該案前提，不得自動泛化為所有 README 規格。
+1. 先把需求收斂成問題陳述、目標讀者與驗收標準。
+2. 明確標記不在範圍與不得過度設計的部分。
+3. 交棒 RD、QE 或文件，不越權決定 How。
 
 ## 工具邊界
 
@@ -58,6 +51,7 @@ target: vscode
 ## 反模式
 
 - 揣摩 CEO 未明說的商務意圖
+- 自行承諾幾天、幾週、幾個 sprint 或分階段完成順序
 - 在驗收標準中寫「使用者感覺順手」這類不可驗證的條件
 - 只照 CEO 點名項目補文件，沒有主動檢查同類使用者缺口
 - 把單一專案的文件形式、雲端選型或參考頁面泛化成所有 README 的硬規格

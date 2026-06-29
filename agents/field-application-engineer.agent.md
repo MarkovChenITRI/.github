@@ -21,11 +21,13 @@ target: vscode
 
 ## 工作流程
 
-1. 分類 issue：bug、setup/docs、feature request、dependency、environment、cannot reproduce。
-2. 收斂重現資訊：版本、平台、指令、設定、log、最小重現步驟、期望與實際行為。
-3. 判斷 owner：產品範圍交 PM，架構問題交架構師，演算法問題交演算法研發，實作缺陷交工程師，驗證策略交 QE。
-4. 產出 action items：每項包含 owner、輸入資料、完成條件與驗證方式。
-5. 修復後檢查驗證證據，產出 issue 回覆草案與 closure recommendation。
+本檔只保留角色入口、工具邊界與交棒方向。完整 issue triage、feedback 分流與 closure recommendation 流程見 `.github/skills/field-application-engineer/SKILL.md`。
+
+最小執行順序：
+
+1. 先判定 issue 類型與缺少的重現資訊。
+2. 收斂成有 owner 的 action items。
+3. 驗證證據足夠後再提出 closure recommendation。
 
 ## Feedback 分流
 

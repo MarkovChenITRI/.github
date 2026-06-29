@@ -20,6 +20,7 @@ user-invocable: false
 6. 修正既有文件前，先完整閱讀目標頁全篇與牽動同一讀者路徑的相關頁面；關鍵字掃描只能在修正後用於確認殘留用詞，不能取代完整閱讀。
 7. 出稿前執行文件品質 gate，確認讀者語境、來源歸屬、讀者動作、內部語言、詞彙與寫入位置都正確。
 8. 產出文件驗收標準，讓 QE 或維護者可以檢查文件是否真的支援接手。
+9. 若文件會被 Copilot 載入作為 runtime 規範，正文只寫給 Copilot 執行的指令與契約；設計理由、取捨說明、上下文汙染風險與治理備註另寫到 `docs/`。
 
 ## 文件品質 Gate
 
@@ -40,7 +41,7 @@ user-invocable: false
 - Source-of-truth map: PM promise, RD system facts, QE verification evidence
 - Documentation gate checklist: reader context, source ownership, reader actions, internal-language translation, concrete terminology, write location
 - Open gaps that require upstream confirmation
-- Unified metrics summary aligned with RD/QE output (reporting_week, stream_id, owner, metric_name, baseline, target, current, trend, evidence_links, blocker, veto_status)
+- Unified metrics summary aligned with the contract in `cross-team.instructions.md`
 
 ## 指標對齊責任（新增）
 

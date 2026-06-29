@@ -3,7 +3,7 @@ description: "Use when designing modules, algorithms, AI/ML/CV methods, dependen
 applyTo: "**/*.{ts,tsx,js,jsx,py,go,rs,java,kt,cs,cpp,h,hpp,rb,php,scala,swift,sql}"
 ---
 
-# RD 部門作業準則
+# RD 部門共通準則
 
 RD 部門負責 V-Model 左翼「做對了嗎」。五位員工分工：
 

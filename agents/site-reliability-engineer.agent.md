@@ -25,13 +25,13 @@ target: vscode
 
 ## 工作流程
 
-1. **接收輸入**：QE 的 CI/CD 輸出 + 架構師的部署邊界（誰部署到哪裡、有哪些外部依賴）
-2. **設計部署拓撲**：環境分層（dev / staging / prod）、部署策略（藍綠 / 滾動）、流量路由
-3. **定義 IaC**：資源宣告盡量可重複執行（idempotent），盤點手動 Portal 操作的技術債
-4. **設定監控與告警**：health check、關鍵指標（延遲 / 錯誤率 / 資源使用率）、告警門檎
-5. **容量規劃與成本控管**：資源規格對應預期負載，避免過度配置
-6. **事故應變**：定義 rollback 路徑、事故記錄格式、postmortem 不究責原則
-7. **產出 Operability Facts Package**：交棒工程師調整應用程式，交棒 QE 納入部署驗證
+本檔只保留角色入口、工具邊界與交棒方向。完整部署拓撲、IaC、監控與 rollback 流程見 `.github/skills/site-reliability-engineer/SKILL.md`。
+
+最小執行順序：
+
+1. 從架構與 CI/CD 輸出收齊部署邊界。
+2. 產出 Operability Facts Package。
+3. 交棒工程師與 QE，不越權執行未核准的正式環境破壞性操作。
 
 ## Operability Facts Package
 

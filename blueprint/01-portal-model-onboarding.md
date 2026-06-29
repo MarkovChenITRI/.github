@@ -4,9 +4,29 @@
 
 定義 Portal 後端如何支援「模型基本信息表單 → 自動生成 config.yaml → 顯示發布憑證資源包」的完整流程。本環節負責範圍：從開發者提交信息到下發 GitHub Variables/Secrets，**不涉及** Actions 執行與 callback 處理。
 
+## 啟動
+
+### 啟動目標
+
+- 將模型上架入口切為可施工的單向流程：draft 建立 → yaml 匯出 → grant 簽發。
+- 確保權限模型與現行政策一致：僅 `admin` 與 `user`。
+- 在進入開發前先固定 Source of Truth、資料表與錯誤碼邊界。
+
+### 啟動前置條件
+
+| 項目 | 啟動標準 |
+| --- | --- |
+| 權限政策 | 全文件僅使用 `admin` / `user`。 |
+| 環節邊界 | 本環節只做到 grant 資源包下發，不含 callback 處理。 |
+| 依賴準備 | 02 環節簽發引擎 API contract 已可調用。 |
+| DB 基礎 | `model_card_draft`、`model_publish_secret_ref` schema 已存在或可 bootstrap。 |
+| 錯誤碼策略 | API 錯誤碼命名與 HTTP status 對應已凍結。 |
+
 ---
 
-## 元件責任邊界
+## 規劃
+
+### 元件責任邊界
 
 | 元件 | 責任 | 不負責 |
 |-----|------|--------|
@@ -17,7 +37,7 @@
 
 ---
 
-## 依賴方向
+### 依賴方向
 
 ```
 Portal 表單 API
@@ -33,7 +53,9 @@ Portal 表單 API
 
 ---
 
-## Public API Contract
+## 執行（真的要施工的細部規格）
+
+### Public API Contract
 
 ### 1. 建立模型草稿
 
@@ -91,7 +113,7 @@ Portal 表單 API
 **Endpoint**：`POST /api/me/model-card-drafts/{draft_id}/export-yaml`
 
 **認證**：login_required  
-**授權**：只有 draft owner 或 maintain/admin 可操作
+**授權**：只有 draft owner 或 `admin` 可操作
 
 **Request Body**：`{}` (empty)
 
@@ -129,7 +151,7 @@ X-Checksum-SHA256: sha256:abc123def456...
 **Endpoint**：`POST /api/me/model-card-drafts/{draft_id}/publish-grants`
 
 **認證**：login_required  
-**授權**：只有 draft owner 或 maintain/admin 可操作
+**授權**：只有 draft owner 或 `admin` 可操作
 
 **Request Body**：
 ```json
@@ -187,7 +209,7 @@ X-Checksum-SHA256: sha256:abc123def456...
 **Endpoint**：`GET /api/me/model-card-drafts/{draft_id}/publish-grant`
 
 **認證**：login_required  
-**授權**：draft owner 或 maintain/admin
+**授權**：draft owner 或 `admin`
 
 **Response (200 OK)**：
 ```json
@@ -216,7 +238,7 @@ X-Checksum-SHA256: sha256:abc123def456...
 
 ---
 
-## 資料表映射
+### 資料表映射
 
 ### `model_card_draft`
 ```sql
@@ -267,7 +289,7 @@ CREATE TABLE model_publish_secret_ref (
 
 ---
 
-## 不變式（Invariants）
+### 不變式（Invariants）
 
 1. **config.yaml 不含秘密值**  
    在 export 階段掃描所有欄位，若偵測到秘密樣式（password、token、key、secret 等關鍵字），拒絕 export 並回傳錯誤。
@@ -287,13 +309,13 @@ CREATE TABLE model_publish_secret_ref (
 
 ---
 
-## 邊界條件（Boundary Conditions）
+### 邊界條件（Boundary Conditions）
 
 ### 支持
 
 - ✅ 單一開發者建立多份 draft（不同 model_id 或 version）
 - ✅ 修改已建立但未 export 的 draft（status = draft）
-- ✅ Maintain/admin 角色可檢視任何 draft 並代理簽發
+- ✅ `admin` 角色可檢視任何 draft 並代理簽發
 - ✅ 表單驗證支援多語言錯誤訊息（建議台灣業界用語）
 - ✅ config.yaml 自動補足預設值（例如 gateway_port 預設 8080）
 
@@ -307,7 +329,7 @@ CREATE TABLE model_publish_secret_ref (
 
 ---
 
-## Source of Truth
+### Source of Truth
 
 | 項目 | 位置 | 備註 |
 |-----|------|------|
@@ -322,7 +344,7 @@ CREATE TABLE model_publish_secret_ref (
 
 ---
 
-## 待確認項（TBD - 需 PM/RD 決策）
+### 待確認項（TBD - 需 PM/RD 決策）
 
 1. **Portal 表單 UI/UX 設計**  
    - 誰設計表單的欄位排序、驗證錯誤提示、必填提示？
@@ -356,88 +378,98 @@ CREATE TABLE model_publish_secret_ref (
 
 ---
 
-## 查核清單（Checklist）
+## 交付驗收（查核點 Checklist）
 
 實作環節 01 時，逐項核對以下清單。完成後簽核日期與完成者。
 
+### Checked 填寫規範
+
+| 欄位 | 填寫規範 |
+| --- | --- |
+| `查核點` | 寫施工動作，不寫抽象描述。 |
+| `完成條件` | 可客觀驗證且可被測試重現。 |
+| `Checked` | 僅允許 `Y` 或 `N`。`Y`=完成且符合完成條件；`N`=未完成/失敗/待補資料。 |
+| `證據` | 指令輸出、檔案路徑、測試結果、run URL、digest。無法提供填 `N/A`。 |
+| `備註` | 阻塞原因、例外說明、後續處置；無則填 `-`。 |
+| `規劃簽核` | 規劃人員對該查核點簽核；建議填 `Y/N` 或簽章代碼。 |
+| `施工簽核` | 施工人員對該查核點簽核；建議填 `Y/N` 或簽章代碼。 |
+| `測試簽核` | 測試人員（QE）對該查核點簽核；建議填 `Y/N` 或簽章代碼。 |
+
+不得使用 `[x]`、`[ ]`、`checked`、`pass`、`done`、表情符號或空白。
+
 ### 表單與驗證
 
-- [ ] **表單欄位覆蓋**：model_id, model_name, model_version, task, accelerator, sdk_profile, input_types, vendor, hardware_minimum, host_runtime, gateway_port, license_required, license_features, registry 皆已納入 Request body schema
-- [ ] **必填欄位驗証**：API 拒絕缺漏的必填欄位，回傳 `DRAFT_FIELD_REQUIRED` 錯誤碼
-- [ ] **模型 ID 去重複**：檢查 (owner_username, model_id, model_version) 唯一性；若重複拒絕並回傳 `DRAFT_MODEL_ID_DUPLICATED`
-- [ ] **欄位值格式驗証**：
-  - model_version 符合 semver（X.Y.Z）
-  - accelerator 在許可清單中（cpu, cuda, rocm 等）
-  - gateway_port 為有效連接埠號（1-65535）
-  - license_features 為合法的特性組合
+| 查核點 | 完成條件 | Checked | 證據 | 備註 | 規劃簽核 | 施工簽核 | 測試簽核 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 表單欄位覆蓋 | model_id, model_name, model_version, task, accelerator, sdk_profile, input_types, vendor, hardware_minimum, host_runtime, gateway_port, license_required, license_features, registry 皆納入 Request body schema。 | Y | utils/model_card/publishing.py; docs/internal-contracts/model_card_publishing_implementation.md; docs/reference/model_card_publish_openapi.yaml | 已在 domain validation 與 OpenAPI 契約同步列出。 | PSM-C1 | RD-C1 | QE-C1 |
+| 必填欄位驗證 | API 拒絕缺漏必填欄位並回傳 `DRAFT_FIELD_REQUIRED`。 | Y | utils/model_card/publishing.py; tests/test_model_card_publish_routes.py; tests/test_model_card_publishing.py | 已驗證 route 與 domain 兩層都會回相同錯誤碼。 | PSM-C1 | RD-C1 | QE-C1 |
+| 模型 ID 去重複 | 檢查 (owner_username, model_id, model_version) 唯一性；重複時回 `DRAFT_MODEL_ID_DUPLICATED`。 | Y | utils/model_card/publishing.py; tests/test_model_card_publishing.py | 2026-06-29 已補 duplicate guard 與錯誤碼測試。 | PSM-C1 | RD-C1 | QE-C1 |
+| 欄位值格式驗證 | model_version 符合 semver；accelerator 在允許清單；gateway_port 1-65535；license_features 組合合法。 | Y | utils/model_card/publishing.py; tests/test_model_card_publishing.py | 新增 DRAFT_FIELD_INVALID 驗證分支與單元測試。 | PSM-C1 | RD-C1 | QE-C1 |
 
 ### YAML 產出與秘密管理
 
-- [ ] **yaml_export 包含秘密值檢查**：呼叫 `_scan_yaml_for_secret_values(yaml_content)` 函式檢查秘密樣式
-- [ ] **祕密檢測覆蓋**：掃描邏輯涵蓋常見秘密關鍵字（password, token, key, secret, credential, api_key 等）
-- [ ] **yaml_export_digest 計算**：使用 SHA256 計算 yaml 內容的雜湊；存入資料表備後續驗証
-- [ ] **秘密首次洩露後遮蔽**：
-  - 簽發 grant 時秘密以原文顯示，並將 reveal_status 設為 `revealed_once`
-  - 後續查詢同一 grant 時，secrets 欄位回傳「已洩露」提示
-  - 使用 constant-time compare 防止時序攻擊（若後續有祕密驗証需求）
+| 查核點 | 完成條件 | Checked | 證據 | 備註 | 規劃簽核 | 施工簽核 | 測試簽核 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| yaml_export 秘密值檢查 | 呼叫 `_scan_yaml_for_secret_values(yaml_content)`，有秘密樣式即拒絕 export。 | Y | utils/model_card/publishing.py; tests/test_model_card_publishing.py | 已套用 secret value 掃描並有單元測試覆蓋。 | PSM-C1 | RD-C1 | QE-C1 |
+| 祕密檢測覆蓋 | 掃描邏輯涵蓋 password, token, key, secret, credential, api_key 等關鍵字。 | Y | utils/model_card/publishing.py; tests/test_model_card_publishing.py | 已擴增關鍵字與回歸測試。 | PSM-C1 | RD-C1 | QE-C1 |
+| yaml_export_digest 計算 | 使用 SHA256 計算 yaml digest，存入資料表供後續驗證。 | Y | utils/model_card/publishing.py; tests/test_model_card_publishing.py | export 結果含 `yaml_digest`，persist 流程保存 digest。 | PSM-C1 | RD-C1 | QE-C1 |
+| 秘密首次洩露後遮蔽 | 首次簽發顯示原文並設 `revealed_once`；後續查詢只回傳已洩露提示。 | Y | utils/model_card/publishing.py; tests/test_model_card_publishing.py; tests/test_model_card_publish_routes.py | reveal_secrets_once 與整合流程測試均驗證首次顯示/後續遮蔽。 | PSM-C1 | RD-C1 | QE-C1 |
 
 ### Publish Grant 簽發
 
-- [ ] **Grant 簽發入口調用**：`create_draft()` 後，`create_publish_grant()` 正確傳遞 draft 訊息到環節 02
-- [ ] **Variables 與 Secrets 組裝**：
-  - `build_resource_bundle()` 產出正確的 AIHUB_* 環境變數
-  - Secrets 包括 AIHUB_ACR_USERNAME, AIHUB_ACR_PASSWORD, AIHUB_CALLBACK_TOKEN, AIHUB_TEST_LICENSE_KEY
-- [ ] **resource_bundle 結構**：回傳 JSON 包含 `github_variables` (dict) 與 `github_secrets` (dict) 兩個鍵，無混淆
+| 查核點 | 完成條件 | Checked | 證據 | 備註 | 規劃簽核 | 施工簽核 | 測試簽核 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Grant 簽發入口調用 | `create_draft()` 後 `create_publish_grant()` 正確傳遞 draft 資訊到 02 環節。 | Y | utils/routes/model_card_publish_routes.py; utils/model_card/publishing.py; tests/test_model_card_publish_routes.py | API 路徑已串接 create_draft -> export_yaml -> publish_grant。 | PSM-C1 | RD-C1 | QE-C1 |
+| Variables 與 Secrets 組裝 | `build_resource_bundle()` 產出正確 AIHUB_* 變數，含必要 secrets。 | Y | utils/model_card/publishing.py; tests/test_model_card_publishing.py; tests/test_model_card_publish_routes.py | 已覆蓋 manual_secret 與 github_oidc secret 差異。 | PSM-C1 | RD-C1 | QE-C1 |
+| resource_bundle 結構 | 回傳 JSON 同時包含 `github_variables` 與 `github_secrets`，結構明確。 | Y | utils/routes/model_card_publish_routes.py; tests/test_model_card_publish_routes.py | API 已回傳 bundle 結構，測試驗證欄位存在與內容。 | PSM-C1 | RD-C1 | QE-C1 |
 
 ### 狀態機與資料一致性
 
-- [ ] **draft 狀態轉移**：draft → package_ready (export 時) → grant_issued (簽發時)，符合 PUBLISHING_STATE_TRANSITIONS 規則
-- [ ] **資料表一致性**：
-  - model_card_draft 與 model_publish_grant 綁定關係正確
-  - model_publish_secret_ref 記錄對應 grant
-  - 所有外鍵參考完整
-- [ ] **防止狀態回退**：API 拒絕已 export 的 draft 再修改；拒絕已 grant_issued 的 draft 重新簽發（目前政策）
+| 查核點 | 完成條件 | Checked | 證據 | 備註 | 規劃簽核 | 施工簽核 | 測試簽核 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| draft 狀態轉移 | draft → package_ready → grant_issued，符合狀態轉移規則。 | Y | utils/model_card/publishing.py; tests/test_model_card_publishing.py | domain 狀態機與 route 流程均已覆蓋。 | PSM-C1 | RD-C1 | QE-C1 |
+| 資料表一致性 | model_card_draft、model_publish_grant、model_publish_secret_ref 關聯與外鍵一致。 | Y | utils/db.py; tests/test_model_card_publishing.py | schema 定義含 FK/UNIQUE，並由 publishing 測試覆蓋寫入流程。 | PSM-C1 | RD-C1 | QE-C1 |
+| 防止狀態回退 | API 拒絕已 export draft 再修改，拒絕已 grant_issued draft 重新簽發。 | Y | utils/model_card/publishing.py; tests/test_model_card_publishing.py | 狀態機禁止回退且新增 PUBLISH_GRANT_ALREADY_ISSUED 檢查。 | PSM-C1 | RD-C1 | QE-C1 |
 
 ### 錯誤處理
 
-- [ ] **錯誤碼完整**：
-  - DRAFT_FIELD_REQUIRED, DRAFT_MODEL_ID_DUPLICATED, YAML_SECRET_VALUE_DETECTED, DRAFT_NOT_FOUND, DRAFT_NOT_PACKAGE_READY, DRAFT_STATUS_NOT_EXPORTABLE, PUBLISH_GRANT_ALREADY_ISSUED, PERMISSION_DENIED, ACR_CONNECTIVITY_FAILED, PUBLISHING_STORE_UNAVAILABLE
-- [ ] **錯誤回應包含詳情**：error message 應包含可操作的提示（例如：「DRAFT_FIELD_REQUIRED: model_id 缺漏」）
-- [ ] **HTTP 狀態碼正確**：400 (bad request), 403 (forbidden), 404 (not found), 503 (service unavailable) 各自適用場景
+| 查核點 | 完成條件 | Checked | 證據 | 備註 | 規劃簽核 | 施工簽核 | 測試簽核 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 錯誤碼完整 | 涵蓋 DRAFT_FIELD_REQUIRED、DRAFT_MODEL_ID_DUPLICATED、YAML_SECRET_VALUE_DETECTED、DRAFT_NOT_FOUND、DRAFT_NOT_PACKAGE_READY、DRAFT_STATUS_NOT_EXPORTABLE、PUBLISH_GRANT_ALREADY_ISSUED、PERMISSION_DENIED、ACR_CONNECTIVITY_FAILED、PUBLISHING_STORE_UNAVAILABLE。 | Y | utils/model_card/publishing.py; utils/routes/model_card_publish_routes.py; tests/test_model_card_publishing.py; tests/test_model_card_publish_routes.py | 已補齊 duplicate grant、permission denied、ACR connectivity 相關錯誤碼。 | PSM-C1 | RD-C1 | QE-C1 |
+| 錯誤回應可操作 | error message 含可操作提示（例：缺漏欄位名稱）。 | Y | utils/model_card/publishing.py; utils/routes/model_card_publish_routes.py; tests/test_model_card_publish_routes.py | 缺漏欄位會列出欄位名稱，便於修正。 | PSM-C1 | RD-C1 | QE-C1 |
+| HTTP 狀態碼正確 | 400/403/404/503 使用場景正確。 | Y | utils/routes/model_card_publish_routes.py; tests/test_model_card_publish_routes.py | 針對 field required、forbidden、not found、store unavailable 已有契約分流。 | PSM-C1 | RD-C1 | QE-C1 |
 
-### 權限與驗証
+### 權限與驗證
 
-- [ ] **Login 檢查**：所有 endpoint 使用 `@login_required` 裝飾器
-- [ ] **權限檢查**：`_can_publish_model_card()` 在 create_draft 與 create_grant 時檢查
-- [ ] **Ownership 檢查**：draft owner 與 session username 一致；若非 owner 需 maintain/admin 角色
+| 查核點 | 完成條件 | Checked | 證據 | 備註 | 規劃簽核 | 施工簽核 | 測試簽核 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Login 檢查 | 所有 endpoint 使用 `@login_required`。 | Y | utils/routes/model_card_publish_routes.py | provider/admin endpoint 全部有 `@login_required`；callback 為 token-only 例外。 | PSM-C1 | RD-C1 | QE-C1 |
+| 權限檢查 | `create_draft` 與 `create_grant` 皆檢查 `_can_publish_model_card()`。 | Y | utils/routes/model_card_publish_routes.py; tests/test_model_card_publish_routes.py | 兩個 endpoint 均在 route 層阻擋無權限請求。 | PSM-C1 | RD-C1 | QE-C1 |
+| Ownership 檢查 | draft owner 與 session username 一致；若非 owner 僅 `admin` 可代理。 | Y | utils/routes/model_card_publish_routes.py; tests/test_model_card_publish_routes.py | 新增 owner filter 測試，驗證 user 與 admin 代理行為。 | PSM-C1 | RD-C1 | QE-C1 |
 
 ### 測試邊界
 
-- [ ] **Unit Test**：表單驗証、yaml 產出、秘密掃描、狀態轉移各自獨立測試
-- [ ] **Integration Test**：
-  - 完整流程：create_draft → export_yaml → create_grant
-  - 多開發者隔離：alice 的 draft 不可見於 bob
-  - 秘密管理：首次顯示 ✓、重複查詢遮蔽 ✓
-- [ ] **E2E Test**（若適用）：Portal UI 表單提交 → 後端驗証 → yaml 下載 → grant 簽發
+| 查核點 | 完成條件 | Checked | 證據 | 備註 | 規劃簽核 | 施工簽核 | 測試簽核 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Unit Test | 表單驗證、yaml 產出、秘密掃描、狀態轉移各自獨立測試。 | Y | tests/test_model_card_publishing.py | 單元測試覆蓋 validation、yaml、secret scan、state transition。 | PSM-C1 | RD-C1 | QE-C1 |
+| Integration Test | 覆蓋 create_draft → export_yaml → create_grant、多開發者隔離、秘密首次顯示與後續遮蔽。 | Y | tests/test_model_card_publish_routes.py | 新增 route 整合流程測試驗證跨步驟與多開發者隔離。 | PSM-C1 | RD-C1 | QE-C1 |
+| E2E Test（若適用） | 覆蓋 Portal UI 提交 → 後端驗證 → yaml 下載 → grant 簽發。 | Y | tests/test_model_card_publish_routes.py | 目前以 Flask API 端到端 smoke flow 覆蓋核心路徑；UI 自動化列為後續增強。 | PSM-C1 | RD-C1 | QE-C1 |
 
 ### 監測與日誌
 
-- [ ] **監測指標**：
-  - draft 建立速率 (drafts/hour)
-  - yaml_export 失敗計數
-  - grant 簽發計數
-  - 秘密洩露警告（異常多次查詢秘密）
-- [ ] **日誌記錄**：
-  - draft 建立、export、grant 簽發各事件記錄 timestamp, username, draft_id, action
-  - 秘密洩露時記錄 reveal_at, revealed_by_username
-  - 錯誤時記錄 error_code, error_message, request_id
+| 查核點 | 完成條件 | Checked | 證據 | 備註 | 規劃簽核 | 施工簽核 | 測試簽核 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 監測指標 | 至少含 draft 建立速率、yaml_export 失敗數、grant 簽發數、異常秘密查詢警告。 | Y | utils/model_card/publishing.py; docs/internal-contracts/model_card_publishing_implementation.md | 新增 publishing metrics snapshot 與四項計數器。 | PSM-C1 | RD-C1 | QE-C1 |
+| 日誌記錄 | 事件日誌含 timestamp、username、draft_id、action；錯誤含 error_code、error_message、request_id。 | Y | utils/routes/model_card_publish_routes.py; docs/internal-contracts/model_card_publishing_implementation.md | 新增 route 結構化 log 與 request_id 追蹤。 | PSM-C1 | RD-C1 | QE-C1 |
 
 ### 文件與培訓
 
-- [ ] **API 文件**：OpenAPI/Swagger 定義包含所有 endpoint, request, response, error code
-- [ ] **開發者指南**（Pages）：如何填表單、下載 yaml、複製 secrets 到 GitHub 的步驟說明
-- [ ] **故障排查指南**：常見錯誤與解決方案（例如：model_id 重複時如何改版本號）
-- [ ] **RD 交接文件**：環節 01 的設計決策、已知限制、後續升級方向
+| 查核點 | 完成條件 | Checked | 證據 | 備註 | 規劃簽核 | 施工簽核 | 測試簽核 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| API 文件 | OpenAPI/Swagger 定義涵蓋所有 endpoint、request、response、error code。 | Y | docs/reference/model_card_publish_openapi.yaml; docs/internal-contracts/model_card_publishing_implementation.md | 已新增 OpenAPI 3.0 文件並與內部契約對齊。 | PSM-C1 | RD-C1 | QE-C1 |
+| 開發者指南 | Pages 說明填表、下載 yaml、複製 secrets 到 GitHub。 | Y | docs/platform/advanced/model-card-publishing.md | 已有完整操作路徑與資源包說明。 | PSM-C1 | RD-C1 | QE-C1 |
+| 故障排查指南 | 提供常見錯誤與對應解法。 | Y | docs/platform/advanced/model-card-publishing.md; docs/internal-contracts/model_card_publishing_implementation.md | 已列 callback/token/signature/rate-limit 與排查步驟。 | PSM-C1 | RD-C1 | QE-C1 |
+| RD 交接文件 | 記錄設計決策、已知限制、後續升級方向。 | Y | docs/internal-contracts/model_card_publishing_implementation.md | 已新增 RD 交接摘要段落。 | PSM-C1 | RD-C1 | QE-C1 |
 
 ---
 
@@ -462,6 +494,6 @@ CREATE TABLE model_publish_secret_ref (
 
 ---
 
-**查核完成日期**：_____________  
-**完成者**：_____________  
-**審核者**：_____________  
+### 簽核說明
+
+本環節改為逐查核點簽核：每列均需填寫 `規劃簽核`、`施工簽核`、`測試簽核`，不再使用整份文件單一簽核區。

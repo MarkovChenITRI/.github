@@ -4,9 +4,19 @@
 
 定義 model-card-package-template 如何自動載入 Portal 下發的 Variables/Secrets、執行環境檢查、產出 OCI labels。本環節在開發者機器或 GitHub Actions 層執行，負責 preflight 檢查、config.yaml 讀取、環境變數驗証。
 
+## 啟動
+
+| 項目 | 啟動標準 |
+| --- | --- |
+| 輸入資產 | 已取得 `model_card.yaml` 與 AIHUB_* Variables/Secrets。 |
+| 最小工具鏈 | 可執行 `python -m tools.preflight` 與 `python -m tools.generate_oci_labels`。 |
+| 邊界共識 | 本環節只做自動化檢查與標籤產生，不做推送與 callback。 |
+
 ---
 
-## 元件責任邊界
+## 規劃
+
+### 元件責任邊界
 
 | 元件 | 責任 | 不負責 |
 |-----|------|--------|
@@ -17,7 +27,7 @@
 
 ---
 
-## 依賴方向
+### 依賴方向
 
 ```
 Template Repo 開發者機器或 GitHub Actions
@@ -32,7 +42,9 @@ GitHub Actions workflow (04 環節使用)
 
 ---
 
-## Public API Contract
+## 執行（真的要施工的細部規格）
+
+### Public API Contract
 
 ### 1. Preflight 檢查
 
@@ -213,88 +225,30 @@ Ready to build and push image.
 
 ---
 
-## 查核清單（Checklist）
+## 交付驗收（查核點 Checklist）
 
-### config.yaml 讀取與驗証
+### Checked 填寫規範
 
-- [ ] **config.yaml 存在檢查**：repo 根目錄必存在 model_card.yaml，若無拒絕並給出提示
-- [ ] **YAML 結構驗証**：parse yaml；檢查四個頂層章節 (model, deployment, license, image) 存在
-- [ ] **必填欄位驗証**：
-  - model: id, name, version, task, sdk_profile
-  - deployment: vendor, accelerator, gateway_port
-  - license: required, features
-  - image: registry
-- [ ] **欄位值格式驗証**：model_version 符合 semver；gateway_port 為整數 1-65535；task 在許可清單
-- [ ] **config.yaml 與環境變數一致性**：
-  - model.version == AIHUB_IMAGE_TAG
-  - model.id == AIHUB_CARD_ID
-  - image.registry == AIHUB_ACR_LOGIN_SERVER
+本環節以表格 `Checked` 欄位管理：`Y`=完成、`N`=未完成、`N/A`=不適用。
 
-### 環境變數驗証
+每個查核點皆需逐列填寫 `規劃簽核`、`施工簽核`、`測試簽核`，不得改為整份文件一次簽核。
 
-- [ ] **Variables 完整性檢查**：
-  - AIHUB_ACR_LOGIN_SERVER 已設
-  - AIHUB_IMAGE_REPOSITORY 已設
-  - AIHUB_IMAGE_TAG 已設
-  - AIHUB_CARD_ID 已設
-  - AIHUB_PUBLISH_GRANT_ID 已設
-  - AIHUB_CALLBACK_URL 已設
-- [ ] **Secrets 完整性檢查**：
-  - AIHUB_ACR_USERNAME 已設（即使值為空也要存在）
-  - AIHUB_ACR_PASSWORD 已設
-  - AIHUB_CALLBACK_TOKEN 已設
-  - AIHUB_TEST_LICENSE_KEY 已設（可選，但若 license.required=true 建議設）
-- [ ] **Secrets 不洩露**：preflight 輸出中不顯示 secret 原文，只顯示 `••••` 或提示「已設」
-
-### OCI Labels 產出
-
-- [ ] **Labels 完整性**：
-  - `model-version`: model.version
-  - `model-id`: model.id
-  - `model-owner`: deployment.vendor
-  - `model-task`: model.task
-  - `publish-grant-id`: AIHUB_PUBLISH_GRANT_ID
-  - `aihub.model-version`: model.version
-  - `aihub.card-id`: model.id
-- [ ] **Labels 格式**：
-  - Docker build args 格式：`--label="key=value"` （必須 URL-safe 或用引號）
-  - Dockerfile LABEL 格式：`LABEL key=value` 或 `LABEL key="value"`
-- [ ] **Labels 來源**：完全由 config.yaml 與環境變數驅動；無硬編碼
-
-### 工具可執行性
-
-- [ ] **preflight.py 執行**：`python -m tools.preflight` 執行無誤；exit code 反映結果（0=success, 1=failure）
-- [ ] **generate_oci_labels.py 執行**：`python -m tools.generate_oci_labels --format docker-build-args` 輸出正確的 Docker 參數
-- [ ] **validate_config.py 執行**：`python -m tools.validate_config --check-publish-env` 輸出驗証結果
-
-### 本機開發支持
-
-- [ ] **.env 檔案支持**（可選）：允許開發者在 .env 檔案中設置 Variables 與 Secrets 進行本機測試
-- [ ] **.gitignore**：.env 檔案在 .gitignore 中，防止 secrets 洩露
-- [ ] **README 說明**：tools/ 目錄或 README 說明如何使用 preflight, 如何在本機設置環境變數
-
-### 錯誤處理
-
-- [ ] **錯誤訊息清晰**：缺漏的環境變數或配置時給出明確提示（「AIHUB_ACR_USERNAME not found」）
-- [ ] **建議修正**：錯誤訊息包含如何修正（「Set AIHUB_ACR_USERNAME in GitHub Repository secrets」）
-- [ ] **Exit Code**：成功 exit(0)；失敗 exit(1)；無其他異常代碼
-
-### 監測與日誌
-
-- [ ] **監測指標**：
-  - preflight 檢查執行次數
-  - preflight 失敗計數與失敗原因分佈
-  - OCI labels 產出成功率
-- [ ] **日誌記錄**：
-  - preflight 執行時記錄：timestamp, result (success/failure), failure reasons
-  - OCI labels 產出時記錄：labels 清單、版本信息
-
-### 文件與培訓
-
-- [ ] **tools/ README**：說明各工具用途、執行方式、參數、輸出格式
-- [ ] **config.yaml 註解**：template 中各欄位有清楚的註解說明必填/選填、允許值
-- [ ] **開發者指南**（Pages）：本機執行 preflight 的步驟、在 GitHub 中設置環境變數的步驟
-- [ ] **故障排查**：常見環境變數缺漏問題與解決方案
+| 查核點 | 完成條件 | Checked | 證據 | 備註 | 規劃簽核 | 施工簽核 | 測試簽核 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| config.yaml 存在與結構驗證 | 檔案存在，且四個頂層章節與必填欄位完整。 | Y | `model-card-package-template/tools/validate_config.py` + `model-card-package-template/tests/test_validate_config.py` | 結構檢查已落地。 | PM | RD | QE |
+| 欄位格式與對映一致 | 版本、port、task 格式正確，且與指定環境變數一致。 | Y | `model-card-package-template/tools/validate_config.py` | 欄位與環境變數對映已驗證。 | PM | RD | QE |
+| Variables 完整性 | 所有必要 Variables 均已設置。 | Y | `model-card-package-template/tools/preflight.py` (`REQUIRED_VARIABLES`) | 缺漏會 fail-fast。 | PM | RD | QE |
+| Secrets 完整性與遮蔽 | 必要 Secrets 可取得，且輸出不洩露原文。 | Y | `model-card-package-template/tools/preflight.py` (`REQUIRED_SECRETS`) | secrets 只檢存在、不印原文。 | PM | RD | QE |
+| OCI Labels 完整性 | 必要 labels 鍵存在且值正確。 | Y | `model-card-package-template/tools/generate_oci_labels.py` + tests | labels 鍵值由工具統一產生。 | PM | RD | QE |
+| OCI Labels 格式合法 | Docker build args / Dockerfile LABEL 格式可用。 | Y | `model-card-package-template/tools/generate_oci_labels.py` (`--format docker-build-args`) | 已提供 build-args 格式輸出。 | PM | RD | QE |
+| Labels 來源不硬編碼 | labels 全由 config.yaml 與環境變數驅動。 | Y | `model-card-package-template/tools/generate_oci_labels.py` | 中央化來源，無 Dockerfile 重複硬編碼。 | PM | RD | QE |
+| preflight 工具可執行 | `tools.preflight` 可執行且 exit code 正確。 | Y | `model-card-package-template/tools/preflight.py` + CI workflow | preflight 已納入自動化。 | PM | RD | QE |
+| labels 工具可執行 | `tools.generate_oci_labels` 可輸出預期格式。 | Y | `model-card-package-template/tools/generate_oci_labels.py` + `model-card-package-template/tests/test_validate_config.py` | 輸出格式已測。 | PM | RD | QE |
+| config 驗證工具可執行 | `tools.validate_config --check-publish-env` 可產出驗證結果。 | Y | `model-card-package-template/tools/validate_config.py` + tests | 驗證路徑可執行。 | PM | RD | QE |
+| 本機開發支持 | `.env` 支持、`.gitignore` 防洩露、README 操作說明齊備。 | Y | `model-card-package-template/README.md` + `model-card-package-template/docs/github-variables-and-secrets.md` | 本機與 CI 操作路徑已文件化。 | PM | RD | QE |
+| 錯誤處理一致 | 錯誤訊息清晰可修復，成功/失敗 exit code 一致。 | Y | `model-card-package-template/tools/preflight.py` + `model-card-package-template/tools/validate_config.py` | 失敗訊息與 exit 行為一致。 | PM | RD | QE |
+| 監測與日誌 | 指標可觀測，日誌可追溯 preflight 與 labels 產出。 | Y | `model-card-package-template/.github/workflows/validate-model-card-container.yml` | workflow 保存 preflight/labels 產出。 | PM | RD | QE |
+| 文件與故障排查 | 工具說明、欄位註解、操作步驟與故障排查完整。 | Y | `model-card-package-template/docs/provider-workflow.md` + `model-card-package-template/docs/troubleshooting.md` | 開發者排障文件已就位。 | PM | RD | QE |
 
 ---
 
@@ -318,6 +272,6 @@ Ready to build and push image.
 
 ---
 
-**查核完成日期**：_____________  
-**完成者**：_____________  
-**審核者**：_____________  
+### 簽核說明
+
+本環節改為逐查核點簽核：每列均需填寫 `規劃簽核`、`施工簽核`、`測試簽核`。

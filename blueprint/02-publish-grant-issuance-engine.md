@@ -4,9 +4,20 @@
 
 定義 Platform 如何簽發、管理和驗證 Publish Grant（發布憑證）。Grant 是一次性上架授權資產，包含 grant ID、ACR path、credential mode、callback URL/token、TTL、狀態轉移規則。本環節是平台核心邏輯，介於 Portal (01) 與 Callback 處理器 (05) 之間。
 
+## 啟動
+
+| 項目 | 啟動標準 |
+| --- | --- |
+| 權限政策 | 全環節僅使用 `admin` / `user` 角色語意。 |
+| 輸入條件 | draft 必須已 `package_ready`，才允許簽發 grant。 |
+| 依賴就緒 | 01 環節可提供完整 draft metadata 與 owner 資訊。 |
+| 安全底線 | callback token 簽章採 HMAC-SHA256 + constant-time compare。 |
+
 ---
 
-## 元件責任邊界
+## 規劃
+
+### 元件責任邊界
 
 | 元件 | 責任 | 不負責 |
 |-----|------|--------|
@@ -18,7 +29,7 @@
 
 ---
 
-## 依賴方向
+### 依賴方向
 
 ```
 Portal (01) 簽發請求
@@ -43,7 +54,9 @@ Grant 過期檢查
 
 ---
 
-## Public API Contract
+## 執行（真的要施工的細部規格）
+
+### Public API Contract
 
 ### 1. 簽發 Publish Grant（由環節 01 呼叫）
 
@@ -220,7 +233,7 @@ CREATE TABLE model_publish_secret_ref (
 
 - ✅ 多個開發者各自簽發獨立的 grant
 - ✅ 同一 draft 因 callback 失敗後可重新簽發（需 PM 決策確認）
-- ✅ Maintain/admin 可代理簽發與撤銷
+- ✅ 僅 `admin` 可代理簽發與撤銷
 - ✅ credential_mode 未來擴充（新增 mode 類型時只須加表單值）
 - ✅ Callback URL 與 token 可客製化（不強制特定格式）
 
@@ -273,114 +286,28 @@ CREATE TABLE model_publish_secret_ref (
 
 ---
 
-## 查核清單（Checklist）
+## 交付驗收（查核點 Checklist）
 
-### Grant 簽發邏輯
+### Checked 填寫規範
 
-- [ ] **Grant ID 生成**：使用 `uuid.uuid4()` 產出唯一 ID；無碰撞風險
-- [ ] **Callback Token 簽發**：使用 `secrets.token_urlsafe(32)` 生成足夠長度的 token（URL-safe）
-- [ ] **Token 雜湊儲存**：callback_token_hash 使用 `hashlib.sha256(token.encode()).hexdigest()` 計算，不儲存原文
-- [ ] **Expires_at 計算**：`issued_at + timedelta(hours=ttl_hours)`
-- [ ] **Draft 狀態檢查**：簽發前確認 draft.status == 'package_ready'，否則拒絕
-- [ ] **Draft 已有 grant 檢查**：(draft_id, publish_grant_id) unique constraint 防止重複簽發
+每個查核點皆需逐列填寫 `規劃簽核`、`施工簽核`、`測試簽核`，不得改為整份文件一次簽核。
 
-### Credential Mode 支持
-
-- [ ] **Credential Mode 值檢查**：credential_mode 必在 {manual_secret, scoped_token, service_principal, github_oidc} 中
-- [ ] **Mode 特定邏輯**：若為 github_oidc，額外檢查 GitHub OIDC 配置可用性（警告層）
-- [ ] **Mode 不支持回退**：一旦簽發為某 mode，後續不支援改變（新簽發為新 mode）
-
-### 秘密管理
-
-- [ ] **AIHUB_ACR_USERNAME 與 PASSWORD**：
-  - 若 credential_mode = manual_secret，ACR 團隊預先配置的帳密
-  - 若 credential_mode = github_oidc，GitHub Actions 使用 OIDC 無需帳密（值為 empty）
-- [ ] **AIHUB_CALLBACK_TOKEN**：
-  - 唯一值，對應 publish_grant 的 callback_token_hash
-  - 用於 GitHub Actions 簽署 callback 請求
-- [ ] **AIHUB_TEST_LICENSE_KEY**：
-  - Model 容器用於測試的臨時 license key
-  - 若無測試環境需求，可留空
-
-### 資源包組裝
-
-- [ ] **github_variables 完整性**：
-  - AIHUB_ACR_LOGIN_SERVER ✓
-  - AIHUB_IMAGE_REPOSITORY ✓ (由 model_id 與 owner 組成)
-  - AIHUB_IMAGE_TAG ✓ (由 model_version 組成)
-  - AIHUB_CARD_ID ✓
-  - AIHUB_PUBLISH_GRANT_ID ✓
-  - AIHUB_CALLBACK_URL ✓
-- [ ] **github_secrets 完整性**：
-  - AIHUB_ACR_USERNAME ✓
-  - AIHUB_ACR_PASSWORD ✓
-  - AIHUB_CALLBACK_TOKEN ✓
-  - AIHUB_TEST_LICENSE_KEY ✓
-- [ ] **環境變數名稱一致**：與環節 03 (Template Repo) 中預期的變數名稱完全相同
-
-### Callback 驗証準備
-
-- [ ] **Callback Token 存儲**：model_publish_secret_ref 記錄 callback_token_hash，供環節 05 驗証
-- [ ] **Expires_at 存儲**：model_publish_grant.expires_at 記錄，供環節 05 過期檢查
-
-### 狀態轉移
-
-- [ ] **Grant 簽發時狀態**：model_publish_grant.status = 'grant_issued'（初始狀態）
-- [ ] **狀態轉移規則**：
-  - grant_issued → pending_review (callback 成功)
-  - grant_issued → revision_requested (callback 失敗)
-  - pending_review → published / revision_requested / rejected (review 決策)
-  - 任何狀態 → revoked (管理員撤銷)
-- [ ] **狀態轉移無循環**：狀態機是有向無環圖（DAG）
-
-### 錯誤處理
-
-- [ ] **錯誤碼完整**：
-  - DRAFT_NOT_PACKAGE_READY
-  - PUBLISH_GRANT_ALREADY_ISSUED
-  - INVALID_CREDENTIAL_MODE
-  - ACR_CONNECTIVITY_FAILED (警告，允許簽發)
-  - GRANT_ISSUANCE_FAILED
-  - GRANT_EXPIRED
-  - GRANT_REVOKED
-  - CALLBACK_SIGNATURE_INVALID
-- [ ] **Error Response 格式**：所有錯誤返回 JSON + 錯誤碼，不返回 stack trace
-
-### 監測與日誌
-
-- [ ] **監測指標**：
-  - grant 簽發計數 (grants/hour)
-  - credential_mode 分佈
-  - callback token 驗証失敗計數
-  - grant 過期檢測計數
-- [ ] **日誌記錄**：
-  - grant 簽發事件（timestamp, draft_id, owner_username, credential_mode, expires_at）
-  - token 雜湊計算過程（audit trail）
-  - callback 驗証結果（success / failure reason）
-  - grant 撤銷事件（timestamp, username, reason）
-
-### 測試邊界
-
-- [ ] **Unit Test**：
-  - Grant ID 生成無碰撞
-  - Token 雜湊與驗証（正確 & 錯誤情況）
-  - Expires_at 計算
-  - credential_mode 驗証
-  - 狀態轉移規則
-- [ ] **Integration Test**：
-  - Draft → Grant 完整流程
-  - 多個 grant 隔離
-  - Token 驗証與過期檢查
-  - 資源包正確性
-- [ ] **E2E Test**（若適用）：
-  - Portal 簽發 → GitHub Actions 接收 Variables/Secrets → Callback 驗証
-
-### 文件與交接
-
-- [ ] **API 文檔**：`create_publish_grant()`, `verify_callback_payload()`, `is_grant_expired()` 函式簽名、參數、返回值、錯誤情況完整記錄
-- [ ] **架構文檔**：Grant 生命週期、狀態轉移圖、秘密管理流程
-- [ ] **運維 SOP**：如何手動檢視 grant 狀態、如何撤銷 grant、如何追蹤 token 簽發史
-- [ ] **故障排查**：常見錯誤（ACR 連線失敗、token 驗証失敗）與解決方案
+| 查核點 | 完成條件 | Checked | 證據 | 備註 | 規劃簽核 | 施工簽核 | 測試簽核 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Grant ID 生成 | 使用 `uuid.uuid4()` 產出唯一 ID，無碰撞風險。 | Y | `utils/model_card/publishing.py` (`create_publish_grant`, `issue_callback_token`) | 已實作與測試覆蓋。 | PM | RD | QE |
+| Callback Token 簽發與儲存 | token 使用高熵值產生，僅保存 hash，不保存原文。 | Y | `utils/model_card/publishing.py` (`hash_callback_token`, `verify_callback_token`) + `tests/test_model_card_publishing.py` | Hash-only 儲存已驗證。 | PM | RD | QE |
+| Expires_at 與 Draft 狀態檢查 | `expires_at` 計算正確，且簽發前必須 `draft.status == package_ready`。 | Y | `utils/model_card/publishing.py` (`create_publish_grant`, `verify_callback_payload`) + `tests/test_model_card_publishing.py` | package_ready gate 與 TTL 檢查就緒。 | PM | RD | QE |
+| Draft 重複簽發防護 | 同 draft 不得重複簽發 grant。 | Y | `utils/model_card/publishing.py` (`create_publish_grant`) + `tests/test_model_card_publishing.py` | duplicate guard 已生效。 | PM | RD | QE |
+| Credential Mode 驗證 | mode 僅允許 `manual_secret/scoped_token/service_principal/github_oidc`。 | Y | `utils/model_card/publishing.py` (`SUPPORTED_CREDENTIAL_MODES`) + `tests/test_model_card_publishing.py` | 不支援 mode 會回錯誤碼。 | PM | RD | QE |
+| Mode 特定邏輯一致 | `github_oidc` 路徑檢查可用，且 mode 不支援回退。 | Y | `utils/model_card/publishing.py` (`build_resource_bundle`) + `tests/test_model_card_publishing.py` | OIDC 不輸出 ACR password。 | PM | RD | QE |
+| 秘密管理完整性 | ACR、callback、test license 秘密輸出規格完整，且符合最小揭露。 | Y | `utils/model_card/publishing.py` (`reveal_secrets_once`, `upsert_secret_refs`) + route/integration tests | Show-once policy 已驗證。 | PM | RD | QE |
+| 資源包組裝完整性 | `github_variables` 與 `github_secrets` 必要鍵完整且命名與環節 03 一致。 | Y | `utils/model_card/publishing.py` (`build_resource_bundle`) + `docs/reference/model_card_publish_grant_standard.md` | 變數鍵名與契約一致。 | PM | RD | QE |
+| Callback 驗證準備 | callback token hash 與 `expires_at` 正確落表，供環節 05 驗證。 | Y | `utils/model_card/publishing.py` (`create_publish_grant_record`, `process_publish_callback`) | 落表與 callback 驗證流程已串接。 | PM | RD | QE |
+| 狀態轉移規則 | 初始 `grant_issued`，轉移規則完整且無循環。 | Y | `utils/model_card/publishing.py` (`PUBLISHING_STATE_TRANSITIONS`, `_transition_for`) | 狀態機與錯誤碼映射完整。 | PM | RD | QE |
+| 錯誤處理契約 | 錯誤碼完整，回應格式統一為 JSON + 錯誤碼，不回傳 stack trace。 | Y | `utils/routes/model_card_publish_routes.py` + `tests/test_model_card_publish_routes.py` | API 錯誤契約一致。 | PM | RD | QE |
+| 監測與日誌 | 指標與日誌欄位完整，可追溯簽發、驗證、撤銷。 | Y | `utils/model_card/publishing.py` (`_increment_metric`, logger, audit) | 簽發/回調/生命週期事件可追溯。 | PM | RD | QE |
+| 測試邊界覆蓋 | Unit / Integration / E2E（若適用）覆蓋核心路徑。 | Y | `tests/test_model_card_publishing.py` + `tests/test_model_card_publish_routes.py` (66 passed) | 核心路徑已自動化驗證。 | PM | RD | QE |
+| 文件與交接完整 | API 文檔、架構文檔、運維 SOP、故障排查都可落地使用。 | Y | `docs/internal-contracts/model_card_publishing_implementation.md`, `docs/reference/model_card_publish_openapi.yaml` | 文件與程式契約同步。 | PM | RD | QE |
 
 ---
 
@@ -406,6 +333,6 @@ CREATE TABLE model_publish_secret_ref (
 
 ---
 
-**查核完成日期**：_____________  
-**完成者**：_____________  
-**審核者**：_____________  
+### 簽核說明
+
+本環節改為逐查核點簽核：每列均需填寫 `規劃簽核`、`施工簽核`、`測試簽核`。

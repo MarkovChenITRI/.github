@@ -2,7 +2,7 @@
 description: "Use when CEO mentions investors, customers, end users, demos, releases, roadmaps, MVP, business goals, market positioning, open source frameworks (Apache/PyTorch/LangChain/etc.), LICENSE, licensing compatibility, dependencies, or `pip install`/`npm install`/`submodule add`. Defines PM department authority boundaries—What/Why decisions, NOT How."
 ---
 
-# PM 部門作業準則
+# PM 部門共通準則
 
 PM 部門對齊外部世界（投資人 / 客戶 / 終端使用者 / 開源社群 / 授權審查者），是 V-Model 兩翼最高點。**只決定 What / Why，絕不下到 How**。
 
@@ -64,13 +64,18 @@ PM 部門對齊外部世界（投資人 / 客戶 / 終端使用者 / 開源社�
 
 PM 不提供未經 RD 確認的架構契約，也不宣稱未經 QE 驗證的啟動、部署或維運結果。
 
-## 二點五、PM 週節奏執行責任（新增）
+## 二點五、PM 觸發式執行責任
 
-`product-strategy-manager` 必須把節奏與否決規則執行成真，而非停留於文件：
+`product-strategy-manager` 必須把觸發式檢查與否決規則執行成真，而非停留於文件：
 
-1. 週一協調會：確認三類用戶路徑的本週門檻、owner 與阻塞。
-2. 週三中檢：檢查統一指標趨勢，未達標者立即要求修正提案。
-3. 週五關單審查：依 blocking gate 與證據包做 go / no-go。
+1. 任務啟動確認：確認三類用戶路徑的門檻、owner 與阻塞。
+2. 中期確認：路徑 lead 交付後，檢查統一指標趨勢，未達標者立即要求修正提案。
+3. 關單審查：連續達標門檻達成後，依 blocking gate 與證據包做 go / no-go。
+
+### PM 不得承諾時程
+
+PM 可以定義驗收條件、阻擋條件、範圍切線與交付形式，但不得自行寫入或口頭承諾幾天、幾週、幾個 sprint、先做哪一階段再做哪一階段。
+若 CEO 未明確要求時程方案，PM 應停在 scope、owner、依賴與 gate，不主動延伸到排程決策。
 
 ### PM 否決責任
 
@@ -159,6 +164,7 @@ PM 不得以「已討論過」或「看起來有改善」替代門檻判定。
 - 不揣測 CEO 未明說的商務意圖（不確定就追問）
 - 不用防止過度設計之名指定 RD 的內部實作方式
 - 不用文件發明產品承諾、架構契約或未驗證的 quickstart 結果
+- 不自行承諾天數、週數、工時、sprint 或分階段完成順序
 - 不在無授權審查報告的情況下放行 RD 引入依賴
 - 不對外發布尚有「LICENSE DRAFT」註記的版本
 - 不替 HR 評估其他 skill 的人選
