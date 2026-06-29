@@ -6,7 +6,7 @@ description: "Use when CEO mentions investors, customers, end users, demos, rele
 
 PM 部門對齊外部世界（投資人 / 客戶 / 終端使用者 / 開源社群 / 授權審查者），是 V-Model 兩翼最高點。**只決定 What / Why，絕不下到 How**。
 
-員工：`product-strategy-manager`、`tech-stack-curator`、`documentation-experience-manager`。完整角色定義見 `.github/agents/`；本檔與 `.github/agents/` 共同提供 VS Code Copilot 的完整工作流。
+員工：`product-strategy-manager`、`tech-stack-curator`。使用者文件、README、onboarding 與 UI 文案不再由獨立文件員工承接，而是回到 PM 定義 reader contract、當前任務 owner 直接出稿的工作流。完整角色定義見 `.github/agents/`；本檔與 `.github/agents/` 共同提供 VS Code Copilot 的完整工作流。
 
 ## 一、職權邊界
 
@@ -42,14 +42,17 @@ PM 部門對齊外部世界（投資人 / 客戶 / 終端使用者 / 開源社�
 - CEO 提到「LICENSE」「授權」「商用」「衍生作品」「開源合規」
 - 專案首次需要對外發布 → 主動產出 LICENSE 草案
 
-### `documentation-experience-manager`
+### 使用者文件與 UI 文案活動
 
-任一觸發即主動介入：
-- CEO 提到「README」「文件」「系統文件」「onboarding」「quickstart」「接手」「交接」「使用手冊」「開發者文件」
-- RD 完成架構藍圖後，需要整理成系統文件
-- 工程實作或部署流程完成後，需要補啟動、安裝、操作或維護文件
-- QE 完成驗證後，需要把可重現的檢查步驟寫入文件
-- README 宣稱的 agent / skill / instruction 或目錄需要與實際 runtime 對齊
+當任務涉及 README、文件、系統文件、onboarding、quickstart、接手文件、使用手冊或開發者文件時，PM 仍需主動介入，但不再切出獨立文件員工。
+
+PM 在這類任務中的責任是：
+
+1. 定義讀者、成功條件與不在範圍。
+2. 凍結這次要修的是單頁文案、跨頁導航，還是整體資訊架構。
+3. 指定由當前任務 owner 直接出稿，必要時要求 RD / QE 補來源。
+
+若只是單頁文案補充、一般 README 調整、HTML / JS 使用者可見文字修改，預設由當前任務 owner 在原流程內直接完成，並套用 `user-facing-docs.instructions.md`；不另設專屬文件 agent。
 
 ### README / Onboarding Context Package
 
@@ -63,6 +66,21 @@ PM 部門對齊外部世界（投資人 / 客戶 / 終端使用者 / 開源社�
 6. 哪些專案前提不得泛化為所有專案規則
 
 PM 不提供未經 RD 確認的架構契約，也不宣稱未經 QE 驗證的啟動、部署或維運結果。
+
+### 使用者文件與 UI 文案交付鏈
+
+凡是面向採用者、開發者、維運者或終端使用者的人類文件與使用者可見文案，PM 不得只把內容視為「附屬文字工作」。這些內容屬正式交付面，必須先定義 reader contract。
+
+一般情況下，當前任務 owner 直接依 `user-facing-docs.instructions.md` 出稿即可；若涉及跨頁重構、資訊架構重整、或需要收斂多方來源，則由 `product-strategy-manager` 協調 reader contract，並指派現有 owner 共同完成。
+
+PM 在這類任務中的最低輸入為：
+
+1. 讀者是誰。
+2. 讀者要完成什麼任務。
+3. 最低成功標準是什麼。
+4. 哪些內容不在本次交付範圍。
+
+若缺這四項，RD / QE / 當前任務 owner 不得自行腦補成最終對外表達。
 
 ## 二點五、PM 觸發式執行責任
 

@@ -10,12 +10,20 @@
    - 階段: 複檢後重新派工
 2. [WO-2026-06-29-05] 第一輪真人使用回饋跟進施工單
    - 檔案: `2026-06-29-first-round-user-feedback-followup-workorder.md`
-   - 狀態: Open
-   - 階段: feedback triage 完成，等待施工規劃與派工
+   - 狀態: Superseded by newer feedback
+   - 階段: 第二輪真人回饋已另開 follow-up 工單
 3. [WO-2026-06-29-06] 冷啟動新手部署沙盤推演跟進施工單
    - 檔案: `2026-06-29-cold-start-deploy-use-simulation-workorder.md`
    - 狀態: Open
    - 階段: heuristic triage 完成，等待 scope freeze 與施工派工
+4. [WO-2026-06-29-07] 第二輪真人使用回饋跟進施工單
+   - 檔案: `2026-06-29-second-round-real-user-feedback-followup-workorder.md`
+   - 狀態: Blocked on external participants
+   - 階段: 模板收斂、文件重寫與本地驗證完成；等待第三輪真人驗收資源
+5. [WO-2026-06-29-08] 第三輪真人使用回饋跟進施工單
+   - 檔案: `2026-06-29-third-round-real-user-feedback-followup-workorder.md`
+   - 狀態: Blocked on external participants
+   - 階段: 我的方案模板收斂、admin 逐卡盤點與本地驗證完成；等待新一輪真人驗收資源
 
 ## 使用方式
 

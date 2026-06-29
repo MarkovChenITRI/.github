@@ -39,28 +39,28 @@
 - 分類: docs / operability / platform mismatch
 - 現況: `docs/model-provider/packaging-quickstart.md` 使用 `mapfile -t ... < <(...)` 這類 Bash 專屬語法。
 - 風險: Windows / PowerShell 使用者即使理解流程，也可能在第一個 build 指令前失敗，誤以為是 Docker 或模型問題。
-- owner: `documentation-experience-manager` + `senior-software-engineer` + `site-reliability-engineer`
+- owner: `product-strategy-manager` + `senior-software-engineer` + `site-reliability-engineer`
 
 ### `SIM-02` 同一頁同時混寫 provider packaging 與 end-user deploy-and-use
 
 - 分類: information architecture / docs
 - 現況: `packaging-quickstart.md` 同時宣告自己覆蓋「本機封裝驗收」與「end-user deploy-and-use 最小可行路徑」。
 - 風險: 新手無法判定自己此刻是在做上架準備、容器驗收，還是最終部署使用，容易把不同角色的責任混成一條路。
-- owner: `product-strategy-manager` + `documentation-experience-manager`
+- owner: `product-strategy-manager`
 
 ### `SIM-03` 憑證與授權心智模型太密集，使用者必須先懂四種值才有第一個成功點
 
 - 分類: usability / docs / runtime onboarding
 - 現況: 文件雖有憑證分層表，但新手仍需在首次成功前同時理解 `AIHUB_ACR_USERNAME` / `AIHUB_ACR_PASSWORD`、`AIHUB_CALLBACK_TOKEN`、`AIHUB_LICENSE_KEY`、`OPENAI_API_KEY` 與固定 tag / digest 的差異。
 - 風險: 使用者把 Publish Grant secret、runtime license 與 client placeholder 混用，造成錯誤定位困難。
-- owner: `senior-software-engineer` + `site-reliability-engineer` + `documentation-experience-manager`
+- owner: `senior-software-engineer` + `site-reliability-engineer` + `product-strategy-manager`
 
 ### `SIM-04` 理想路徑缺少單一進度板，使用者必須自己拼接跨頁前置條件
 
 - 分類: docs / task flow / validation
 - 現況: 使用者需在 `index.md`、`packaging-quickstart.md` 與 `deploy-usability-test-protocol.md` 之間自行推理「現在做到哪裡、下一步是什麼、何時才算可進入真人驗收」。
 - 風險: 可能把 `/healthz` ready 誤判為整條路徑完成，或不知道何時該轉交維運 / QE / usability。
-- owner: `documentation-experience-manager` + `testing-quality-engineer`
+- owner: `product-strategy-manager` + `testing-quality-engineer`
 
 ## 5) Missing Information Request
 
@@ -74,7 +74,7 @@
 |------|-------|--------|
 | 問題收斂 | field-application-engineer | heuristic triage、issue 結構、closure gate 整理 |
 | 範圍凍結 | product-strategy-manager | 讀者切分、第一版修正範圍、out-of-scope |
-| 文件重構 | documentation-experience-manager | 單一路徑、角色切分、進度板與命令入口 |
+| 文件重構 | product-strategy-manager | 單一路徑、角色切分、進度板與命令入口 |
 | 工程支援 | senior-software-engineer | shell 相容輔助、env preflight、必要腳本 |
 | 維運驗收 | site-reliability-engineer | deploy 路徑、rollback 路徑、平台相容性 signoff |
 | 文件 / 指令 gate | testing-quality-engineer | 冷啟動命令驗證與 regression gate |
@@ -96,7 +96,7 @@
 
 ### `ACT-02` 提供 shell 相容命令路徑
 
-- Owner: `documentation-experience-manager` + `senior-software-engineer`
+- Owner: `product-strategy-manager` + `senior-software-engineer`
 - 輸入資料:
   - `docs/model-provider/packaging-quickstart.md`
   - `tools.generate_oci_labels`
@@ -106,7 +106,7 @@
 
 ### `ACT-03` 建立 deploy-and-use 憑證預檢與決策表
 
-- Owner: `senior-software-engineer` + `site-reliability-engineer` + `documentation-experience-manager`
+- Owner: `senior-software-engineer` + `site-reliability-engineer` + `product-strategy-manager`
 - 輸入資料:
   - `docs/model-provider/packaging-quickstart.md`
   - `docs/model-provider/deploy-usability-test-protocol.md`
@@ -116,7 +116,7 @@
 
 ### `ACT-04` 建立單一進度板與關鍵驗收節點
 
-- Owner: `documentation-experience-manager` + `testing-quality-engineer`
+- Owner: `product-strategy-manager` + `testing-quality-engineer`
 - 輸入資料:
   - `docs/model-provider/index.md`
   - `docs/model-provider/packaging-quickstart.md`
@@ -175,7 +175,7 @@
 
 - reporting_week: `2026-W27`
 - stream_id: `provider`
-- owner: `field-application-engineer` / `product-strategy-manager` / `documentation-experience-manager` / `senior-software-engineer` / `site-reliability-engineer` / `testing-quality-engineer` / `usability-test-coordinator` / `CEO`
+- owner: `field-application-engineer` / `product-strategy-manager` / `senior-software-engineer` / `site-reliability-engineer` / `testing-quality-engineer` / `usability-test-coordinator` / `CEO`
 - metric_name: `cold_start_deploy_use_risk_closure_rate`
 - baseline: `ideal blueprint path still contains shell-specific commands, mixed reader paths, dense credential mental model, and fragmented progress checkpoints`
 - target: `cold-start newcomer can complete the intended path without shell mismatch, role confusion, or credential misuse before real-user validation starts`

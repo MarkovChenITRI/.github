@@ -45,7 +45,7 @@ PM 需求單包含使用者操作流程、但尚未定義介面結構時，交�
 
 ### 架構事實包（交文件 / QE）
 
-當架構資訊要交給 documentation-experience-manager 或 testing-quality-engineer 時，架構師需提供 architecture facts package，而不是只有服務名稱清單：
+當架構資訊要交給 user-facing docs 任務 owner 或 testing-quality-engineer 時，架構師需提供 architecture facts package，而不是只有服務名稱清單：
 
 1. 元件責任：各模組、服務或外部資源負責什麼
 2. 依賴方向與資料流：誰呼叫誰、資料如何流動、外部服務位於哪個邊界

@@ -26,7 +26,7 @@ user-invocable: false
 
 ## Reader / Product Context Package
 
-交給 `documentation-experience-manager` 的 README / onboarding 上游輸入至少包含：
+交給 user-facing docs 任務 owner 的 README / onboarding 上游輸入至少包含：
 
 - 目標讀者與採用情境：採用者、部署者、接手開發者、維運者或其他明確角色。
 - 一句話定位：這個專案是什麼、為什麼存在。
@@ -46,7 +46,7 @@ user-invocable: false
 - Delivery form
 - Dependencies requiring curator review
 - User success path and verification criteria, when the deliverable is a README or onboarding document
-- Reader / product context package, when handing off to documentation
+- Reader / product context package, when handing off to the current user-facing docs owner
 - Weekly go/no-go decision with veto reasons when metrics fail
 
 ## 邊界

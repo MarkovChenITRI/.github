@@ -47,7 +47,7 @@
 - 分類: bug / operability
 - 現況: consumer quickstart 使用 `8080:80` 與 container port `80` 的敘述，但 template README、Dockerfile、compose 與 runtime 行為走 `8080`。
 - 風險: 首次部署、升版驗證、回滾驗證會走到不同指令與不同 port 假設。
-- owner: `architecture-research-developer` + `senior-software-engineer` + `documentation-experience-manager`
+- owner: `architecture-research-developer` + `senior-software-engineer` + `product-strategy-manager`
 - 目前狀態: Resolved
 - 完成證據: `docs/model-provider/packaging-quickstart.md`、`docs/model-provider/integration/api.md`、`docs/reference/model_card_containerization_standard.md`、`docs/deployer/container-startup.md` 已全部對齊為 container 內 `80`。
 
@@ -73,7 +73,7 @@
 |------|-------|--------|
 | 架構收斂 | architecture-research-developer | 單一 deploy port / gateway 契約 |
 | 施工實作 | senior-software-engineer | template runtime / compose / docs 對齊變更 |
-| 文件回寫 | documentation-experience-manager | 唯一 deploy 指令與驗證路徑 |
+| 文件回寫 | product-strategy-manager + senior-software-engineer | 唯一 deploy 指令與驗證路徑 |
 | 維運驗收 | site-reliability-engineer | operability gate truth 與 rollback 驗證證據 |
 | Issue closure | field-application-engineer | closure recommendation、狀態對齊、metrics 回寫 |
 | 真人驗收 | usability-test-coordinator | findings package |
@@ -83,7 +83,7 @@
 
 | Action | Owner | 狀態 | 說明 |
 |------|-------|------|------|
-| `ACT-01` | architecture-research-developer + senior-software-engineer + documentation-experience-manager | Completed | deploy port / gateway 文件與相鄰契約已對齊為 host `8080` -> container `80` |
+| `ACT-01` | architecture-research-developer + senior-software-engineer + product-strategy-manager | Completed | deploy port / gateway 文件與相鄰契約已對齊為 host `8080` -> container `80` |
 | `ACT-02` | site-reliability-engineer + field-application-engineer | Completed | closure gate truth 已重整到本單，舊矛盾工單已清除 |
 | `ACT-03A` | CEO | Blocked | 尚未提供真人受測者管道、beta 名單或招募資源 |
 | `ACT-03B` | usability-test-coordinator | Blocked | 缺可追溯真人 findings package 與原始記錄 |
@@ -92,7 +92,7 @@
 
 ### `ACT-01` 對齊 deploy port / gateway 真相源
 
-- Owner: `architecture-research-developer` + `senior-software-engineer` + `documentation-experience-manager`
+- Owner: `architecture-research-developer` + `senior-software-engineer` + `product-strategy-manager`
 - 輸入資料:
   - `docs/model-provider/packaging-quickstart.md`
   - `model-card-package-template/README.md`
@@ -213,7 +213,7 @@
 
 | 類型 | 觀察摘要 | 影響任務 | 建議 owner | 對應檔案 / 區塊 | 優先度 |
 |------|----------|----------|------------|------------------|--------|
-| 文件問題 | - | Task __ | documentation-experience-manager | `docs/...` | 高 / 中 / 低 |
+| 文件問題 | - | Task __ | product-strategy-manager | `docs/...` | 高 / 中 / 低 |
 | 功能缺陷 | - | Task __ | senior-software-engineer | `utils/...` / `app/...` | 高 / 中 / 低 |
 | 維運 / 部署問題 | - | Task __ | site-reliability-engineer | workflow / deploy docs | 高 / 中 / 低 |
 | 平台流程問題 | - | Task __ | field-application-engineer / product-strategy-manager | issue / status flow | 高 / 中 / 低 |
@@ -259,7 +259,7 @@
 
 - reporting_week: `2026-W27`
 - stream_id: `consumer`
-- owner: `architecture-research-developer` / `senior-software-engineer` / `documentation-experience-manager` / `site-reliability-engineer` / `field-application-engineer` / `usability-test-coordinator`
+- owner: `architecture-research-developer` / `senior-software-engineer` / `product-strategy-manager` / `site-reliability-engineer` / `field-application-engineer` / `usability-test-coordinator`
 - metric_name: `consumer_deploy_success_rate`
 - baseline: `docs and closure package were inconsistent`
 - target: `>= 80% first deployment success with traceable real-user findings`

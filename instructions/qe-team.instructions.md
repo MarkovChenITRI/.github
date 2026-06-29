@@ -131,7 +131,7 @@ README、部署指南、維運文件與 quickstart 若包含可執行步驟，QE
 |------|------|-----------|
 | Markdown 結構、相對連結、路徑存在、關鍵命令未無聲消失 | QE 可自動化或要求 PR 檢查 | 低成本可擋 PR |
 | quickstart、部署、維運最小路徑 | QE 設計驗收，RD 提供可測入口 | 依成本採 CI、staging 或人工驗收 |
-| 文風、讀者語境、資訊架構、連結位置 | documentation-experience-manager 自查，QE 可提供風險意見 | 預設人工 review，不作 CI blocking |
+| 文風、讀者語境、資訊架構、連結位置 | `product-strategy-manager` 與當前任務 owner 自查，QE 可提供風險意見 | 預設人工 review，不作 CI blocking |
 | 雲端正式資源、secret、資料庫維運 | `site-reliability-engineer` 設隔離策略，`security-engineer` 審查機密與權限 | 不直接打正式環境，採 dry-run / staging / 驗收紀錄 |
 
 QE 的核心是可重現、不可無聲退化、不能破壞讀者操作路徑；不要把所有文件品味問題都變成測試流程。

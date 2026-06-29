@@ -67,7 +67,7 @@ CEO 不應直接接收多份平行證據包做技術仲裁。SOP3 的最終對 C
 
 ### 文件交付 Handoff Package
 
-需要產出 README、onboarding、quickstart、部署指南、維運文件或系統文件時，documentation-experience-manager 不接收只有抽象名稱的交付物；上游需提供可追溯來源。各 package 的必填內容仍以對應 owner 的 agent.md 為真相源，此處只列索引：
+需要產出 README、onboarding、quickstart、部署指南、維運文件或系統文件時，當前任務 owner 不接收只有抽象名稱的交付物；上游需提供可追溯來源。各 package 的必填內容仍以對應 owner 的 agent.md 為真相源，此處只列索引：
 
 - Reader / product context package：`product-strategy-manager.agent.md`
 - Architecture facts package：`architecture-research-developer.agent.md`
@@ -79,6 +79,17 @@ CEO 不應直接接收多份平行證據包做技術仲裁。SOP3 的最終對 C
 - Issue / feedback action package：`field-application-engineer.agent.md`
 
 唯一例外是 Verification evidence package：目前仍由 `testing-quality-engineer` 與 SOP3 共同約束，必填內容為已驗證命令、驗收路徑、gate 分級、殘餘風險與證據連結。
+
+### 使用者文件表達責任鏈
+
+當交付物包含 README、開發者文件、Pages 文件、維運手冊或產品中的使用者可見文字時，責任鏈固定如下：
+
+1. PM 定義 reader / product context package。
+2. RD 提供 architecture / schema / design facts package。
+3. QE 提供 verification evidence package。
+4. 一般情況由當前任務 owner 依 `user-facing-docs.instructions.md` 直接完成；若跨頁、跨來源或資訊架構重整，則由 `product-strategy-manager` 協調 reader contract，並由相關 owner 共同收斂。
+
+任何角色都可以提供內容，但不得直接以內部交接語氣定稿面向使用者的最終文字表達。
 
 ## 四、SOP3 的關單輸出規則
 
@@ -144,7 +155,7 @@ FAE 可提供 closure recommendation，QE / SRE / Usability 可提供證據包�
 | PM 寫程式碼 / 改 agent.md 或 SKILL.md | 越權；PM 只管 What/Why |
 | 任何規劃角色自行承諾工時、天數、週數、sprint 或分階段落地順序 | 越權；時程裁決屬 CEO |
 | RD / QE 自行揣摩 CEO 商務意圖並擴張範圍 | 越權；商務裁決屬 PM |
-| documentation-experience-manager 自行發明產品承諾、架構契約或驗證結果 | 越權；產品屬 PM、架構屬 RD、驗證屬 QE |
+| 任何 owner 在 user-facing docs 中自行發明產品承諾、架構契約或驗證結果 | 越權；產品屬 PM、架構屬 RD、驗證屬 QE |
 | QE 直接改 RD 的程式碼 | 越權；QE 提建議，RD 決定是否採納 |
 | FAE 沒有重現或驗證證據就建議關閉 issue | 越權；issue closure 必須有證據與 owner 回覆 |
 | QE（usability-test-coordinator）自行招募、聯繫或支付真人受測者 | 越權；真人測試管道需 CEO 提供 |

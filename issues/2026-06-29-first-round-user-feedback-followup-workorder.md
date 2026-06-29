@@ -5,9 +5,9 @@
 - Stream ID: maintainer
 - 範圍: 第一輪真人使用回饋的工程跟進與驗收規劃
 - 來源: `real-user-feedback-form.md` 第一輪回填 + `/site-reliability-engineer` + `/usability-test-coordinator` read-only triage
-- 目前狀態: Blocked on external participants
-- 目前階段: 工程與文件冷啟動驗收已完成；等待 CEO 提供第二輪真人測試資源
-- 下一位 owner: CEO / usability-test-coordinator
+- 目前狀態: Superseded by newer feedback
+- 目前階段: 第二輪真人回饋已否定部分完成判定，後續施工轉移至 `WO-2026-06-29-07`
+- 下一位 owner: field-application-engineer
 
 ## 1) Issue Classification
 
@@ -60,7 +60,7 @@
 - 分類: docs / operability / discoverability
 - 現況: GitHub Pages 中雖有授權與上架相關頁，但沒有一個明確分類能讓平台維護者快速辨識「模型憑證與授權」的完整邏輯。
 - 風險: 維運者找不到 Publish Grant、ACR credential、callback token、部署 `AIHUB_LICENSE_KEY` 的邊界，造成誤用與支持成本上升。
-- owner: `documentation-experience-manager` + `site-reliability-engineer`
+- owner: `product-strategy-manager` + `site-reliability-engineer`
 
 ## 5) Missing Information Request
 
@@ -77,7 +77,7 @@
 | 工程實作 | senior-software-engineer | CI 契約修正、模型頁行為調整、文件入口實作 |
 | 維運觀點驗收 | site-reliability-engineer | 平台授權 / 憑證文件可發現性驗收 |
 | 測試與 gate | testing-quality-engineer | CI / docs 契約檢查與 regression gate |
-| 文件回寫 | documentation-experience-manager | Pages 導覽與授權分類中心 |
+| 文件回寫 | product-strategy-manager | Pages 導覽與授權分類中心 |
 | 第二輪真人驗收 | usability-test-coordinator | 新 IA / 新文件的下一輪 findings package |
 
 ## 7) Action Items
@@ -185,7 +185,7 @@
 
 ### `ACT-06` 建立「模型憑證與授權」文件分類中心
 
-- Owner: `documentation-experience-manager`
+- Owner: `product-strategy-manager`
 - 輸入資料:
   - `mkdocs.yml`
   - `docs/platform/advanced/model-card-publishing.md`
@@ -282,7 +282,7 @@
 | --- | --- | --- |
 | `FB-01` CI 錯誤契約 | 已完成修正並通過 focused pytest。 | `senior-software-engineer` 完成；`testing-quality-engineer` 驗證通過。 |
 | `FB-02` 模型頁改版規劃與第一版實作 | PM scope freeze、UI IA handoff、drafts list API 與 `/guide` 列表化第一版已完成。 | `product-strategy-manager`、`ui-ux-designer`、`senior-software-engineer` 已完成本輪簽核。 |
-| `FB-03` 文件分類中心 | 已完成分類入口與站內回指，並通過冷啟動走查。 | `documentation-experience-manager` 完成；`testing-quality-engineer` 冷啟動 signoff 通過。 |
+| `FB-03` 文件分類中心 | 已完成分類入口與站內回指，並通過冷啟動走查。 | `product-strategy-manager` 協調完成；`testing-quality-engineer` 冷啟動 signoff 通過。 |
 | 第二輪真人驗收 | protocol 已完成，但 findings 仍待 CEO 提供受測者後執行。 | `usability-test-coordinator` 已完成 protocol；`CEO` 待提供資源。 |
 
 ## 10) Feedback Routing Recommendation
@@ -293,7 +293,7 @@
 
 - reporting_week: `2026-W27`
 - stream_id: `maintainer`
-- owner: `field-application-engineer` / `product-strategy-manager` / `ui-ux-designer` / `senior-software-engineer` / `site-reliability-engineer` / `testing-quality-engineer` / `documentation-experience-manager` / `usability-test-coordinator`
+- owner: `field-application-engineer` / `product-strategy-manager` / `ui-ux-designer` / `senior-software-engineer` / `site-reliability-engineer` / `testing-quality-engineer` / `usability-test-coordinator`
 - metric_name: `first_round_user_feedback_closure_rate`
 - baseline: `first-round user feedback uncovered CI contract drift, model-page IA burden, and missing credential/auth documentation classification`
 - target: `all first-round feedback items have owner, implementation evidence, and a clear second-round validation path`
