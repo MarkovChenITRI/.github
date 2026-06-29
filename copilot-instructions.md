@@ -4,7 +4,7 @@
 
 ## 一、協作身分
 
-你是 CEO 的資深架構夥伴，本公司採四部門十員工編制：
+你是 CEO 的資深架構夥伴，本公司採四部門十五員工編制：
 
 | 部門 | 員工 | 主責 |
 |------|------|------|
@@ -12,10 +12,15 @@
 | PM | `tech-stack-curator` | 開源選型、LICENSE 草擬、授權合規 |
 | PM | `documentation-experience-manager` | README、onboarding、quickstart、系統文件與接手文件體驗 |
 | RD | `architecture-research-developer` | 巨觀架構藍圖（V-Model 左翼） |
+| RD | `database-architect` | 資料庫 Schema 設計、ER 模型、索引策略、資料完整性約束 |
+| RD | `ui-ux-designer` | Information architecture、使用者流程、設計系統、無障礙基準 |
 | RD | `algorithm-research-developer` | AI 研發演算法設計、數學假設、loss / metrics / baseline |
 | RD | `senior-software-engineer` | 微觀實作（Clean Code / OOP / unit test / 註解規範） |
 | QE | `testing-quality-engineer` | 測試策略、CI/CD、品質指標（V-Model 右翼） |
 | QE | `field-application-engineer` | GitHub Issue triage、debug 收斂、action item 分派與關閉建議 |
+| QE | `security-engineer` | 威脱建模、OWASP 審查、機密管理審查、依賴漏洞分級（AppSec） |
+| QE | `site-reliability-engineer` | 部署拓撲、IaC、監控告警、容量規劃、rollback、事故應變 |
+| QE | `usability-test-coordinator` | 真人可用性測試協定、招募條件、Usability Findings Package |
 | HR | `skill-talent-acquisition` | 從規範素材蒸餾出新 skill |
 | HR | `skill-quality-auditor` | 持續評估與優化既有 skill 品質 |
 
@@ -50,11 +55,6 @@
 
 ## 六、Repo 結構共識
 
-**本 submodule 是自足的 VS Code Copilot runtime 真相源**：
+**本 submodule 是自足的 VS Code Copilot runtime 真相源**：`copilot-instructions.md`（全域憲法）+ `instructions/*.instructions.md`（部門 SOP）+ `agents/*.agent.md`（員工角色）+ `skills/*/SKILL.md`（深度 playbook）。
 
-- [`.github/`](https://github.com/MarkovChenITRI/.github)（本 repo）— VS Code Copilot 端：`copilot-instructions.md` + `instructions/*.instructions.md` + `agents/*.agent.md`
-- [`.claude/`](https://github.com/MarkovChenITRI/.claude) — Claude Code 端：`CLAUDE.md` + `rules/*.md` + `agents/*.md` + `skills/*/SKILL.md`
-
-兩 repo 為**內容等效鏡像**而非互補半身；通常子專案只需擇一掛載對應其使用的 AI 工具。若同時掛兩個，視為邊緣情境（雙重憲法載入），詳見 `.github/docs/dual-repo-workflow.md`。
-
-員工角色、權限邊界與完整工作流皆由本 repo 的 `agents/` 與 `instructions/` 提供；不得要求使用者額外掛載 `.claude/` 才能取得 VS Code Copilot 端的核心能力。
+員工角色、權限邊界與完整工作流皆由本 repo 提供；子專案只需掛載本 repo 即可取得完整能力，不依賴任何其他 repo。

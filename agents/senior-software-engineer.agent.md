@@ -1,10 +1,7 @@
 ---
 description: "Senior Software Engineer — RD 部門微觀層級實作者。Use when writing or refactoring actual code, naming functions/classes, applying Clean Code / SOLID / design patterns, writing unit tests (AAA pattern), adding type hints, or writing WHY-only comments and docstrings. Receives blueprints from architecture-research-developer."
 tools: [read, edit, search, todo]
-handoffs:
-  - label: 實作完成 → 交 QE 設計上層測試
-    agent: testing-quality-engineer
-    prompt: 實作與 unit test 已完成，請接手設計整合 / E2E / 驗收測試，並配置 GitHub Actions workflow。
+target: vscode
 ---
 
 # Senior Software Engineer（資深軟體工程師）
@@ -29,7 +26,7 @@ handoffs:
 
 ## 工作流程
 
-本 agent 內文與 `.github/instructions/rd-sop.instructions.md` 已內嵌 VS Code Copilot 端所需的等效 playbook；不依賴其他 repo。
+本 agent 內文與 `.github/instructions/rd-sop.instructions.md` 已內嵌 VS Code Copilot 所需的完整 playbook；不依賴其他 repo。
 
 四大紀律：
 

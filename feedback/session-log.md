@@ -69,12 +69,17 @@ documentation-experience-manager 與 skill-quality-auditor 後續處理 README �
 ### 校正建議
 documentation-experience-manager 後續修 README、GitHub Pages 文件、部署指南、資料庫維護文件或 provider 規範時，應採用「全篇閱讀 -> 相關頁語意比對 -> 最小修文 -> 建置驗證 -> 關鍵字殘留掃描」的順序。若 CEO 指出「語意不順」或「不是只查關鍵字」時，應停止擴大 grep，先逐頁閱讀並摘要目前讀者路徑，再做文案修正。skill-quality-auditor 後續評估文件類 skill 表現時，也應把「是否完整閱讀目標文件與相關語意上下文」列為檢查點；只靠關鍵字掃描完成文件修正，應視為文件體驗落差。
 
+<<<<<<< HEAD
 ## [2026-06-25] 子專案：ai-hub-webui
+=======
+## [2026-06-24] 子專案：ai-hub-webui
+>>>>>>> 242c23700b3740c7995ad3d354873667a08afb60
 
 ### 分類
 process-governance
 
 ### 前情提要
+<<<<<<< HEAD
 這筆回饋來自帳號權限分級、`/cards` 公開瀏覽、top bar 登入狀態、自助註冊與 admin 使用者管理頁的規劃工作。該需求同時牽涉 PM 產品邊界、RD route/domain/template/API 設計、RD 工程施工、QE 角色矩陣驗收與文件交付說明；它不是單一頁面調整，也不是單一工程師可直接憑直覺完成的小修改。適用於後續跨角色、跨階段、需要作為提案與驗收標準的大型功能規劃；不適用於單檔 bugfix、單一文案修正或已由 CEO 明確要求直接實作的小任務。
 
 ### 落差描述
@@ -98,3 +103,28 @@ Owner：PM / RD / QE / Documentation / HR
 
 ### 校正建議
 product-strategy-manager 後續接到大型 feature 規劃時，應先判斷是否需要 blueprint package，並要求 PM 需求文件明確寫出 problem statement、target user、acceptance criteria、out of scope 與 delivery form。architecture-research-developer 應提供 architecture facts package，不以服務名稱清單取代模組邊界、依賴方向、public API、不變式與邊界條件。senior-software-engineer 應把架構規格拆成 work orders，列出檔案影響、施工順序、unit test 與完成條件。testing-quality-engineer 應把 PM/RD contract 轉成角色矩陣、自動化測試、手動驗收腳本與阻擋交付條件。documentation-experience-manager 應要求 PM/RD/QE 證據齊備後才更新正式文件，並明確區分已完成與規劃中能力。skill-quality-auditor 後續評估規劃品質時，應把「是否為大型工程建立角色化 blueprint package」列為 process-governance 檢查點。
+=======
+本次 CEO 要求 PM 與跨部門團隊完整審計 ai-hub-webui，從 UX/UI 視角往前端、後端、資料庫與文件導覽逐層找出問題、瑕疵與可移除候選。第一輪交付已產出審計報告與 backlog，但 CEO 進一步校正：審計完成後不能只點出問題，也不能只列 owner、驗收條件與驗證方式；每一個問題都必須同步制定解決方案，讓後續團隊知道如何落地修正。
+
+### 落差描述
+審計型任務容易停在「發現問題」與「建立 backlog」，造成文件雖然可追蹤，卻仍需要下一位 agent 重新拆解實際修法。這會讓 PM/RD/QE/Documentation 的交接不完整，也會使 CEO 的下一步決策成本偏高。
+
+### 影響
+若 backlog 缺少每題解決方案，後續執行者會反覆重做分析、owner 可能不清楚從哪裡開始、驗收條件也可能被誤解為修復方案。長期會造成審計文件變成問題清單，而不是能推動修正的工程治理文件。
+
+### 實際決策
+所有專案審計輸出必須至少包含四層：問題描述、證據、解決方案、驗證方式。若某項仍需 PM/CEO 決策，也要先提出可選方案與建議決策點，而不是只標示 blocked。backlog 的每個 issue item 應新增 `Solution plan` 或等效欄位，說明 PM/RD/QE/Documentation 各自應採取的落地動作、順序與不可做事項。
+
+### Action Item
+Owner：PM / RD / QE / Documentation
+完成條件：審計報告與 backlog 中每個 `AUDIT-*` 項目都包含可執行的解決方案；需要裁決者列出可選方案與建議決策點。
+驗證方式：抽查任一 `AUDIT-*` 項目時，讀者能直接回答「要改哪裡、由誰改、先做什麼、怎麼驗證、什麼情況下不能直接改」。
+
+### 同仁審查結論
+保留：審計任務必須從問題清單升級為問題與解法並列的執行 backlog。
+修正：不是要求審計階段直接修完所有產品問題，而是要求每題具備可落地方案與決策分支。
+撤回：無。
+
+### 校正建議
+product-strategy-manager、documentation-experience-manager、architecture-research-developer、testing-quality-engineer 後續處理審計、review、backlog 或交接文件時，應把「Solution plan」視為必要欄位。若只輸出問題、風險、owner 或驗收條件，應主動補齊解法後再回報完成。
+>>>>>>> 242c23700b3740c7995ad3d354873667a08afb60
