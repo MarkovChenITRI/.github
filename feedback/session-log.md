@@ -68,3 +68,33 @@ documentation-experience-manager 與 skill-quality-auditor 後續處理 README �
 
 ### 校正建議
 documentation-experience-manager 後續修 README、GitHub Pages 文件、部署指南、資料庫維護文件或 provider 規範時，應採用「全篇閱讀 -> 相關頁語意比對 -> 最小修文 -> 建置驗證 -> 關鍵字殘留掃描」的順序。若 CEO 指出「語意不順」或「不是只查關鍵字」時，應停止擴大 grep，先逐頁閱讀並摘要目前讀者路徑，再做文案修正。skill-quality-auditor 後續評估文件類 skill 表現時，也應把「是否完整閱讀目標文件與相關語意上下文」列為檢查點；只靠關鍵字掃描完成文件修正，應視為文件體驗落差。
+
+## [2026-06-25] 子專案：ai-hub-webui
+
+### 分類
+process-governance
+
+### 前情提要
+這筆回饋來自帳號權限分級、`/cards` 公開瀏覽、top bar 登入狀態、自助註冊與 admin 使用者管理頁的規劃工作。該需求同時牽涉 PM 產品邊界、RD route/domain/template/API 設計、RD 工程施工、QE 角色矩陣驗收與文件交付說明；它不是單一頁面調整，也不是單一工程師可直接憑直覺完成的小修改。適用於後續跨角色、跨階段、需要作為提案與驗收標準的大型功能規劃；不適用於單檔 bugfix、單一文案修正或已由 CEO 明確要求直接實作的小任務。
+
+### 落差描述
+初版規劃只產出一份總 blueprint，雖然列出需求與驗收項目，但不足以支撐大型工程。它沒有把 PM、RD 架構師、RD 工程師、QE、文件經理各自的交付物拆清楚，也沒有明確定義施工批次、交棒輸入輸出、RACI、阻擋條件與 QE 驗收矩陣。這會讓後續執行時仍留下模糊空間：誰負責裁決 scope、誰負責架構邊界、誰負責具體施工、誰提供驗收證據、什麼狀態才算可交付，都可能被不同 agent 猜測，造成返工或把尚未完成的能力誤寫成承諾。
+
+### 影響
+大型規劃若只交單一總綱，會讓提案不可審、施工不可控、驗收不可追。PM 可能無法確認 scope 是否被擴張，RD 可能拿不到足夠的模組邊界與 public API，QE 可能只能事後補測而非提前設計 gate，文件經理也可能在缺少驗證證據時把規劃中能力寫成既成事實。最終風險是 owner 不清、工程分期失焦、驗收標準不足，以及 CEO 需要重複糾正同一類規劃品質問題。
+
+### 實際決策
+後續遇到跨部門、跨階段、需作為提案與驗收標準的大型功能規劃時，必須產出 blueprint package，而不是只產出單一文件。至少應包含：總控索引、PM 需求與產品驗收、RD 架構與系統邊界、RD 施工工單與交付項目、QE 驗收計畫與測試矩陣、文件與交付說明計畫、期程/RACI/交棒清單。每份文件要明確標示 owner、上游輸入、下游輸出、交付項目、阻擋條件與驗收方式。若任一角色的責任或驗收證據尚未定義，該規劃不得宣稱已可作為完整提案。
+
+### Action Item
+Owner：PM / RD / QE / Documentation / HR
+完成條件：後續大型規劃先判斷是否需要 blueprint package；若需要，至少拆出 PM、RD 架構、RD 施工、QE 驗收、文件交付與 RACI 六類交付物，並在總控文件中建立文件地圖與最終完成定義。
+驗證方式：檢查 blueprint 是否能回答「誰負責、交付什麼、何時交棒、怎麼驗收、哪些不做、什麼情況阻擋交付」六個問題；若任一問題只能靠對話記憶或 agent 猜測回答，規劃需退回重寫。
+
+### 同仁審查結論
+保留：大型跨角色工程規劃必須拆 owner、交付物、施工階段與驗收 gate；單一總綱不足以作為嚴謹提案。
+修正：不是所有任務都要多文件 package；只有跨 PM/RD/QE/Documentation、具期程與驗收責任的大型規劃才適用。
+撤回：不要求每份 blueprint 都使用固定檔名或固定文件數量；文件數量可依工程規模調整，但角色責任與驗收證據不可省略。
+
+### 校正建議
+product-strategy-manager 後續接到大型 feature 規劃時，應先判斷是否需要 blueprint package，並要求 PM 需求文件明確寫出 problem statement、target user、acceptance criteria、out of scope 與 delivery form。architecture-research-developer 應提供 architecture facts package，不以服務名稱清單取代模組邊界、依賴方向、public API、不變式與邊界條件。senior-software-engineer 應把架構規格拆成 work orders，列出檔案影響、施工順序、unit test 與完成條件。testing-quality-engineer 應把 PM/RD contract 轉成角色矩陣、自動化測試、手動驗收腳本與阻擋交付條件。documentation-experience-manager 應要求 PM/RD/QE 證據齊備後才更新正式文件，並明確區分已完成與規劃中能力。skill-quality-auditor 後續評估規劃品質時，應把「是否為大型工程建立角色化 blueprint package」列為 process-governance 檢查點。

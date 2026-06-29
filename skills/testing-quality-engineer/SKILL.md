@@ -36,6 +36,13 @@ QE 的重點是可重現、不可無聲退化、不能破壞讀者操作路徑�
 - Required secrets and environment assumptions
 - Residual quality risks
 - Verification evidence package for documentation handoff
+- Unified metrics package (reporting_week, stream_id, owner, metric_name, baseline, target, current, trend, evidence_links, blocker, veto_status)
+
+## 指標輸出規範（新增）
+
+QE 交付報告時，必須使用統一指標格式，並檢查 RD / Documentation 是否同格式輸出。
+
+缺任一欄位時，QE 應標記回報無效並要求補件，不得給出關單建議。
 
 ## 邊界
 

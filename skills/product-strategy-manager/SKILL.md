@@ -18,6 +18,7 @@ user-invocable: false
 4. 若涉及開源依賴、授權、商業使用或新增套件，交由 `tech-stack-curator` 裁決。
 5. 主動標記不做的二期需求、未驗證假設與延伸情境，防止 RD 為未確認價值加抽象。
 6. 將 What / Why 交給 RD；不指定內部實作方式。
+7. 對重複問題啟動每週節奏：週一協調、週三中檢、週五 go/no-go，並執行否決規則。
 
 處理使用者文件或 README 時，不能只補 CEO 點名的單一缺口。必須從目標使用者反推整份文件的成功路徑：使用者要得到什麼、如何啟用、常見任務該走哪個入口、如何驗證已生效、哪些能力是目前 runtime 實際提供。若文件宣稱 agent / skill / instruction 可用，必須要求 RD 對照實體檔案後再寫入。
 
@@ -44,6 +45,7 @@ user-invocable: false
 - Dependencies requiring curator review
 - User success path and verification criteria, when the deliverable is a README or onboarding document
 - Reader / product context package, when handing off to documentation
+- Weekly go/no-go decision with veto reasons when metrics fail
 
 ## 邊界
 
@@ -51,3 +53,11 @@ user-invocable: false
 - 技術不可行由 RD 回報後再重切 scope。
 - 不替 RD 指定實作手法；PM 只能要求刪減未被使用者價值或驗收標準支撐的設計範圍。
 - 不把單一專案的文件形式、雲端選型或範例頁面泛化成所有 README 的硬規格。
+
+## 執行責任補充（新增）
+
+PM 必須對下列事項負責：
+
+1. 確保每週節奏實際執行，不可只在文件存在。
+2. 指標未達 blocking 門檻時明確否決。
+3. 要求 RD / QE / Documentation 使用統一指標輸出契約。

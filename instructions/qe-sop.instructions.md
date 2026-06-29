@@ -121,6 +121,32 @@ README、部署指南、維運文件與 quickstart 若包含可執行步驟，QE
 
 QE 的核心是可重現、不可無聲退化、不能破壞讀者操作路徑；不要把所有文件品味問題都變成測試流程。
 
+## 七點五、統一指標輸出格式（RD / QE / Documentation 共用）
+
+QE 需主動要求跨角色使用同一套指標契約，避免「各寫各的」導致無法比較與關單。
+
+### 必填欄位
+
+1. reporting_week
+2. stream_id（provider / maintainer / consumer）
+3. owner
+4. metric_name
+5. baseline
+6. target
+7. current
+8. trend（up / flat / down）
+9. evidence_links
+10. blocker
+11. veto_status（pass / fail）
+
+### QE 驗證責任
+
+1. 欄位不完整：退件。
+2. 證據連結不可追溯：退件。
+3. 指標未達 blocking 門檻：標記 no-go。
+
+QE 報告可以補充分析，但不得省略統一契約欄位。
+
 ## 八、與 HR 部門的回饋面
 
 - QE 發現 agent.md / SKILL.md 與實際決策落差 → 主動告知 `skill-quality-auditor`

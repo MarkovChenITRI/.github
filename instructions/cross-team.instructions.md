@@ -88,6 +88,45 @@ CEO（真人）
 
 文件經理負責把 package 轉成讀者可用的資訊架構，不得替 PM 發明承諾、替 RD 決定拓撲、替 QE 宣稱驗證成功，或替 FAE 決定 issue closure。
 
+## 三點五、每週節奏與否決規則（跨部門硬規範）
+
+### 固定節奏（Mandatory Cadence）
+
+1. 週一：PM 協調會
+- 輸出：本週目標、owner、blocking risk、驗收門檻。
+
+2. 週三：中期檢查
+- 輸出：故障回放、指標趨勢、是否偏離門檻。
+
+3. 週五：關單審查
+- 輸出：go / no-go 決策、否決原因、下週修正清單。
+
+### 否決規則（Veto Rules）
+
+任一條件成立，PM 必須標記 no-go，不得以文字承諾替代：
+
+1. 任一 blocking gate 未達標。
+2. 證據包缺欄位（owner、完成條件、驗證方式、closure criteria）。
+3. 指標未達連續穩定門檻（例如連續兩週達標）。
+
+### 指標輸出單一契約（Unified Metrics Contract）
+
+所有 RD / QE / Documentation 週報必須使用相同欄位，禁止各自定義格式：
+
+1. reporting_week
+2. stream_id（provider / maintainer / consumer）
+3. owner
+4. metric_name
+5. baseline
+6. target
+7. current
+8. trend（up / flat / down）
+9. evidence_links
+10. blocker
+11. veto_status（pass / fail）
+
+任一欄位缺失即視為無效回報，不可進入關單流程。
+
 ## 四、跨部門禁忌
 
 | 禁忌 | 違反原則 |

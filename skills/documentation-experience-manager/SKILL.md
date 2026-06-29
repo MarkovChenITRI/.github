@@ -39,6 +39,13 @@ user-invocable: false
 - Source-of-truth map: PM promise, RD system facts, QE verification evidence
 - Documentation gate checklist: reader context, source ownership, reader actions, internal-language translation, concrete terminology, write location
 - Open gaps that require upstream confirmation
+- Unified metrics summary aligned with RD/QE output (reporting_week, stream_id, owner, metric_name, baseline, target, current, trend, evidence_links, blocker, veto_status)
+
+## 指標對齊責任（新增）
+
+文件交付若涉及驗收結果，必須對齊 RD/QE 的統一指標格式，不得自建欄位命名。
+
+若指標欄位缺失或 evidence_links 無法追溯，文件須標註待補件，不可包裝為完成狀態。
 
 ## 文件分層原則
 
