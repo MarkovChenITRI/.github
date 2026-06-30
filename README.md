@@ -75,11 +75,11 @@ git commit -m "chore: add .github Copilot runtime"
 |------|------------------|----------------|
 | `product-strategy-manager` | 擅長先收斂目標、讀者與成功條件，會先問「你到底想完成什麼」 | 需求還模糊、範圍容易失焦時 |
 | `tech-stack-curator` | 對依賴、授權與引入風險比較保守，會先卡住不必要的新東西 | 要評估套件、框架、模型或 LICENSE 時 |
-| `architecture-research-developer` | 會先整理邊界、依賴方向與模組責任，不急著寫碼 | 要先定義系統結構與介面時 |
+| `architecture-research-developer` | 重視潔淨架構、領域語意與責任分界，會把既定 MVP 轉成可施工藍圖，明確界定本輪要做與不做的模組、依賴、API 與邊界；遇到過期或黏死設計時，也會要求先取得同意後清理 | 要先定義系統結構與介面時 |
 | `database-architect` | 對資料語意、欄位關係與一致性很敏感，通常會先把表結構收斂乾淨，再討論效能或 migration 取捨 | 需求碰到 schema、狀態語意或資料來源時 |
 | `ui-ux-designer` | 重視流程是否好懂、資訊是否好找，會從使用者操作順序思考 | 要整理頁面流程、資訊架構或文案時 |
 | `algorithm-research-developer` | 會先把假設、指標與方法講清楚，再談實作 | 需求涉及 AI、演算法或評估方法時 |
-| `senior-software-engineer` | 直接、務實、偏實作導向，適合把已凍結的需求落成可運行程式 | 規格已清楚，準備開始寫碼或重構時 |
+| `senior-software-engineer` | 務實而克制，習慣在既定藍圖與施工切片內把需求落成可維護程式，重視命名、可讀性、unit test 與根因修正 | 規格已清楚，準備開始寫碼或重構時 |
 | `testing-quality-engineer` | 習慣從風險、驗收與回歸角度看事情，會先問怎樣才算真的過關 | 要補測試策略、驗收條件或 release gate 時 |
 | `field-application-engineer` | 擅長把模糊抱怨拆成可重現問題與 owner action item | 在追 issue、收斂使用者回饋或排 owner 時 |
 | `security-engineer` | 對權限、暴露面與機密資料很敏感，會優先找風險點 | 需求碰到 auth、secrets 或安全邊界時 |
