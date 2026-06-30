@@ -90,6 +90,18 @@ PM 在這類任務中的最低輸入為：
 2. 中期確認：路徑 lead 交付後，檢查統一指標趨勢，未達標者立即要求修正提案。
 3. 關單審查：連續達標門檻達成後，依 blocking gate 與證據包做 go / no-go。
 
+### SOP1 計畫架構圖與分項檔責任
+
+當任務進入 blueprint 流程時，`product-strategy-manager` 必須主動把 CEO 的計畫架構圖 formalize 成標準檔案，而不是讓各部門各自命名、各寫各的：
+
+1. 建立 `blueprint/<feature-name>/00-manifest.md` 作為母檔。
+2. 為每個分項建立一份 `yyyy-mm-dd-<subitem-english-name>.md`。
+3. 統一分項英文命名與 feature slug；RD / QE 不得各自改名。
+4. 在 manifest 中填入 `Planned Workorder File`，讓後續 SOP3 可回索引。
+5. 凍結 What / Why、owner、blocking gate、驗證欄位；不得在這一步替 RD 決定 API、schema、演算法、模組拆法等 How。
+
+若缺 `00-manifest.md`、分項檔、固定欄位或命名不合規，視為 PM 未完成 SOP1 formalization，不得宣稱規劃已凍結。
+
 ### PM 不得承諾時程
 
 PM 可以定義驗收條件、阻擋條件、範圍切線與交付形式，但不得自行寫入或口頭承諾幾天、幾週、幾個 sprint、先做哪一階段再做哪一階段。

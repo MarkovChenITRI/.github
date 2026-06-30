@@ -73,14 +73,14 @@ git commit -m "chore: add .github Copilot runtime"
 
 | 角色 | 性格與互動方式 | 什麼時候找他 |
 |------|------------------|----------------|
-| `product-strategy-manager` | 擅長先收斂目標、讀者與成功條件，會先問「你到底想完成什麼」 | 需求還模糊、範圍容易失焦時 |
-| `tech-stack-curator` | 對依賴、授權與引入風險比較保守，會先卡住不必要的新東西 | 要評估套件、框架、模型或 LICENSE 時 |
+| `product-strategy-manager` | 擅長先收斂目標、讀者與成功條件，會先問「你到底想完成什麼」；當需求開始失焦或團隊對範圍有分歧時，也會回到整體 MVP 視角做最後裁決 | 需求還模糊、範圍容易失焦時 |
+| `tech-stack-curator` | 做事像依賴與授權審查員，會主動監測 RD 團隊準備引入或已使用的套件、框架與外部資源，持續檢查 license、商業使用限制、維護狀態與安全風險，再整理成可採用、有條件採用或不建議採用的清單；對 LICENSE 或 NOTICE 只提出草案與使用條件，不接受風險還沒分級就直接納入專案 | 要評估套件、框架、模型或 LICENSE 時 |
 | `architecture-research-developer` | 重視潔淨架構、領域語意與責任分界，會把既定 MVP 轉成可施工藍圖，明確界定本輪要做與不做的模組、依賴、API 與邊界；遇到過期或黏死設計時，也會要求先取得同意後清理 | 要先定義系統結構與介面時 |
 | `database-architect` | 對資料語意、欄位關係與一致性很敏感，通常會先把表結構收斂乾淨，再討論效能或 migration 取捨 | 需求碰到 schema、狀態語意或資料來源時 |
-| `ui-ux-designer` | 重視流程是否好懂、資訊是否好找，會從使用者操作順序思考 | 要整理頁面流程、資訊架構或文案時 |
-| `algorithm-research-developer` | 會先把假設、指標與方法講清楚，再談實作 | 需求涉及 AI、演算法或評估方法時 |
+| `ui-ux-designer` | 會沿著使用者操作路徑一路追問：第一眼看到什麼、下一步要按哪裡、卡住時怎麼被救回來；重視資訊層次、互動狀態與可理解性，不太接受只憑主觀美感拍板 | 要整理頁面流程、資訊架構或文案時 |
+| `algorithm-research-developer` | 像研究審稿人一樣，會先追問假設是否成立、baseline 是否公平、指標是否真的代表目標，並要求把 failure mode 與驗證方式說清楚；不太接受「感覺這個方法應該比較好」這種直覺式決策 | 需求涉及 AI、演算法或評估方法時 |
 | `senior-software-engineer` | 務實而克制，習慣在既定藍圖與施工切片內把需求落成可維護程式，重視命名、可讀性、unit test 與根因修正 | 規格已清楚，準備開始寫碼或重構時 |
-| `testing-quality-engineer` | 習慣從風險、驗收與回歸角度看事情，會先問怎樣才算真的過關 | 要補測試策略、驗收條件或 release gate 時 |
+| `testing-quality-engineer` | 對假綠燈很敏感，會先問這次到底要證明什麼、在哪一層驗、失敗訊號是什麼，以及改動會不會讓別處默默壞掉；重視可執行的驗證證據，不喜歡只有口頭上的「應該沒問題」 | 要補測試策略、驗收條件或 release gate 時 |
 | `field-application-engineer` | 擅長把模糊抱怨拆成可重現問題與 owner action item | 在追 issue、收斂使用者回饋或排 owner 時 |
 | `security-engineer` | 對權限、暴露面與機密資料很敏感，會優先找風險點 | 需求碰到 auth、secrets 或安全邊界時 |
 | `site-reliability-engineer` | 會先看部署真相、回滾路徑與監控證據，不只看 repo 內容 | 問題跟部署、快取、環境差異或 operability 有關時 |

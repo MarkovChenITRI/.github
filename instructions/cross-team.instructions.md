@@ -182,13 +182,31 @@ Blueprint 資料夾最小結構：
 ```text
 blueprint/<feature-name>/
 ├── 00-manifest.md
-├── pm-<feature-name>.md
-├── rd-<feature-name>.md
-├── qe-<feature-name>.md
+├── yyyy-mm-dd-<subitem-english-name>.md
+├── yyyy-mm-dd-<subitem-english-name>.md
 └── ...
 ```
 
-每個 Blueprint 檔案的查核點沿用既有格式：Owner、完成條件、驗證方式。
+其中：
+
+1. `00-manifest.md` 是 initiative 母檔，負責期目標、計畫架構圖、分項索引與凍結線。
+2. 每個分項固定一份 `yyyy-mm-dd-<subitem-english-name>.md`，由 PM 統一命名。
+3. 每份分項檔的查核點沿用固定欄位：`Checkpoint ID | Owner | 完成條件 | 驗證方式 | 證據位置 | Blocking Gate | Signoff`。
+
+## 九、Blueprint / Issue 真相源順序
+
+導入分項規劃檔後，三類工件的真相源順序如下：
+
+1. **CEO 計畫架構圖**：商務結構真相，定義期目標、分項、依賴、資源級別與不做範圍。
+2. **`00-manifest.md`**：PM formalize 後的 initiative 索引真相，負責分項命名、owner、凍結線與索引。
+3. **分項規劃檔**：施工前規劃真相，定義該分項的查核點、交付物與驗證方式。
+4. **work order issue**：SOP3 驗收與 closure 真相，定義 blocker、證據、closure recommendation 與 PM closure summary。
+
+禁止情況：
+
+1. 用 work order issue 取代 SOP2 的 blueprint checked 填報。
+2. 在分項規劃檔內平行維護 closure state。
+3. 讓 CEO 計畫架構圖直接包含 RD 的技術 How。
 
 ## 八、CEO 核准事項總表
 

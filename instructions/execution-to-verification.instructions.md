@@ -1,6 +1,6 @@
 ---
 description: "Use when a blueprint task is in the 執行 → 驗證 stage. Define the input contract, standard output package, and acceptance gate for verifying deliverables from a user and QE perspective."
-applyTo: ".github/blueprint/05-*.md,.github/blueprint/06-*.md,.github/blueprint/07-*.md,.github/issues/*-workorder.md"
+applyTo: ".github/blueprint/05-*.md,.github/blueprint/06-*.md,.github/blueprint/07-*.md,blueprint/**/*.md,.github/issues/*-workorder.md"
 ---
 
 # Blueprint SOP3：執行到驗證
@@ -33,6 +33,42 @@ SOP3 只處理驗證，不再承接施工決策；它的作用是確認成果是
 2. FAE、QE、SRE、Usability 等 closure 相關角色，應以該 issue 內的 blocker、signoff、metrics、owner、stage 為唯一真相源，不平行維護一份 blueprint 驗收摘要。
 3. 若驗證失敗但仍屬施工缺口，回到同一份 issue 重新派工；若失敗原因是否定 blueprint 前提，才回到 SOP1 / SOP2 重開規劃。
 
+### Work Order 檔名規範
+
+1. 每份 work order issue 檔名固定格式為 `yyyy-mm-dd-<feature-english-name>-<subitem-english-name>-workorder.md`。
+2. `<subitem-english-name>` 必須與 blueprint 分項檔 `yyyy-mm-dd-<subitem-english-name>.md` 的英文名完全一致。
+3. `<feature-english-name>` 應與 `blueprint/<feature-name>/` 的 feature slug 對齊；由 PM 在 manifest 中統一定義。
+4. 禁止使用 `followup`、`new`、`latest`、`final` 這類缺乏結構語意的命名作為唯一標識。
+
+### Work Order 固定章節
+
+每份 `yyyy-mm-dd-<feature-english-name>-<subitem-english-name>-workorder.md` 至少包含以下段落，順序不可顛倒：
+
+1. 標題
+2. Metadata bullets
+3. Issue Classification
+4. Objective and Scope
+5. Frozen Input Contract
+6. 角色指派表
+7. 查核點定義表
+8. 查核點簽核表
+9. Verification Evidence
+10. Blockers and Gate Status
+11. Closure Recommendation
+12. PM Closure Summary
+
+Metadata bullets 至少包含：`Work Order ID`、`Date`、`Stream ID`、`Source Blueprint File`、`Source Checkpoint IDs`、`Current Stage`、`Next Owner`。
+
+`角色指派表` 固定欄位為：`Planner | Executor | Validator`。
+
+`查核點定義表` 必須沿用來源 blueprint 分項檔的凍結欄位；固定欄位為：`Checkpoint ID | Item | 完成條件 | 驗證方式 | 證據位置`。
+
+`查核點簽核表` 固定欄位為：`Checkpoint ID | Planner | Executor | Validator | Notes`。
+
+其中 `查核點定義表` 與來源 blueprint 分項檔必須一一對應，不得在 SOP3 另改完成條件或驗證方式；SOP3 只允許更新 `查核點簽核表` 與驗收證據。
+
+`Planner`、`Executor`、`Validator` 三欄直接表示各角色的簽核狀態；允許值固定為：`pending`、`confirmed`、`blocked`、`rejected`、`n/a`。
+
 ## CEO 與 PM 的關單輸出規則
 
 1. FAE 可以提出 closure recommendation。
@@ -52,6 +88,7 @@ SOP3 只處理驗證，不再承接施工決策；它的作用是確認成果是
 ## 完成判定
 
 1. 驗收結論可被證據支持。
-2. 阻擋項目已明確回寫到 work order issue，且 owner / stage / blocker / gate 狀態一致。
+2. 阻擋項目已明確回寫到 work order issue，且 `查核點簽核表`、blocker 紀錄與 `Current Stage` 一致。
 3. 若未通過，必須能指出下一個 owner 與下一步行動。
 4. 提交給 CEO 的輸出已被 PM 收斂為 closure summary，而不是平行證據包堆疊。
+5. work order issue 已回填 `Source Blueprint File` 與 `Source Checkpoint IDs`，且可從 `00-manifest.md` 反向索引。
