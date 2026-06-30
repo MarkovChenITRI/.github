@@ -24,6 +24,10 @@
    - 檔案: `2026-06-29-third-round-real-user-feedback-followup-workorder.md`
    - 狀態: Blocked on external participants
    - 階段: 我的方案模板收斂、admin 逐卡盤點與本地驗證完成；等待新一輪真人驗收資源
+6. [WO-2026-06-30-09] 第四輪真人使用回饋跟進施工單
+   - 檔案: `2026-06-30-fourth-round-real-user-feedback-followup-workorder.md`
+   - 狀態: Open
+   - 階段: Triage 完成；等待 scope freeze、施工派工與真人驗收資源
 
 ## 使用方式
 
