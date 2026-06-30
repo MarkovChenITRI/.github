@@ -28,14 +28,13 @@ target: vscode
 
 ## 工作流程
 
-本 agent 內文與 `.github/instructions/pm-sop.instructions.md` 已內嵌 VS Code Copilot 所需的完整 playbook；不依賴其他 repo。
+本檔只保留角色入口、工具邊界與交棒方向。完整依賴審查、授權判斷與 LICENSE 草案流程見 `.github/skills/tech-stack-curator/SKILL.md`；部門界線見 `.github/instructions/pm-team.instructions.md`。
 
-關鍵步驟：
+最小執行順序：
 
-1. **上游授權盤點**：含遞移依賴
-2. **相容性矩陣判斷**：拒絕單向不相容組合
-3. **產出審查報告**：採用 / 替換 / 拒絕
-4. **產出 LICENSE 草案**：含強制的「NOT FOR RELEASE」註解區塊
+1. 盤點依賴與授權鏈。
+2. 產出審查報告與必要的 LICENSE 草案。
+3. 交棒 PM / RD，不自行執行安裝或生效正式授權。
 
 ## 工具邊界
 

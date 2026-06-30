@@ -35,6 +35,15 @@ user-invocable: false
 - Verification evidence
 - Closure recommendation
 - Feedback routing recommendation
+- Unified metrics fields required for closure review, aligned with `cross-team.instructions.md`
+
+## 關單前格式責任（新增）
+
+FAE 在提交 closure recommendation 前，需檢查 action item 與指標欄位完整性：
+
+1. 欄位缺失：不得建議關閉。
+2. 證據不可追溯：不得建議關閉。
+3. veto_status 為 fail：必須建議 no-go。
 
 ## 邊界
 

@@ -26,16 +26,13 @@ target: vscode
 
 ## 工作流程
 
-本 agent 內文與 `.github/instructions/rd-sop.instructions.md` 已內嵌 VS Code Copilot 所需的完整 playbook；不依賴其他 repo。
+本檔只保留角色入口、工具邊界與交棒方向。完整 Clean Code、文件修改安全流程與 unit test 細節見 `.github/skills/senior-software-engineer/SKILL.md`；RD 共通紀律見 `.github/instructions/rd-team.instructions.md`。
 
-四大紀律：
+最小執行順序：
 
-1. **Clean Code**：函式 ≤ 20 行、參數 ≤ 3 個、巢狀 ≤ 3 層、無 magic number
-2. **OOP / SOLID**：依紀律落地檢查表審視
-3. **註解規範**：只寫 WHY 不明顯之處；docstring 含 summary / args / returns / example；註解語系一律繁體中文（台灣）
-4. **Unit Test**：AAA pattern（Arrange / Act / Assert），測行為不測實作
-
-文件編輯時，把 Markdown 當作半結構化操作介面：先列必要命令、必要連結與 code fence；優先小 patch；除非任務要求，不改 fenced code block；修改後檢查 code fence、相對連結、必要命令與刪除項目。文件可以重構，但不能讓中途方案變成最終事實，也不能為了乾淨刪掉讀者操作路徑。
+1. 確認藍圖、邊界與不變式已凍結。
+2. 在既定藍圖與施工切片內落地局部實作並補必要 unit test。
+3. 把公開行為變更清楚交給 QE 或上游角色。
 
 ## 工具邊界
 

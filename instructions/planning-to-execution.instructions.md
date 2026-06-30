@@ -1,0 +1,66 @@
+---
+description: "Use when a blueprint task is in the 規劃 → 執行 stage. Define the input contract, standard output package, and signoff rules for turning a frozen blueprint into concrete work orders."
+applyTo: ".github/blueprint/**/*.md,blueprint/**/*.md"
+---
+
+# Blueprint SOP2：規劃到執行
+
+SOP2 只處理把已凍結的 blueprint 變成可施工執行面，不再重新定義需求。此階段仍以 blueprint 內各負責人的查核點、checked 填報與施工簽核為主，不在此階段另開 issue 工單取代 blueprint。
+
+## 標準輸入
+
+| 項目 | 內容 |
+|------|------|
+| 已簽核 blueprint | SOP1 完成且必要查核點已定義 |
+| `00-manifest.md` | 已凍結的 initiative 級索引、分項依賴與規劃凍結線 |
+| 分項規劃檔 | 對應分項的 `yyyy-mm-dd-<subitem-english-name>.md` |
+| 施工藍圖 | 分項檔中的 `執行策略與內容規劃` 與查核點內的 `執行方法 / 施工內容` |
+| 施工相依關係 | 哪些查核點必須先成立，哪些項目可平行進行 |
+| 驗證規則 | 每項施工如何被證明完成 |
+| 變更邊界 | 哪些文件、設定、程式可以動 |
+
+若 SOP2 施工目標包含使用者文件重寫，標準輸入還必須包含 SOP1 凍結的 `Page Inventory 與寫作契約`。SOP2 owner 只能依該契約建立、重寫或暫緩頁面；不得自行新增未規劃頁、改變文件類型、把待確認內容寫成現況，或把 `draft-placeholder` / `deferred` 頁面直接定稿。
+
+SOP2 啟動前必須先執行 upstream fidelity gate：確認 Page Inventory、分項規劃檔、施工藍圖與查核點可回追到 manifest 中的 `CEO Immutable Acceptance Source` 或等價段落。若施工契約壓縮、替換、改名、合併、移除或改變 CEO 明確要求的資訊架構與最低成功標準，且沒有 CEO 同意紀錄，SOP2 狀態必須是 `blocked`，不得施工。
+
+## Blueprint 執行填報規則
+
+1. SOP2 啟動後，各負責人仍需直接在對應 blueprint 環節內完成查核點的執行、`查核點簽核表` 回填與偏差揭露。
+2. blueprint 在 SOP2 仍是執行對齊面：用來確認哪個查核點已施工、哪個角色已簽核、哪些前提仍成立，以及每個查核點是否依照凍結的施工藍圖落地。
+3. 只有進入 SOP3、需要統一驗收、blocker、closure state 與重新派工時，才轉入 `.github/issues/*.md` 的 work order issue。
+4. CEO 在 SOP2 不介入施工細節，只在有人回報 blueprint 前提失效、需外部資源或需重新裁決範圍時出場。
+
+## Blueprint 分項檔與施工對應規則
+
+1. 每個分項規劃檔都是施工前的規劃真相源，不是施工進度板。
+2. RD / QE 在 SOP2 必須直接回到對應 blueprint 分項檔的 `執行策略與內容規劃`、`查核點定義表` 與 `查核點簽核表` 完成填報，不得另外發明第二套 checklist。
+3. 若需先預告未來會進入 SOP3 的 issue 工單，應只在分項 Metadata 的 `Planned Workorder Filename` 欄位記錄預定檔名，不得提前把 issue 當成 SOP2 狀態板。
+4. 同一個分項預設對應一份 work order issue；若未來確實需要拆多份 issue，必須先在 manifest 中明示，否則視為規劃偏差。
+
+## 施工藍圖使用規則
+
+1. `執行策略與內容規劃` 是 SOP2 的主要開工依據；若沒有這段，視為 blueprint 尚未 ready。
+2. 每個查核點的實際變更都必須能回指到對應的 `執行方法 / 施工內容`，避免只回報「有改檔」卻無法解釋改動目的。
+3. 若 RD 發現 blueprint 的施工藍圖不足以安全開工，必須先回寫 blueprint 補足方法包，再繼續施工。
+4. 若施工中需要改變觸碰面、交付物型態或角色責任，必須先在 blueprint 揭露偏差；不可只在 commit 或 issue 內默默漂移。
+
+## 標準產出
+
+| 項目 | 內容 |
+|------|------|
+| 施工完成物 | 程式、文件、設定、流程的實際變更 |
+| 施工追溯 | 每個查核點對應的實際變更、觸碰面與偏差回寫 |
+| 施工確認 | blueprint 內 `查核點簽核表` 的角色簽核回填結果 |
+| 殘餘風險 | 尚未消失但已明確揭露的風險 |
+| 偏差回寫 | blueprint 內的 `查核點簽核表`、偏差說明與必要註記同步更新；若前提被推翻，再回上游重開規劃 |
+
+## 完成判定
+
+1. 每個查核點都能對應到具體檔案或程式變更。
+2. 每個查核點都能對應到 blueprint 中既有的 `執行方法 / 施工內容`，而不是施工後才回頭發明理由。
+3. 每個完成項都有對應角色的簽核回填。
+4. 若有偏差，必須先回寫對應 blueprint 的 `查核點簽核表` 與偏差說明；只有進入驗收阻塞、closure state 管理或重新派工時，才在 SOP3 開 issue 工單。
+5. 若 CEO 尚未提供真人受測管道、正式環境核准或其他人類輸入，必須在 blueprint 中明示為待決條件，不得假裝施工已可直接完成關單。
+6. 若分項檔缺少固定欄位、`執行策略與內容規劃`、檔名不符合 `yyyy-mm-dd-<subitem-english-name>.md`，或 `00-manifest.md` 無法回索引該分項，視為 SOP2 前置條件不足。
+7. 若使用者文件重寫缺少逐頁 `Page Inventory 與寫作契約`，或實際文件與該契約的路徑、文件類型、來源、待確認狀態不一致，視為 SOP2 偏差，需先回寫 blueprint 再繼續施工。
+8. 若 Page Inventory、分項檔或施工藍圖無法證明忠於 manifest 中的 CEO 明確輸入，或已知不一致卻未取得 CEO 同意，視為 SOP2 前置條件不足；必須回到 SOP1 修正 manifest 與施工契約。

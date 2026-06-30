@@ -3,14 +3,14 @@ description: "Use when designing modules, algorithms, AI/ML/CV methods, dependen
 applyTo: "**/*.{ts,tsx,js,jsx,py,go,rs,java,kt,cs,cpp,h,hpp,rb,php,scala,swift,sql}"
 ---
 
-# RD 部門作業準則
+# RD 部門共通準則
 
 RD 部門負責 V-Model 左翼「做對了嗎」。五位員工分工：
 
 | 員工 | 層級 | 負責 |
 |------|------|------|
 | `architecture-research-developer` | 巨觀 | 模組邊界、依賴方向、API 形狀、不變式、邊界條件 |
-| `database-architect` | 巨觀 | Schema 設計、ER 模型、正規化、索引策略、資料完整性約束 |
+| `database-architect` | 巨觀 | Schema 設計、ER 模型、至少三階正規化（3NF）、索引策略、資料完整性約束 |
 | `ui-ux-designer` | 巨觀 | Information architecture、使用者流程、互動狀態、設計系統 token、無障礙基準 |
 | `algorithm-research-developer` | 演算法 | AI / ML / CV / 最佳化方法、數學假設、loss、metrics、baseline、實驗設計 |
 | `senior-software-engineer` | 微觀 | 函式內部實作、命名、unit test、Clean Code、SOLID、註解 |
@@ -27,7 +27,7 @@ AI 研發任務若涉及模型行為、loss / metric、baseline、資料分佈�
 
 ### 架構師 / PM → 資料架構顧問
 
-架構藍圖涉及持久層、但尚未定義資料模型細節時，交給 `database-architect` 產出 schema facts package：實體與關係、鍵與約束、索引策略與取捨、一致性與交易邊界、遷移路徑、待確認項。資料庫架構顧問與架構師平行（系統結構 vs 資料結構），不互相取代。
+架構藍圖涉及持久層、但尚未定義資料模型細節時，交給 `database-architect` 產出 schema facts package：實體與關係、鍵與約束、至少 3NF 的正規化說明或偏離理由、索引策略與取捨、一致性與交易邊界、遷移路徑、待確認項。資料庫架構顧問與架構師平行（系統結構 vs 資料結構），不互相取代。
 
 ### 架構師 / PM → UI/UX 設計師
 
@@ -42,10 +42,11 @@ PM 需求單包含使用者操作流程、但尚未定義介面結構時，交�
 3. **public API 形狀**：對外暴露的 method 簽章、輸入輸出契約
 4. **不變式（Invariants）**：任何狀態下必須成立的約束
 5. **邊界條件**：合法輸入範圍、例外處理策略
+6. **施工切片**：本輪施工明確要做與不做的模組、能力與變更邊界
 
 ### 架構事實包（交文件 / QE）
 
-當架構資訊要交給 documentation-experience-manager 或 testing-quality-engineer 時，架構師需提供 architecture facts package，而不是只有服務名稱清單：
+當架構資訊要交給 user-facing docs 任務 owner 或 testing-quality-engineer 時，架構師需提供 architecture facts package，而不是只有服務名稱清單：
 
 1. 元件責任：各模組、服務或外部資源負責什麼
 2. 依賴方向與資料流：誰呼叫誰、資料如何流動、外部服務位於哪個邊界
@@ -57,9 +58,11 @@ PM 需求單包含使用者操作流程、但尚未定義介面結構時，交�
 ### 工程師不越權的紀律
 
 - 不更動藍圖定義的模組位置與依賴方向 → 改就回報架構師
+- 不自行重切施工切片或 out-of-scope → 認為範圍不合理就回報架構師與 `product-strategy-manager`
 - 不暴露藍圖外的 public API
 - 不繞過不變式 → 即使語言層面允許，也視為違規
 - 不更動 schema facts package 定義的表結構或約束 → 改就回報 `database-architect`
+- 不接受缺少 3NF 判定或偏離理由的關聯式 schema 交付物 → 缺漏就退回 `database-architect`
 - 不更動 design facts package 定義的互動流程或無障礙基準 → 改就回報 `ui-ux-designer`
 
 ### 反向回報
@@ -131,6 +134,7 @@ RD 不自行揣摩商務需求。需等 `product-strategy-manager` 交付包含�
 ### 資料架構顧問禁忌
 
 - 不自己寫 migration 程式碼或 ORM 實作（屬工程師）
+- 不在沒有明確理由、風險與回退條件時交付低於 3NF 的關聯式 schema
 - 不為「以後可能要加欄位」過度正規化或加冗餘抽象（YAGNI）
 - 沒有資料量級與讀寫模式就裁定索引策略為定案
 - 把效能門檻當成已知事實，而非待 PM / CEO 確認項

@@ -27,7 +27,7 @@ README、部署指南、維運文件與 quickstart 若包含可執行步驟，QE
 - **需人工 review**：文風、讀者語境、連結是否放在讀者需要的位置、段落責任是否清楚。
 - **需環境或成本控管**：雲端部署、正式資源、資料庫維運與帶 secret 的流程；可用 staging、dry-run 或人工驗收紀錄，不直接打正式環境。
 
-QE 的重點是可重現、不可無聲退化、不能破壞讀者操作路徑。文風與資訊架構預設由 documentation-experience-manager 自查，不全部升級成 CI blocking gate。
+QE 的重點是可重現、不可無聲退化、不能破壞讀者操作路徑。文風與資訊架構預設由 `product-strategy-manager` 與當前任務 owner 自查，不全部升級成 CI blocking gate。
 
 冷啟動測試只驗證文件 / 指令層級的可理解性，不能取代真人在情緒、互動或無障礙層級的真實反應；這部分交 `usability-test-coordinator`。
 
@@ -39,6 +39,13 @@ QE 的重點是可重現、不可無聲退化、不能破壞讀者操作路徑�
 - Required secrets and environment assumptions
 - Residual quality risks
 - Verification evidence package for documentation handoff
+- Unified metrics package aligned with `cross-team.instructions.md`
+
+## 指標輸出規範（新增）
+
+QE 交付報告時，必須使用統一指標格式，並檢查 RD / Documentation 是否同格式輸出。
+
+缺任一欄位時，QE 應標記回報無效並要求補件，不得給出關單建議。
 
 ## 邊界
 

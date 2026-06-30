@@ -2,7 +2,7 @@
 description: "Use when recruiting new skills/agents, distilling persona from source material, scoring existing skills, auditing skill-vs-reality gaps, or writing to feedback/session-log.md. Defines HR department recruitment workflow (Nuwa) and quality audit cycle (Darwin)."
 ---
 
-# HR 部門作業準則
+# HR 部門共通準則
 
 HR 部門的操作對象是公司內部的其他員工。負責「招募」（蒸餾新 skill / agent）與「考核」（評估既有 skill 的品質與落差）。
 
@@ -57,7 +57,7 @@ HR 部門的操作對象是公司內部的其他員工。負責「招募」（�
   - [ ] ≤ 500 行（超過則拆 `references/`）
   - [ ] 已標註誠實邊界（這個 skill 做不到什麼）
   - [ ] 同步建立 `test-prompts.json`（供 `skill-quality-auditor` 考核）
-- [ ] 若新增部門或既有部門 SOP 需更新：`.github/instructions/<dept>-sop.instructions.md`
+- [ ] 若新增部門或既有部門 SOP 需更新：`.github/instructions/<dept>-team.instructions.md`
   - [ ] 內文足以獨立說明工作流、邊界與交接，不依賴其他 repo
 
 ## 二、考核流程
@@ -100,6 +100,17 @@ HR 部門的操作對象是公司內部的其他員工。負責「招募」（�
 3. 要求同仁指出「成立、過度擴張、不精確、需 CEO 裁決」四類結果，並給出可落地建議。
 4. HR 彙整後必須明列原結論的「保留 / 修正 / 撤回」，不得把單案經驗直接升級為通用規則。
 5. 只有經交叉審查後仍成立的結論，才可進入 skill / agent / instruction 校正提案。
+
+### 新治理工件審查規則
+
+當組織新增 blueprint、manifest、workorder 或其他跨部門前置工件格式時，HR 的審查重點不是替各部門寫內容，而是檢查這些新格式是否製造治理風險：
+
+1. 是否造成 PM 越權下到 RD / QE 的 How。
+2. 是否與既有 blueprint、checked、workorder issue 形成重複真相源。
+3. 是否要求多個部門各自維護同一份狀態欄位。
+4. 是否讓檔名、欄位或模板失去可索引性。
+
+若上述任一項成立，HR 應建議退回調整流程，而不是直接固化成 instruction。
 
 ### 落差紀錄寫入規範
 

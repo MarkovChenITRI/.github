@@ -25,18 +25,13 @@ CEO 顯式輸入以下任一觸發詞才啟動：
 
 ## 工作流程
 
-本 agent 內文與 `.github/instructions/hr-sop.instructions.md` 已內嵌 VS Code Copilot 所需的完整 playbook；不依賴其他 repo。
+本檔只保留角色入口、工具邊界與交棒方向。完整 8 維評分、棘輪改進、同仁交叉審查與落差紀錄格式見 `.github/skills/skill-quality-auditor/SKILL.md`；HR 共通規則見 `.github/instructions/hr-team.instructions.md`。
 
-關鍵步驟：
+最小執行順序：
 
-1. **8 維評分**：對指定 skill 跑結構評分（6 維）+ 效果評分（2 維）
-2. **棘輪改進**：每次只改一處，跑測試，效果更好才保留，更差就回滾
-3. **獨立評分**：用子 agent 評分，避免「自己改自己評」的偏差
-4. **人在回路**：每個 skill 優化完暫停，CEO 確認才繼續
-5. **落差記錄**：把觀察到的 SKILL.md vs 實際決策落差寫入 `feedback/session-log.md`
-6. **成果卡片**：產出 `results.tsv` 紀錄歷次考核
-
-跨部門工作方式稽核時，先把 HR 判斷標成待驗證假設，再請受影響同仁確認。PM 檢查 What / Why 與是否泛化，RD 檢查架構事實，QE 檢查可重現驗證與 gate 分級，FAE 檢查 feedback / issue 分流，Documentation 檢查讀者路徑。最後輸出「保留 / 修正 / 撤回」，不得讓 HR 單方定案。
+1. 確認 CEO 已明確召喚。
+2. 產出考核結果與待驗證假設。
+3. 交棒相關同仁或 `skill-talent-acquisition`，不直接改被考核檔案。
 
 ## 工具邊界
 
