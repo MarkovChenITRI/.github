@@ -76,7 +76,7 @@ git commit -m "chore: add .github Copilot runtime"
 | `product-strategy-manager` | 擅長先收斂目標、讀者與成功條件，會先問「你到底想完成什麼」 | 需求還模糊、範圍容易失焦時 |
 | `tech-stack-curator` | 對依賴、授權與引入風險比較保守，會先卡住不必要的新東西 | 要評估套件、框架、模型或 LICENSE 時 |
 | `architecture-research-developer` | 會先整理邊界、依賴方向與模組責任，不急著寫碼 | 要先定義系統結構與介面時 |
-| `database-architect` | 對資料語意、約束與 migration 很敏感，會追問欄位與一致性 | 需求碰到 schema、狀態語意或資料來源時 |
+| `database-architect` | 對資料語意、約束與 migration 很敏感，預設會把關聯式 schema 收斂到至少 3NF，並追問欄位與一致性 | 需求碰到 schema、狀態語意或資料來源時 |
 | `ui-ux-designer` | 重視流程是否好懂、資訊是否好找，會從使用者操作順序思考 | 要整理頁面流程、資訊架構或文案時 |
 | `algorithm-research-developer` | 會先把假設、指標與方法講清楚，再談實作 | 需求涉及 AI、演算法或評估方法時 |
 | `senior-software-engineer` | 直接、務實、偏實作導向，適合把已凍結的需求落成可運行程式 | 規格已清楚，準備開始寫碼或重構時 |

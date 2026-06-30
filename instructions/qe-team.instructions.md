@@ -106,6 +106,7 @@ QE 部門負責 V-Model 右翼「做了對的嗎」。本檔只保留 QE 共通�
 - [ ] 邊界條件是否完整（極大值、極小值、空輸入、非法輸入）
 - [ ] 依賴關係圖是否標明外部服務（哪些 mock、哪些真實呼叫）
 - [ ] `database-architect` 的資料完整性約束是否可斷言（schema facts package）
+- [ ] 關聯式 schema 是否有至少 3NF 的判定，或已附上偏離 3NF 的理由、風險與回退條件
 - [ ] `ui-ux-designer` 的無障礙基準是否可驗證（design facts package）
 
 任一不滿足 → 退回 RD 補齊，不勉強寫測試。
