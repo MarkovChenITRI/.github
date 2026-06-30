@@ -6,8 +6,8 @@
 - 範圍: 第四輪真人使用回饋的方案頁回歸檢查與 admin 既有模型卡認列治理
 - 來源: `.github/issues/real-user-feedback-form.md` 最新回填 + `/site-reliability-engineer` + `/usability-test-coordinator` read-only triage
 - 目前狀態: In progress
-- 目前階段: scope freeze、入口盤點、第一輪工程修正與 focused 驗證完成；等待部署真相核對與 admin 歸戶政策凍結
-- 下一位 owner: site-reliability-engineer / product-strategy-manager
+- 目前階段: scope freeze、入口盤點、方案頁第一輪修正、admin 既有模型卡治理工作流實作與 focused 驗證完成；等待部署真相核對與真人驗收資源
+- 下一位 owner: site-reliability-engineer / usability-test-coordinator / CEO
 
 ## 1) Issue Classification
 
@@ -294,9 +294,10 @@
 - baseline: `real-user feedback says the my-solutions page still looks unmodified and asks admin to recognize all existing model cards under an admin-managed workflow`
 - target: `the public-facing my-solutions entry renders the expected controls and admin can govern all existing model cards with a traceable recognition/update workflow`
 - current: `repo code already contains the expected my-solutions controls, but route/deploy truth and admin recognition policy are not yet closed`
-- trend: `flat`
+- current: `repo code already contains the expected my-solutions controls, and admin now has a projection-based legacy card governance workflow with update/audit/rollback; deploy truth and真人驗收 still remain`
+- trend: `up`
 - evidence_links: `.github/issues/real-user-feedback-form.md`, `templates/pages/workspace/solutions.html`, `static/js/my-solutions.js`, `templates/pages/admin/user_assets.html`, `utils/routes/workspace_page_routes.py`, `templates/pages/admin/model_card_publish_ops.html`, `utils/platform/monitoring_dashboard.py`, `utils/model_card/publishing.py`, `utils/routes/model_card_publish_routes.py`, `utils/db.py`
-- blocker: `route/deploy truth is not yet confirmed for the my-solutions entry, and admin model-card recognition policy has not been frozen`
+- blocker: `route/deploy truth is not yet confirmed for the my-solutions entry, and真人驗收 resources are not yet provided`
 - veto_status: `fail`
 - closure_recommendation: `no-go`
 
@@ -363,8 +364,67 @@
   - 簽核結果: `partial pass`
   - 理由: regression-check 與新治理需求已分流；但 `FB4-03` 的 admin 歸戶政策仍未凍結。
 
-### 13.6 尚未完成項目
+### 13.6 `FB4-03` admin 既有模型卡治理落地
+
+1. `ACT-05` ~ `ACT-07` 已完成本地政策落地與工程實作。
+  - 本輪採用 `admin-only inventory projection + admin 可治理但不修改 owner schema`。
+  - 不新增 `card.owner_username`，也不把 legacy card 假裝成已具正式 end-user owner。
+  - `templates/pages/admin/model_card_publish_ops.html` 在原本 publish pipeline staging 工作流內，新增「既有模型卡治理」區塊。
+  - `static/js/platform-admin.js` 新增單頁工作流控制：
+    - 載入既有 card inventory
+    - 顯示 `已回溯來源` / `legacy_unowned_card` / `資料待補`
+    - 編修可補欄位
+    - 顯示最近 audit / rollback 並可直接回退
+  - `utils/routes/model_card_publish_routes.py` 新增 admin API：
+    - `GET /api/admin/model-card-publish/inventory`
+    - `PATCH /api/admin/model-card-publish/inventory/<card_id>`
+    - `GET /api/admin/model-card-publish/inventory-audits`
+    - `POST /api/admin/model-card-publish/inventory-audits/<audit_id>/rollback`
+  - `utils/model_card/publishing.py` 新增 legacy card inventory query、update、audit listing、rollback 核心邏輯。
+
+2. `ACT-06` 的本地資料契約已落地為單一實作版本。
+  - source of truth 採 `card` 實體 + `model_publish_catalog_sync` 回溯關聯。
+  - 狀態語意如下：
+    - `已回溯來源`: card 可回溯到 publish pipeline sync
+    - `legacy_unowned_card`: card 無 publish pipeline 回溯來源，但仍納入 admin 治理 inventory
+    - `資料待補`: card 缺 `repo_url`、`license` 或 entry capability flag 等治理欄位
+  - `model_card_draft.owner_username` 與 published `card` 實體被明確區分，不再混淆成同一個 owner 語意。
+
+3. `ACT-08` 已完成最小 operability 契約。
+  - `utils/db.py` 新增 `model_card_inventory_audit` schema 與索引。
+  - 每次更新都記錄 `actor_username`、`batch_id`、`before_json`、`after_json`、`reason`。
+  - rollback 走同一份 audit truth source，並把 rollback 自身寫回 audit。
+
+4. `ACT-09` 已完成 focused gate。
+  - `tests/test_model_card_publishing.py` 新增 legacy card inventory 的 list / update / audit parse / rollback 測試。
+  - `tests/test_model_card_publish_routes.py` 新增 admin inventory / audit / rollback route 測試。
+  - `tests/test_solution_template.py` 新增 `model_card_publish_ops` governance hook contract。
+  - 本地驗證結果：
+    - `pytest tests/test_model_card_publishing.py -q` → `42 passed`
+    - `pytest tests/test_model_card_publish_routes.py -q` → `34 passed`
+    - `pytest tests/test_solution_template.py tests/test_model_card_publish_routes.py -q` → `66 passed`
+  - 編輯後檢查結果：
+    - `utils/model_card/publishing.py`: no errors
+    - `utils/routes/model_card_publish_routes.py`: no errors
+    - `templates/pages/admin/model_card_publish_ops.html`: no errors
+    - `static/js/platform-admin.js`: no errors
+
+### 13.7 更新後階段性簽核
+
+1. `senior-software-engineer`
+  - 簽核結果: `pass (local)`
+  - 理由: `FB4-03` 的 projection 型治理工作流、可補欄位更新、audit、rollback 與 focused tests 已完成。
+2. `site-reliability-engineer`
+  - 簽核結果: `partial pass`
+  - 理由: 本地 operability 契約已落地，但 `/my-solutions` 的對外部署真相與 cache / asset 狀態仍待正式環境核對。
+3. `testing-quality-engineer`
+  - 簽核結果: `partial pass`
+  - 理由: `FB4-03` focused gate 已補齊；但真人驗收與正式環境 gate 尚未完成。
+4. `product-strategy-manager`
+  - 簽核結果: `pass (implementation scope)`
+  - 理由: 本輪已用最小可維護政策落地為 `admin-only inventory projection`，避免錯誤引入 schema-level owner 假象。
+
+### 13.8 尚未完成項目
 
 1. `ACT-02` 尚缺正式環境部署真相核對。
-2. `ACT-05` ~ `ACT-09` 尚未開始，因為 `FB4-03` 仍缺 PM 的 admin 歸戶政策裁決與資料契約凍結。
-3. `ACT-10A` / `ACT-10B` 尚未開始，仍需 CEO 提供真人驗收資源。
+2. `ACT-10A` / `ACT-10B` 尚未開始，仍需 CEO 提供真人驗收資源。
