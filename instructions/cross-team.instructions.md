@@ -28,19 +28,26 @@ CEO 不應直接接收多份平行證據包做技術仲裁。SOP3 的最終對 C
 
 | SOP | 真相源 | 責任重點 | 對應檔案 |
 |-----|--------|---------|---------|
-| SOP1 | blueprint | 把需求外部化為可交接的規劃包與查核點 | `.github/instructions/start-to-planning.instructions.md` |
-| SOP2 | blueprint | 依 blueprint 完成 checked 填報、施工簽核與偏差揭露 | `.github/instructions/planning-to-execution.instructions.md` |
+| SOP1 | blueprint | 把需求外部化為可交接的規劃包、可施工的方法包與查核點 | `.github/instructions/start-to-planning.instructions.md` |
+| SOP2 | blueprint | 依 blueprint 的施工藍圖完成執行、checked 填報、施工簽核與偏差揭露 | `.github/instructions/planning-to-execution.instructions.md` |
 | SOP3 | `.github/issues/*-workorder.md` | 集中管理驗收證據、blocker、closure state、重新派工 | `.github/instructions/execution-to-verification.instructions.md` |
 
 請只在需要的階段載入對應 instruction，不要同時混入其他兩段。
 
 ### Blueprint 與 Work Order 的分工
 
-1. blueprint 負責需求、前提、查核點與施工簽署。
+1. blueprint 負責需求、前提、施工藍圖、查核點與施工簽署。
 2. work order issue 負責驗收、blocker、`veto_status`、closure recommendation 與重新派工。
 3. SOP2 不得提前用 issue 取代 blueprint 的 checked 填報。
 4. SOP3 不得把 closure state 反向散寫回 blueprint 當成第二份狀態板。
 5. 只有當驗收或施工結果否定 blueprint 原始前提時，才回到 blueprint 重開規劃。
+
+### 施工藍圖責任鏈
+
+1. PM 在 SOP1 不負責寫程式實作，但必須把每個分項整理成下游可執行的施工藍圖，而不是只留下需求口號。
+2. RD 在 SOP1 凍結前若已被拉入規劃，必須補足會影響開工判定的執行方法、觸碰面、交付物與依賴，避免 SOP2 才臨時發明施工路徑。
+3. QE 在 SOP1 凍結前必須確認驗證方式能對應到已規劃的施工內容；若驗證無法對應施工方法，視為 blueprint 尚未 ready。
+4. SOP2 允許 RD 依現場狀況微調實作技巧，但不得脫離 blueprint 已凍結的施工藍圖；若需要改變施工內容、觸碰面、交付物型態或角色責任，必須先回寫 blueprint。
 
 ### 簽核原則
 
@@ -59,11 +66,20 @@ CEO 不應直接接收多份平行證據包做技術仲裁。SOP3 的最終對 C
 | From | To | 交付物 | 觸發時機 |
 |------|----|--------|---------|
 | CEO | PM | 商務願景、模糊需求、外部訊號、不可變更限制 | 啟動新需求 |
-| PM | RD | 問題陳述、驗收標準、out of scope、交付形式 | blueprint 進入規劃 |
-| RD | QE | 可測 API / 邊界條件 / 不變式 / operability 前提 | 進入驗收設計 |
+| PM | RD | 問題陳述、驗收標準、out of scope、交付形式、施工藍圖骨架 | blueprint 進入規劃 |
+| RD | QE | 可測 API / 邊界條件 / 不變式 / operability 前提、施工內容與變更面 | 進入驗收設計 |
 | GitHub Issue / 使用者回報 | FAE | 外部問題、log、環境資訊、重現線索 | issue 開啟或使用者回報 |
 | PM | CEO | closure summary（基於 issue 證據整理） | SOP3 收斂後 |
 | tech-stack-curator | CEO | LICENSE 草案（含 NOT FOR RELEASE 註記） | 草案產出後 |
+
+### Blueprint Handoff Package 最低契約
+
+每個分項在宣告 `Ready for SOP2` 前，必須至少交出以下四類資訊；缺任一類都不應進入開工：
+
+1. 問題與範圍：問題陳述、預期效益、in scope、out of scope。
+2. 施工藍圖：執行方法、預計觸碰面、交付物、相依與 blocking gate。
+3. 驗證契約：每個查核點的完成條件、驗證方式、證據位置。
+4. 角色責任：planner、executor、validator 與需要 CEO 補的人類資源。
 
 ### 文件交付 Handoff Package
 
@@ -191,7 +207,7 @@ blueprint/<feature-name>/
 
 1. `00-manifest.md` 是 initiative 母檔，負責期目標、計畫架構圖、分項索引與凍結線。
 2. 每個分項固定一份 `yyyy-mm-dd-<subitem-english-name>.md`，由 PM 統一命名。
-3. 每份分項檔的查核點沿用固定欄位：`Checkpoint ID | Owner | 完成條件 | 驗證方式 | 證據位置 | Blocking Gate | Signoff`。
+3. 每份分項檔的查核點沿用固定欄位：`Checkpoint ID | Owner | 完成條件 | 預期效益 | 執行方法 / 施工內容 | 驗證方式 | 證據位置 | Blocking Gate | Signoff`。
 
 ## 九、Blueprint / Issue 真相源順序
 
@@ -199,7 +215,7 @@ blueprint/<feature-name>/
 
 1. **CEO 計畫架構圖**：商務結構真相，定義期目標、分項、依賴、資源級別與不做範圍。
 2. **`00-manifest.md`**：PM formalize 後的 initiative 索引真相，負責分項命名、owner、凍結線與索引。
-3. **分項規劃檔**：施工前規劃真相，定義該分項的查核點、交付物與驗證方式。
+3. **分項規劃檔**：施工前規劃真相，定義該分項的施工藍圖、查核點、交付物與驗證方式。
 4. **work order issue**：SOP3 驗收與 closure 真相，定義 blocker、證據、closure recommendation 與 PM closure summary。
 
 禁止情況：

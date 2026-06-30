@@ -5,7 +5,7 @@ applyTo: ".github/blueprint/README.md,.github/blueprint/01-*.md,blueprint/**/00-
 
 # Blueprint SOP1：開始到規劃
 
-SOP1 只處理把需求變成可施工 blueprint 的前半段，不承接施工細節，也不承接驗收細節。CEO 在這一段必須先提供商務真相與計畫架構圖；`product-strategy-manager` 再把它 formalize 成可交接的 manifest 與分項規劃檔，不直接下到 RD 的技術 How。
+SOP1 只處理把需求變成可施工 blueprint 的前半段，不承接最終程式實作細節，也不承接驗收細節。CEO 在這一段必須先提供商務真相與計畫架構圖；`product-strategy-manager` 再把它 formalize 成可交接的 manifest 與分項規劃檔，不直接決定 RD 的最終程式寫法，但必須把每個分項整理成可交棒的施工藍圖。
 
 ## 標準輸入
 
@@ -25,7 +25,8 @@ SOP1 只處理把需求變成可施工 blueprint 的前半段，不承接施工�
 | 分項規劃檔 | 每個分項一份 `yyyy-mm-dd-<subitem-english-name>.md` |
 | Blueprint package | manifest + 分項規劃檔組成的可交接規劃包，不是摘要筆記 |
 | 角色 Handoff Package | PM / RD / QE / FAE / HR 對應輸出 |
-| 查核點定義 | owner、完成條件、驗證方式、簽署欄位 |
+| 查核點定義 | owner、完成條件、預期效益、執行方法、驗證方式、簽署欄位 |
+| 施工藍圖 | 每個分項的執行策略、內容規劃、觸碰面與交付物 |
 | 規劃凍結線 | 進入 SOP2 後不得任意漂移的內容 |
 
 ## CEO 在 SOP1 的責任
@@ -63,10 +64,11 @@ blueprint/<feature-name>/
 
 1. 本期目標
 2. CEO 商務真相摘要
-3. 計畫架構圖
-4. 分項索引表
-5. 規劃凍結線
-6. CEO 待提供資源
+3. 預期效益
+4. 計畫架構圖
+5. 分項索引表
+6. 規劃凍結線
+7. CEO 待提供資源
 
 分項索引表至少包含欄位：`Subitem ID | 分項名稱 | Owner | Depends On | Resource Level | Blueprint File | Planned Workorder File | Status`。
 
@@ -78,24 +80,32 @@ blueprint/<feature-name>/
 2. Metadata 表
 3. 角色指派表
 4. 問題陳述與分項目標
-5. In Scope
-6. Out of Scope
-7. 前置依賴與輸入契約
-8. 交付物清單
-9. 查核點定義表
-10. 查核點簽核表
-11. CEO 待提供資源
-12. 風險與待確認事項
+5. 預期效益
+6. In Scope
+7. Out of Scope
+8. 前置依賴與輸入契約
+9. 執行策略與內容規劃
+10. 交付物清單
+11. 查核點定義表
+12. 查核點簽核表
+13. CEO 待提供資源
+14. 風險與待確認事項
 
 Metadata 表至少包含欄位：`Subitem ID | Parent Initiative | Depends On | Planned Workorder Filename`。
 
 `角色指派表` 固定欄位為：`Planner | Executor | Validator`。
 
-`查核點定義表` 固定欄位為：`Checkpoint ID | Item | 完成條件 | 驗證方式 | 證據位置`。
+### `執行策略與內容規劃` 固定內容
+
+每份分項規劃檔都必須有一段可交接的施工藍圖，至少包含以下欄位：`Workstream | Owner | 執行方法 / 施工內容 | 觸碰面 | 交付物 | 依賴 / Blocking Gate | 完成訊號`。
+
+此段的目的是讓 RD / QE 在 SOP2 開工時，不需再從對話或零散訊息回推「到底要做什麼、改哪裡、交什麼」；它定義的是可施工的方法包，不是最終程式碼細節。
+
+`查核點定義表` 固定欄位為：`Checkpoint ID | Item | 完成條件 | 預期效益 | 執行方法 / 施工內容 | 驗證方式 | 證據位置`。
 
 `查核點簽核表` 固定欄位為：`Checkpoint ID | Planner | Executor | Validator | Notes`。
 
-其中 `查核點定義表` 屬於 SOP1 凍結欄位，供 PM 在規劃完成前寫定；`查核點簽核表` 屬於 SOP2 / SOP3 回填欄位，只允許對應角色依執行與驗收進度更新。
+其中 `執行策略與內容規劃` 與 `查核點定義表` 都屬於 SOP1 凍結欄位，供 PM 協調 RD / QE 在規劃完成前寫定；`查核點簽核表` 屬於 SOP2 / SOP3 回填欄位，只允許對應角色依執行與驗收進度更新。
 
 `Planner`、`Executor`、`Validator` 三欄直接表示各角色的簽核狀態；允許值固定為：`pending`、`confirmed`、`blocked`、`rejected`、`n/a`。
 
@@ -103,7 +113,8 @@ Metadata 表至少包含欄位：`Subitem ID | Parent Initiative | Depends On | 
 
 1. `00-manifest.md` 已存在，且可索引所有分項規劃檔。
 2. 每個分項都已建立對應的 `yyyy-mm-dd-<subitem-english-name>.md`。
-3. 每個查核點都能由 `查核點定義表` 追到完成條件與驗證方式，並由 `查核點簽核表` 追到各角色簽核狀態。
-4. 規劃內容已可被 RD / QE 逐項接手，不再是口語摘要。
-5. CEO 輸入已被 PM 收斂成可驗證條件，而不是停留在願景口號。
-6. 若缺計畫架構圖、manifest 或分項規劃檔，視為 SOP1 尚未完成，不得進入 SOP2。
+3. 每個查核點都能由 `查核點定義表` 追到完成條件、預期效益、執行方法與驗證方式，並由 `查核點簽核表` 追到各角色簽核狀態。
+4. 每個分項都已有 `執行策略與內容規劃`，可讓 RD / QE 直接接手開工，而不需再從對話回推施工方法。
+5. 規劃內容已可被 RD / QE 逐項接手，不再是口語摘要。
+6. CEO 輸入已被 PM 收斂成可驗證條件，而不是停留在願景口號。
+7. 若缺計畫架構圖、manifest、分項規劃檔或施工藍圖，視為 SOP1 尚未完成，不得進入 SOP2。

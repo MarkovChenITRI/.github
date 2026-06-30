@@ -5,8 +5,8 @@
 - Feature Name: `hardware-environment-support-page`
 - Date: `2026-06-30`
 - Initiative Owner: `product-strategy-manager`
-- Current Stage: `SOP2 施工與證據回填完成，待 SOP3 驗證收尾`
-- Planned Workorder File: `TBD in SOP3`
+- Current Stage: `SOP3 驗證完成，詳見對應 workorder`
+- Planned Workorder File: `2026-06-30-hardware-environment-support-page-markdown-content-governance-workorder.md`
 
 ## CEO 計畫架構圖（PM Formalized）
 
@@ -42,6 +42,12 @@ hardware detail 頁目前把真正影響部署成功率的系統前置條件降�
 4. 已完成的舊議題不再混入此次 initiative 分項。
 5. RD / QE 能直接依本 manifest 與分項檔開工，不需再從對話回推需求。
 
+## Expected Benefits
+
+1. 把真正影響部署成功率的環境前置準備從次要資源卡片提升為主要入口，降低模型開發者與部署者的找路成本。
+2. 建立平台內一致的裝置級支援文件入口，減少因宿主機環境不一致造成的部署失敗、驗證偏差與重複支援成本。
+3. 讓內容維護、前台導覽與後續驗收都以同一套命名與資訊架構對齊，降低跨 PM、RD、QE 的返工。
+
 ## Out Of Scope
 
 1. 不決定資料表、API、編輯器框架、Markdown parser、權限實作。
@@ -66,7 +72,7 @@ hardware detail 頁目前把真正影響部署成功率的系統前置條件降�
 | Subitem | File | Owner | Delivery Form | Planned Workorder File |
 | --- | --- | --- | --- | --- |
 | IA and naming freeze | `2026-06-30-information-architecture-and-naming.md` | PM / UI-UX | 命名、導覽定位、使用者入口凍結 | `TBD` |
-| Markdown content governance | `2026-06-30-markdown-content-governance.md` | PM / RD / FAE | 文件治理邊界、內容角色、平台責任凍結 | `TBD` |
+| Markdown content governance | `2026-06-30-markdown-content-governance.md` | PM / RD / FAE | 文件治理邊界、內容角色、平台責任凍結 | `2026-06-30-hardware-environment-support-page-markdown-content-governance-workorder.md` |
 | Implementation start gate | `2026-06-30-implementation-start-gates.md` | PM / RD / QE | 開工前 blocking gate 與驗收入口凍結 | `TBD` |
 
 ## 規劃凍結線
@@ -90,4 +96,4 @@ hardware detail 頁目前把真正影響部署成功率的系統前置條件降�
 1. Hardware detail 主入口已收斂為 `Overview` 與 `環境安裝與支援`，`Specifications` 已回收在 Overview 區塊內，未刪除內容。
 2. 平台已落地裝置級 Markdown 原文維護與前台渲染：`utils/hardware/markdown_support.py`、`utils/hardware/__init__.py`、`templates/pages/hardware/detail.html`、`static/js/hardware-detail.js`。
 3. 文件與測試已同步更新：`docs/platform/uxui_architecture.md`、`tests/test_hardware_products.py`、`tests/test_solution_template.py`。
-4. focused validation 已通過：`python -m pytest tests/test_hardware_products.py tests/test_solution_template.py -q` → `70 passed`.
+4. focused validation 已通過：`python -m pytest tests/test_hardware_products.py tests/test_solution_template.py -q` → `72 passed`.
