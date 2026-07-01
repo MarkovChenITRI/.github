@@ -113,6 +113,17 @@ HR 部門的操作對象是公司內部的其他員工。負責「招募」（�
 
 若上述任一項成立，HR 應建議退回調整流程，而不是直接固化成 instruction。
 
+### 問責回合治理審查
+
+當 HR 檢討 skill / agent / instruction 是否失靈時，必須額外檢查：
+
+1. 規則是否只存在文件文字，沒有被接成實際 gate。
+2. owner 是否把 `評估 / 檢討 / 問責` 回合誤轉成 `編修` 回合。
+3. 已標示 `frozen` 或定稿的內容，是否仍缺少跨部門共同承認的 rewrite stop rule。
+4. 相關 SOP、instruction、skill 是否對 `Rewrite Permission State` 有一致定義，而不是只在單一檔案出現。
+
+若答案為是，HR 應優先要求補 workflow gate，而不是只要求 owner「下次注意」。
+
 ### 落差紀錄寫入規範
 
 寫入 `feedback/session-log.md` 的標準格式：

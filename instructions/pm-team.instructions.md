@@ -82,6 +82,8 @@ PM 在這類任務中的最低輸入為：
 
 若缺這四項，RD / QE / 當前任務 owner 不得自行腦補成最終對外表達。
 
+若使用者或 CEO 已明示某段、某頁或某組頁面內容為定稿，PM 還必須額外凍結 `Rewrite Permission State` 與可追溯原文來源；在 PM 重新解凍前，任何 owner 都不得把 review、問責或判定問題私自轉成重寫任務。
+
 ### 跨頁文件重寫 Hard Gate
 
 符合下列任一條件，`product-strategy-manager` 必須先凍結 section-level 契約，當前任務 owner 才可開始正式出稿：
@@ -101,6 +103,8 @@ PM 在這類任務中至少要凍結下列工件：
 6. `Deferred Claims List`
 
 若缺上述任一工件，或 PM / RD / QE 來源尚未齊備，當前任務 owner 只能產出 `draft-placeholder`、`deferred` 或等價草稿，不得寫成定稿事實，也不得宣稱該 section 已完成。
+
+若當前回合的使用者訊號屬於 `評估`、`檢討` 或 `問責`，PM 的責任是先收斂判定與 reader contract，不是默許 owner 直接改稿；未獲使用者明確授權前，不得把這類回合視為 `open-for-rewrite`。
 
 ## 二點五、PM 觸發式執行責任
 

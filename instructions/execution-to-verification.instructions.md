@@ -18,6 +18,8 @@ SOP3 只處理驗證，不再承接施工決策；它的作用是確認成果是
 | 證據素材 | 測試結果、log、截圖、錄影、重現步驟、連結 |
 | 風險清單 | 已知但尚未修正的限制與缺口 |
 
+若驗收對象包含使用者文件，SOP3 還必須驗證 `Rewrite Permission State` 與實際變更一致：`frozen` 內容不得被當成本輪施工成果；review / 問責回合中的判定回覆也不得被包裝成已授權改稿。
+
 ## 標準產出
 
 | 項目 | 內容 |
@@ -95,3 +97,4 @@ Metadata bullets 至少包含：`Work Order ID`、`Date`、`Stream ID`、`Source
 4. 若未通過，必須能指出下一個 owner 與下一步行動。
 5. 提交給 CEO 的輸出已被 PM 收斂為 closure summary，而不是平行證據包堆疊。
 6. work order issue 已回填 `Source Blueprint File` 與 `Source Checkpoint IDs`，且可從 `00-manifest.md` 反向索引。
+7. 若文件驗收範圍內存在 `frozen` 內容被未授權改寫、或 review / accountability turn 被誤轉成 rewrite turn，驗收結論必須至少標記為 process failure，不得直接給通過。

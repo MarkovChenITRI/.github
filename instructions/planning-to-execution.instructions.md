@@ -21,6 +21,8 @@ SOP2 只處理把已凍結的 blueprint 變成可施工執行面，不再重新�
 
 若 SOP2 施工目標包含使用者文件重寫，標準輸入還必須包含 SOP1 凍結的 `Page Inventory 與寫作契約`。SOP2 owner 只能依該契約建立、重寫或暫緩頁面；不得自行新增未規劃頁、改變文件類型、把待確認內容寫成現況，或把 `draft-placeholder` / `deferred` 頁面直接定稿。
 
+若 `Rewrite Permission State` 為 `frozen`，SOP2 owner 只能補證據、風險、批註或待確認事項，不得改寫原文；若當前工作回合是審稿、問責或判定問題，也不得藉 SOP2 施工名義直接改稿。
+
 SOP2 啟動前必須先執行 upstream fidelity gate：確認 Page Inventory、分項規劃檔、施工藍圖與查核點可回追到 manifest 中的 `CEO Immutable Acceptance Source` 或等價段落。若施工契約壓縮、替換、改名、合併、移除或改變 CEO 明確要求的資訊架構與最低成功標準，且沒有 CEO 同意紀錄，SOP2 狀態必須是 `blocked`，不得施工。
 
 ## Blueprint 執行填報規則
@@ -64,3 +66,4 @@ SOP2 啟動前必須先執行 upstream fidelity gate：確認 Page Inventory、�
 6. 若分項檔缺少固定欄位、`執行策略與內容規劃`、檔名不符合 `yyyy-mm-dd-<subitem-english-name>.md`，或 `00-manifest.md` 無法回索引該分項，視為 SOP2 前置條件不足。
 7. 若使用者文件重寫缺少逐頁 `Page Inventory 與寫作契約`，或實際文件與該契約的路徑、文件類型、來源、待確認狀態不一致，視為 SOP2 偏差，需先回寫 blueprint 再繼續施工。
 8. 若 Page Inventory、分項檔或施工藍圖無法證明忠於 manifest 中的 CEO 明確輸入，或已知不一致卻未取得 CEO 同意，視為 SOP2 前置條件不足；必須回到 SOP1 修正 manifest 與施工契約。
+9. 若 `frozen` 內容被未授權改寫，或 review / 問責回合被私自轉成 rewrite 回合，視為 SOP2 治理違規；必須先停工、回寫偏差並重新確認 rewrite permission。

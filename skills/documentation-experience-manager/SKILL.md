@@ -35,6 +35,24 @@ user-invocable: false
 - `Source-of-Truth Map`
 - `Deferred Claims List`
 
+若使用者或 CEO 已明示某頁、某段或某組頁面內容為定稿，還必須額外凍結：
+
+- `Rewrite Permission State`：`open-for-rewrite` 或 `frozen`
+- `Frozen Source Text` 或可追溯的已同意原文位置
+
+`Rewrite Permission State` 未明確標成 `open-for-rewrite` 時，只能做評估、判定、補充風險與提出改法，不得直接改字。
+
+## 編輯前 Gate
+
+在任何正式編輯前，先逐項確認：
+
+1. 這一輪是 `編修`，還是 `評估 / 檢討 / 問責`？若不是明確 `編修`，停止編輯。
+2. 使用者是否已把當前段落標成定稿、不要亂改或先不要動內容？若是，停止編輯。
+3. 使用者此刻是在問 `是否合格 / 是否偏題 / 為什麼這樣做` 嗎？若是，先回答判定與理由，不得先改稿。
+4. 我是否已先回答使用者的問題本身，而不是把問題偷換成改稿需求？若否，先回答再說。
+
+以上任一題不通過，就停在分析與回覆，不得進入編輯。
+
 ## 寫中檢查
 
 - 每一頁只有一個主要讀者；其他角色只以交接、分流或參考入口出現。
@@ -103,3 +121,5 @@ user-invocable: false
 - 文件承諾目前 runtime 沒有的 agent、skill、instruction 或 command。
 - 把 PR / commit 歷程寫進正式文件。
 - 只靠關鍵字掃描定位殘留詞就視為修正完成，沒有先完整閱讀目標頁與相關讀者路徑。
+- 把 review / accountability turn 誤判成 rewrite turn，先改稿再回頭解釋。
+- 使用者已說定稿，仍以「我覺得更好」為由重寫既有文字。

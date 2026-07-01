@@ -40,9 +40,11 @@ CEO 已明確提供的原始要求、功能域名稱、巢狀資訊架構、最�
 
 ### 使用者文件重寫 blueprint 的額外產出
 
-若 initiative 目標是重寫 README、docs、Pages 文件、維運手冊、developer site 或任何使用者可見文件，SOP1 除一般 blueprint 產出外，還必須在 manifest 或導覽治理分項中凍結一份 `Page Inventory 與寫作契約`，至少包含欄位：`Page ID | 預定路徑 | 對外標題 | 文件類型 | Primary Reader | Handled Object | 讀者任務 | Upstream Input Signal | Downstream Handoff | 主來源 | 輔助來源 | Source Completeness | 可宣稱內容 | 必須待確認內容 | 本輪產出狀態 | 驗證方式`。
+若 initiative 目標是重寫 README、docs、Pages 文件、維運手冊、developer site 或任何使用者可見文件，SOP1 除一般 blueprint 產出外，還必須在 manifest 或導覽治理分項中凍結一份 `Page Inventory 與寫作契約`，至少包含欄位：`Page ID | 預定路徑 | 對外標題 | 文件類型 | Primary Reader | Handled Object | 讀者任務 | Upstream Input Signal | Downstream Handoff | 主來源 | 輔助來源 | Source Completeness | Rewrite Permission State | 可宣稱內容 | 必須待確認內容 | 本輪產出狀態 | 驗證方式`。
 
 其中 `文件類型` 必須對應 `.github/instructions/user-facing-docs.instructions.md` 的任務型、概念型或參考型；若某頁來源不足，`本輪產出狀態` 必須明示為 `draft-placeholder`、`deferred` 或其他 PM 凍結狀態，不得讓 SOP2 owner 自行判斷是否定稿。
+
+`Rewrite Permission State` 固定只允許 `open-for-rewrite` 或 `frozen`。若 CEO / 使用者已明示某頁、某段、某組頁面骨架、固定用語或逐頁內容為定稿，必須標成 `frozen`，並在 manifest 保留可追溯原文來源；SOP2 / SOP3 未取得重新授權前，不得改寫 `frozen` 內容。
 
 凡是跨頁文件重寫，除 `Page Inventory 與寫作契約` 外，還必須同步凍結五份 section-level 工件：`Reader Matrix`、`Actor / Responsibility Matrix`、`Canonical Terminology Table`、`Source-of-Truth Map`、`Deferred Claims List`。若缺其中任一工件，SOP1 不得宣稱完成，也不得讓文件任務進入 SOP2。
 
