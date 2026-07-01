@@ -40,9 +40,15 @@ CEO 已明確提供的原始要求、功能域名稱、巢狀資訊架構、最�
 
 ### 使用者文件重寫 blueprint 的額外產出
 
-若 initiative 目標是重寫 README、docs、Pages 文件、維運手冊、developer site 或任何使用者可見文件，SOP1 除一般 blueprint 產出外，還必須在 manifest 或導覽治理分項中凍結一份 `Page Inventory 與寫作契約`，至少包含欄位：`Page ID | 預定路徑 | 對外標題 | 文件類型 | 讀者任務 | 主來源 | 輔助來源 | 可宣稱內容 | 必須待確認內容 | 本輪產出狀態 | 驗證方式`。
+若 initiative 目標是重寫 README、docs、Pages 文件、維運手冊、developer site 或任何使用者可見文件，SOP1 除一般 blueprint 產出外，還必須在 manifest 或導覽治理分項中凍結一份 `Page Inventory 與寫作契約`，至少包含欄位：`Page ID | 預定路徑 | 對外標題 | 文件類型 | Primary Reader | Handled Object | 讀者任務 | Upstream Input Signal | Downstream Handoff | 主來源 | 輔助來源 | Source Completeness | 可宣稱內容 | 必須待確認內容 | 本輪產出狀態 | 驗證方式`。
 
 其中 `文件類型` 必須對應 `.github/instructions/user-facing-docs.instructions.md` 的任務型、概念型或參考型；若某頁來源不足，`本輪產出狀態` 必須明示為 `draft-placeholder`、`deferred` 或其他 PM 凍結狀態，不得讓 SOP2 owner 自行判斷是否定稿。
+
+凡是跨頁文件重寫，除 `Page Inventory 與寫作契約` 外，還必須同步凍結五份 section-level 工件：`Reader Matrix`、`Actor / Responsibility Matrix`、`Canonical Terminology Table`、`Source-of-Truth Map`、`Deferred Claims List`。若缺其中任一工件，SOP1 不得宣稱完成，也不得讓文件任務進入 SOP2。
+
+若 CEO / 使用者在 SOP1 過程中，已明確同意逐頁頁面內容、H1 / H2 骨架、必備段落、固定用語、完成條件或頁內 `How`，則 manifest 還必須額外凍結一份 `已同意逐頁內容原文` 或等價段落，作為可查核的原文驗收來源。這份原文不得只保留 PM 壓縮後的摘要版，也不得只剩 Page Inventory 或 derived page freeze。
+
+`product-strategy-manager` 可以在原文之後再整理出 `逐頁內容凍結`、`derived page freeze` 或其他便於施工的結構化版本，但**原文來源必須與整理版並存**，且整理版不得取代原文。若整理版與已同意原文不一致，視為 SOP1 尚未完成。
 
 ## CEO 在 SOP1 的責任
 
@@ -88,6 +94,8 @@ blueprint/<feature-name>/
 
 分項索引表至少包含欄位：`Subitem ID | 分項名稱 | Owner | Depends On | Resource Level | Blueprint File | Planned Workorder File | Status`。
 
+若 initiative 是使用者文件 / Pages / README / 導覽重寫，且 CEO / 使用者已同意逐頁頁面內容，`00-manifest.md` 在固定八段之後，還必須新增一段 `已同意逐頁內容原文` 或等價段落，逐頁保存已同意內容，供後續 SOP2 / SOP3 逐項查核。
+
 ### 分項規劃檔固定內容
 
 每份 `yyyy-mm-dd-<subitem-english-name>.md` 至少包含以下段落，順序不可顛倒：
@@ -113,9 +121,26 @@ Metadata 表至少包含欄位：`Subitem ID | Parent Initiative | Depends On | 
 
 ### `執行策略與內容規劃` 固定內容
 
-每份分項規劃檔都必須有一段可交接的施工藍圖，至少包含以下欄位：`Workstream | Owner | 執行方法 / 施工內容 | 觸碰面 | 交付物 | 依賴 / Blocking Gate | 完成訊號`。
+每份分項規劃檔都必須有一段可交接的施工藍圖，但**主要表達形式不得只是一張摘要表**。這一段的寫法要接近論文中的 methodology 章節：要讓下游看完後，不需再從對話或零散訊息回推「到底要做什麼、改哪裡、哪些東西已存在、哪些不存在、哪些要新增、哪些要更新、更新的具體內容是什麼、若條件不成立要停在哪裡」。
 
-此段的目的是讓 RD / QE 在 SOP2 開工時，不需再從對話或零散訊息回推「到底要做什麼、改哪裡、交什麼」；它定義的是可施工的方法包，不是最終程式碼細節。
+可使用表格作為索引或附錄，但表格只能輔助，不可取代主體敘述。
+
+`執行策略與內容規劃` 至少要包含下列六類資訊，且必須用可交接的完整文字寫清楚：
+
+1. **方法目標與成功定義**：這個分項在 SOP2 真正要做出的成果是什麼，完成後哪個對象會變成什麼狀態。
+2. **施工對象與現況判定**：逐一說明會動到的檔案、頁面、設定或流程目前是已存在、不存在、暫存、待退休、需保留；若寫「更新」必須說明更新哪個既有對象、保留什麼、替換什麼；若寫「新增」必須說明新增到哪個精確路徑或位置。
+3. **步驟順序與依賴關係**：按實際施工順序寫出先做什麼、後做什麼、每一步使用哪些輸入、產生哪些中間成果、下一步憑什麼才可開始。
+4. **決策點、分支與阻擋條件**：明確寫出什麼情況代表可以繼續、什麼情況必須停止、退回、改寫 blueprint 或要求 CEO / 上游補資源。不得只寫抽象的 blocking gate 名稱。
+5. **變更面與內容語意**：對每個觸碰面說明是建立、改寫、搬移、刪除、保留、重導向、補連結、重組章節，並說明具體變更內容，不可只列檔名。
+6. **證據、完成訊號與回寫位置**：說明做完後應留下哪些證據、由誰看什麼結果判定完成、結果回寫到哪裡。
+
+若 initiative 是文件、Pages、README、導覽或其他使用者文件重寫，這一段還必須額外寫清楚：
+
+1. 每個頁面路徑是沿用既有檔案、建立新檔、搬移既有檔案、退休舊檔，還是只更新相鄰連結。
+2. 每個頁面的 H1、章節骨架、主要讀者任務與相鄰頁連接方式。
+3. 何者可直接宣稱為既成事實，何者只能寫成待確認或待驗證狀態。
+
+若作者希望附上 `Workstream | Owner | 觸碰面 | 交付物` 之類的摘要表，可放在 methodology 敘述之後作為索引，但不得讓摘要表成為 `執行策略與內容規劃` 的主要內容。
 
 `查核點定義表` 固定欄位為：`Checkpoint ID | Item | 完成條件 | 預期效益 | 執行方法 / 施工內容 | 驗證方式 | 證據位置`。
 
@@ -130,9 +155,12 @@ Metadata 表至少包含欄位：`Subitem ID | Parent Initiative | Depends On | 
 1. `00-manifest.md` 已存在，且可索引所有分項規劃檔。
 2. 每個分項都已建立對應的 `yyyy-mm-dd-<subitem-english-name>.md`。
 3. 每個查核點都能由 `查核點定義表` 追到完成條件、預期效益、執行方法與驗證方式，並由 `查核點簽核表` 追到各角色簽核狀態。
-4. 每個分項都已有 `執行策略與內容規劃`，可讓 RD / QE 直接接手開工，而不需再從對話回推施工方法。
+4. 每個分項都已有 methodology 等級的 `執行策略與內容規劃`，可讓 RD / QE 直接接手開工，而不需再從對話回推施工方法與變更語意。
 5. 規劃內容已可被 RD / QE 逐項接手，不再是口語摘要。
 6. CEO 輸入已被 PM 收斂成可驗證條件，而不是停留在願景口號。
 7. 若缺計畫架構圖、manifest、分項規劃檔或施工藍圖，視為 SOP1 尚未完成，不得進入 SOP2。
 8. 若 initiative 目標包含使用者文件重寫，且缺少逐頁 `Page Inventory 與寫作契約`，視為 SOP1 尚未完成；不得進入全量撰寫或定稿。
 9. 若 CEO 明確輸入未被寫入 manifest，或 Page Inventory / 施工藍圖與 CEO 明確輸入不一致且未取得 CEO 同意，視為 SOP1 尚未完成；不得進入 SOP2。
+10. 若 initiative 已有 CEO / 使用者同意的逐頁內容，但 manifest 未保留原文凍結來源，只剩摘要、表格或 PM 派生版本，視為 SOP1 尚未完成；不得進入 SOP2。
+11. 若 initiative 目標包含跨頁文件重寫，且缺少 `Reader Matrix`、`Actor / Responsibility Matrix`、`Canonical Terminology Table`、`Source-of-Truth Map` 或 `Deferred Claims List` 任一項，視為 SOP1 尚未完成；不得進入 SOP2。
+12. 若 `Source Completeness` 顯示 PM / RD / QE 任一來源未齊，卻仍把頁面標為可定稿狀態，視為 SOP1 尚未完成；不得進入 SOP2。

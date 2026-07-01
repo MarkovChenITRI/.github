@@ -169,7 +169,7 @@ FAE 可提供 closure recommendation，QE / SRE / Usability 可提供證據包�
 
 ### 指標輸出單一契約（Unified Metrics Contract）
 
-所有 RD / QE / Documentation 週報必須使用相同欄位，禁止各自定義格式：
+所有 RD / QE / 當前文件 owner 週報必須使用相同欄位，禁止各自定義格式：
 
 1. reporting_week
 2. stream_id（provider / maintainer / consumer）

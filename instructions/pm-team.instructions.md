@@ -82,6 +82,26 @@ PM 在這類任務中的最低輸入為：
 
 若缺這四項，RD / QE / 當前任務 owner 不得自行腦補成最終對外表達。
 
+### 跨頁文件重寫 Hard Gate
+
+符合下列任一條件，`product-strategy-manager` 必須先凍結 section-level 契約，當前任務 owner 才可開始正式出稿：
+
+1. 同時改動兩頁以上的人類文件。
+2. 調整導覽、資訊架構、頁面標題或讀者切頁路徑。
+3. 重命名共用名詞、流程段名、角色名或任務名稱。
+4. 把同一組文件從一種讀者路徑改寫成另一種讀者路徑，或新增 / 合併讀者立場。
+
+PM 在這類任務中至少要凍結下列工件：
+
+1. `Page Inventory 與寫作契約`
+2. `Reader Matrix`
+3. `Actor / Responsibility Matrix`
+4. `Canonical Terminology Table`
+5. `Source-of-Truth Map`
+6. `Deferred Claims List`
+
+若缺上述任一工件，或 PM / RD / QE 來源尚未齊備，當前任務 owner 只能產出 `draft-placeholder`、`deferred` 或等價草稿，不得寫成定稿事實，也不得宣稱該 section 已完成。
+
 ## 二點五、PM 觸發式執行責任
 
 `product-strategy-manager` 必須把觸發式檢查與否決規則執行成真，而非停留於文件：

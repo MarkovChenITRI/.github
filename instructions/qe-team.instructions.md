@@ -135,6 +135,17 @@ README、部署指南、維運文件與 quickstart 若包含可執行步驟，QE
 | 文風、讀者語境、資訊架構、連結位置 | `product-strategy-manager` 與當前任務 owner 自查，QE 可提供風險意見 | 預設人工 review，不作 CI blocking |
 | 雲端正式資源、secret、資料庫維運 | `site-reliability-engineer` 設隔離策略，`security-engineer` 審查機密與權限 | 不直接打正式環境，採 dry-run / staging / 驗收紀錄 |
 
+### 文件風險升級責任
+
+當 QE 在文件驗收過程中發現下列情況，必須明確標記為 documentation risk，並退回 `product-strategy-manager` 與當前任務 owner 收斂，不得只留模糊 review comment：
+
+1. 文字宣稱無法對應 PM / RD / QE 任一來源證據。
+2. 任務步驟缺少操作位置、處理物件、成功訊號或下一位行動者。
+3. 條件分支、例外處理或退回情境沒有寫明誰接手。
+4. 讀者路徑中途切換立場，或交叉連結把讀者送到不相容的下一頁。
+
+QE 可以對「不可驗證的主張」給出 no-go，但不取代 PM 成為最終文風與資訊架構決策者。
+
 QE 的核心是可重現、不可無聲退化、不能破壞讀者操作路徑；不要把所有文件品味問題都變成測試流程。
 
 ## 九、統一指標責任

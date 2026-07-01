@@ -29,7 +29,7 @@ disable-model-invocation: true
 - RD：確認架構事實、依賴方向、資料流與 HR 是否越權決定拓撲。
 - QE：確認可重現驗證、文件/測試 gate 分級與是否過度流程化。
 - FAE：確認 feedback / issue 分流、owner、完成條件與 closure criteria。
-- Documentation：確認讀者成功路徑、文件語境與文件品質 gate 是否可操作。
+- 當前文件 owner：依 `documentation-experience-manager` checklist 確認讀者成功路徑、文件語境與文件品質 gate 是否可操作。
 
 交叉審查的輸出必須包含：成立的判斷、過度擴張的判斷、不精確措辭、建設性建議與需 CEO 裁決項。
 

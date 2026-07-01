@@ -76,7 +76,7 @@ CEO 顯式輸入以下任一觸發詞才啟動：
 <CEO 實際採用的做法>
 
 ### Action Item
-Owner：<PM / RD / QE / FAE / Documentation / HR>
+Owner：<PM / RD / QE / FAE / HR / 當前任務 owner>
 完成條件：<可檢查的完成狀態>
 驗證方式：<如何確認修正有效>
 
