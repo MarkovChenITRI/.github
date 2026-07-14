@@ -1,4 +1,4 @@
-name: Deployment
+﻿name: Deployment
 
 on:
   workflow_dispatch:
@@ -389,79 +389,151 @@ jobs:
           python - <<'PY'
           import json
           import os
+          import time
+          import urllib.error
           import urllib.parse
           import urllib.request
 
           app_url = os.environ.get('APP_SERVICE_URL') or f"https://{os.environ['APP_SERVICE_NAME']}.azurewebsites.net"
           base_url = app_url.rstrip('/')
 
-          with urllib.request.urlopen(base_url + '/healthz', timeout=30) as response:
-              health_body = response.read().decode('utf-8')
+          VERIFY_TIMEOUT_SECONDS = 300
+          REQUEST_TIMEOUT_SECONDS = 30
+          RETRY_INTERVAL_SECONDS = 5
+
+          def _read_error_body(error):
+            try:
+              return error.read().decode('utf-8')
+            except Exception:
+              return str(error)
+
+          def wait_for_check(name, path, validator):
+            url = base_url + path
+            deadline = time.time() + VERIFY_TIMEOUT_SECONDS
+            last_error = None
+
+            while time.time() < deadline:
+              try:
+                with urllib.request.urlopen(url, timeout=REQUEST_TIMEOUT_SECONDS) as response:
+                  body = response.read().decode('utf-8')
+                  validator(response, body)
+                  return body
+              except urllib.error.HTTPError as error:
+                last_error = f'HTTP {error.code}: {_read_error_body(error)[:400]}'
+              except Exception as error:
+                last_error = f'{type(error).__name__}: {error}'
+              time.sleep(RETRY_INTERVAL_SECONDS)
+
+            raise SystemExit(
+              f'{name} failed after {VERIFY_TIMEOUT_SECONDS}s while calling {url}. '
+              f'Last error: {last_error}'
+            )
+
+          def validate_health(response, health_body):
               if response.status != 200 or 'ok' not in health_body:
                   raise SystemExit(f'Health check failed: {response.status} {health_body}')
+          wait_for_check('Health check', '/healthz', validate_health)
 
-          with urllib.request.urlopen(base_url + '/readyz/db', timeout=30) as response:
-              db_ready_body = response.read().decode('utf-8')
+          def validate_db_ready(response, db_ready_body):
               if response.status != 200:
                   raise SystemExit(f'DB readiness check failed: {response.status} {db_ready_body}')
               payload = json.loads(db_ready_body)
               if payload.get('status') != 'ok':
                   raise SystemExit(f'DB readiness returned unexpected payload: {db_ready_body}')
+          # fetch('DB readiness check', '/readyz/db')
+          wait_for_check('DB readiness check', '/readyz/db', validate_db_ready)
 
-          with urllib.request.urlopen(base_url + '/api/model-cards', timeout=30) as response:
-              cards_body = response.read().decode('utf-8')
+          def validate_model_cards(response, cards_body):
               if response.status != 200:
                   raise SystemExit(f'Model Cards API failed: {response.status} {cards_body}')
               payload = json.loads(cards_body)
               if 'total' not in payload or 'cards' not in payload:
                   raise SystemExit(f'Model Cards API returned unexpected payload: {cards_body}')
+          # fetch('Model Cards API', '/api/model-cards')
+          wait_for_check('Model Cards API', '/api/model-cards', validate_model_cards)
 
-          with urllib.request.urlopen(base_url + '/api/hardware-atlas', timeout=30) as response:
-              hardware_body = response.read().decode('utf-8')
-              if response.status != 200:
-                  raise SystemExit(f'Hardware Atlas API failed: {response.status} {hardware_body}')
-              payload = json.loads(hardware_body)
+          product_slug = None
+            def validate_products(response, products_body):
               product_slug = None
+              if response.status != 200:
+                raise SystemExit(f'Products API failed: {response.status} {products_body}')
+              payload = json.loads(products_body)
               if payload.get('products'):
                   product_slug = payload['products'][0].get('product_slug')
-              if not product_slug and payload.get('devices'):
+                if not product_slug and payload.get('product_specs'):
+                  product_slug = payload['product_specs'][0].get('product_slug')
+                if not product_slug and payload.get('devices'):
                   product_slug = payload['devices'][0].get('product_slug')
               if not product_slug:
-                  raise SystemExit(f'Hardware Atlas API returned no product slug: {hardware_body}')
+                raise SystemExit(f'Products API returned no product slug: {products_body}')
+              return product_slug
 
-          detail_url = base_url + '/hardware/' + urllib.parse.quote(product_slug)
-            hardware_detail_result = 'not checked'
-            try:
+            # fetch('Products API', '/api/products')
+            def wait_for_product_slug():
+            url = base_url + '/api/products'
+            deadline = time.time() + VERIFY_TIMEOUT_SECONDS
+            last_error = None
+            attempts = 0
+
+            while time.time() < deadline:
+              attempts += 1
+              try:
+                with urllib.request.urlopen(url, timeout=REQUEST_TIMEOUT_SECONDS) as response:
+                  products_body = response.read().decode('utf-8')
+                  product_slug = validate_products(response, products_body)
+                  return product_slug
+              except urllib.error.HTTPError as error:
+                last_error = f'HTTP {error.code}: {_read_error_body(error)[:400]}'
+              except Exception as error:
+                last_error = f'{type(error).__name__}: {error}'
+              time.sleep(RETRY_INTERVAL_SECONDS)
+
+            raise SystemExit(
+              f'Products API check failed after {attempts} attempts while calling {url}. '
+              f'Last error: {last_error}'
+            )
+
+          product_slug = wait_for_product_slug()
+
+          # fetch('Health check', '/healthz')
+          detail_url = base_url + '/products/' + urllib.parse.quote(product_slug)
+          product_detail_result = 'not checked'
+          try:
               with urllib.request.urlopen(detail_url, timeout=30) as response:
-                detail_html = response.read().decode('utf-8')
-                if response.status != 200:
-                  raise RuntimeError(f'HTTP {response.status}: {detail_html[:400]}')
-                required_markers = (
-                'class="product-tabs"',
-                'data-hardware-panel="overview"',
-                'data-hardware-panel="environment-support"',
-                'class="hw-tab-panel hw-support-panel"',
-                )
-                missing_markers = [marker for marker in required_markers if marker not in detail_html]
-                if missing_markers:
-                  raise RuntimeError(f'missing markers {missing_markers}')
-                forbidden_markers = ('data-hardware-panel="specifications"', 'hw-detail-panel')
-                present_forbidden_markers = [marker for marker in forbidden_markers if marker in detail_html]
-                if present_forbidden_markers:
-                  raise RuntimeError(f'stale markers {present_forbidden_markers}')
-                hardware_detail_result = 'passed'
-            except Exception as error:
-              hardware_detail_result = f'warning: {type(error).__name__}: {error}'
+                  detail_html = response.read().decode('utf-8')
+                  if response.status != 200:
+                      raise RuntimeError(f'HTTP {response.status}: {detail_html[:400]}')
+                  required_markers = (
+                      'class="product-tabs"',
+                      'data-hardware-panel="overview"',
+                      'data-hardware-panel="environment-support"',
+                      'class="hw-tab-panel hw-support-panel"',
+                  )
+                  missing_markers = [marker for marker in required_markers if marker not in detail_html]
+                  if missing_markers:
+                      raise RuntimeError(f'missing markers {missing_markers}')
+                  forbidden_markers = ('data-hardware-panel="specifications"', 'hw-detail-panel')
+                  present_forbidden_markers = [marker for marker in forbidden_markers if marker in detail_html]
+                  if present_forbidden_markers:
+                      raise RuntimeError(f'stale markers {present_forbidden_markers}')
+                    product_detail_result = 'passed'
+          except Exception as error:
+                  product_detail_result = f'warning: {type(error).__name__}: {error}'
+
+            blocking_results = []
+            # fatal=False
+            # record=False
 
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as summary:
               summary.write('\n## App Service Deployment\n\n')
               summary.write('| Field | Value |\n| --- | --- |\n')
               summary.write('| Resource | Azure App Service |\n')
+              summary.write('| Blocking endpoint attempts | /healthz, /readyz/db, /api/model-cards, /api/products |\n')
               summary.write(
                 '| Blocking verification | /healthz, /readyz/db, /api/model-cards, and '
-                '/api/hardware-atlas returned expected results |\n'
+                '/api/products returned expected results |\n'
               )
-              summary.write(f'| Non-blocking hardware detail check | {hardware_detail_result} |\n')
+              summary.write(f'| Non-blocking product detail check | {product_detail_result} |\n')
           PY
 
   release-report:
