@@ -1,3 +1,0 @@
-workflows/*
-!workflows/deployment.yml
-!workflows/docs-pages.yml
