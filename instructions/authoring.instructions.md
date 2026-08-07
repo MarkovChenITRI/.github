@@ -1,12 +1,15 @@
 ---
-description: "Use when adding or editing a rule, procedure, or skill inside this runtime's own .github/instructions, .github/prompts, or .github/skills directories. Gives the decision procedure for which mechanism to use."
-applyTo: ".github/instructions/**/*.md, .github/prompts/**/*.md, .github/skills/**/*.md"
+description: "Use when adding or editing a rule, procedure, or skill inside this runtime's own .github/copilot-instructions.md, .github/instructions, .github/prompts, or .github/skills directories. Gives the decision procedure for which mechanism to use."
+applyTo: ".github/copilot-instructions.md, .github/instructions/**/*.md, .github/prompts/**/*.md, .github/skills/**/*.md"
 ---
 
 # 新增規則或流程的判斷 SOP
 
 依序回答下列問題，走到符合的分支就照做，不必往下看其他分支：
 
+0. 這件事要不要不管使用者在這個專案裡問什麼、動哪個檔案，這條規則都要生效——不是只在特定路徑、特定情境或特定任務類型下才用得到？而且內容量要小（`copilot-instructions.md` 每次對話都會整份載入，份量越大，每次對話要扛的負擔就越重）？
+   - 是 → 直接寫進 `copilot-instructions.md`。完成。
+   - 否 → 進第 1 題。
 1. 這件事要不要不管使用者怎麼講、只要 Copilot 碰到符合路徑的檔案就套用？
    - 是 → 建立 `instructions/<name>.instructions.md`：frontmatter 寫 `description`（何時該用）與 `applyTo`（涵蓋的檔案路徑 glob），內文放規則與 SOP 本體。完成。
    - 否 → 進第 2 題。
