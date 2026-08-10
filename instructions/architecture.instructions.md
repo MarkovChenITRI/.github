@@ -1,6 +1,5 @@
 ---
 description: "Use when implementing or modifying code under presentation/application/domain/infrastructure. Identifies which layer the change belongs to, checks the layer spec at .github/specs/*.md exists, then follows that layer's placement and dependency rules."
-applyTo: "**/{presentation,interfaces,api,application,domain,infrastructure}/**, .github/specs/**/*.md, **/*.{ts,tsx,js,jsx,py,go,rs,java,kt,cs,cpp,h,hpp,rb,php,scala,swift,sql}"
 ---
 
 # DDD 分層架構準則
