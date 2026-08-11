@@ -1,5 +1,5 @@
 ---
-description: "從 0 或局部協助使用者撰寫計劃書的計畫架構與實施方法、計畫時程、查核點三段——三段互相依賴，一起問答完成，寫入 .github/proposals/<name>.md"
+description: "從 0 或局部協助使用者撰寫計劃書的計畫架構與實施方法、計畫時程、查核點三段——三段互相依賴，一起問答完成，寫入 <專案資料夾>/.github/proposals/<name>.md"
 ---
 
 # 計劃書圖表段落撰寫 SOP
@@ -9,7 +9,7 @@ description: "從 0 或局部協助使用者撰寫計劃書的計畫架構與實
 ## 開始之前
 
 1. 確認要撰寫的計畫名稱；使用者未提供時，先詢問。
-2. 開啟 `.github/proposals/<name>.md`，確認這三段是否已存在：
+2. 開啟 `<專案資料夾>/.github/proposals/<name>.md`，確認這三段是否已存在：
    - 已存在：告知使用者已存在，確認要整組重新規劃，還是只調整其中一段（調整單一段時，仍要依下方順序核對跟其他兩段的一致性，不能只改一段留下不一致的分項子項名稱或時間）。
    - 不存在：依下方問答建立。
 
@@ -26,7 +26,7 @@ description: "從 0 或局部協助使用者撰寫計劃書的計畫架構與實
 ## 寫入計劃書
 
 1. 依 `proposal-schedule-format.instructions.md` 的語法，把架構圖畫成 `mindmap`、時程畫成 `gantt`、查核點整理成表格。
-2. 開啟 `.github/proposals/<name>.md`，把這三段寫入或覆蓋既有段落；檔案不存在時先建立，其餘段落留待 `plan-proposal-narrative.prompt.md` 補上。
+2. 開啟 `<專案資料夾>/.github/proposals/<name>.md`，把這三段寫入或覆蓋既有段落；檔案不存在時先建立，其餘段落留待 `plan-proposal-narrative.prompt.md` 補上。
 3. 在對話中貼出寫入的完整內容，請使用者確認。
 
 ## 完成條件

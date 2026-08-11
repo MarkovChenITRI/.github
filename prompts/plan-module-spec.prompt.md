@@ -1,5 +1,5 @@
 ---
-description: "從 0 協助使用者為一個新模組或功能撰寫規格，透過問答收斂 Who/What/How/Where，寫入 .github/specs/<layer>.md 或 .github/specs/<layer>/<module>.md"
+description: "從 0 協助使用者為一個新模組或功能撰寫規格，透過問答收斂 Who/What/How/Where，寫入 <專案資料夾>/.github/specs/<layer>.md 或 <專案資料夾>/.github/specs/<layer>/<module>.md"
 ---
 
 # 模組規格撰寫 SOP
@@ -10,8 +10,8 @@ description: "從 0 協助使用者為一個新模組或功能撰寫規格，透
 
 1. 確認要建立規格的模組或功能名稱；使用者未提供時，先詢問。
 2. 判斷這個模組屬於使用者介面層、應用層、領域層、基礎設施層哪一層：依模組描述的職責，對照 `spec-format.instructions.md` 的四層定義判斷，跟使用者確認判斷結果。
-3. 這個專案第一次使用 `plan` 建立規格時（`.github/specs/overview.md` 還不存在），先依 `spec-format.instructions.md` 的「目錄結構」把兩種選項攤給使用者選，選定後才繼續下面的步驟；已經選過時，沿用既有結構。
-4. 開啟這個模組對應的規格檔案（依已選定的目錄結構，是 `.github/specs/<layer>.md` 還是 `.github/specs/<layer>/<module>.md`），確認這個模組是否已有內容：
+3. 這個專案第一次使用 `plan` 建立規格時（`<專案資料夾>/.github/specs/overview.md` 還不存在），先依 `spec-format.instructions.md` 的「目錄結構」把兩種選項攤給使用者選，選定後才繼續下面的步驟；已經選過時，沿用既有結構。
+4. 開啟這個模組對應的規格檔案（依已選定的目錄結構，是 `<專案資料夾>/.github/specs/<layer>.md` 還是 `<專案資料夾>/.github/specs/<layer>/<module>.md`），確認這個模組是否已有內容：
    - 已有內容：告知使用者已存在，詢問要不要改走 `code-build.instructions.md` 的 Implementation SOP 更新既有內容，而不是在這裡重複建立。
    - 沒有內容：依下方問答建立。
 
@@ -29,7 +29,7 @@ description: "從 0 協助使用者為一個新模組或功能撰寫規格，透
    - 不變式：任何狀態下必須成立的約束。
    - 邊界條件：合法輸入範圍、例外處理策略。
    - 完成條件：這個模組的 How 交代完後，讀者應該能確認哪幾件事。
-4. Where：檔案放在 `src/<layer>/` 底下哪個子目錄，檔名慣例是什麼。
+4. Where：檔案放在 `<專案資料夾>/src/<layer>/` 底下哪個子目錄，檔名慣例是什麼。
 
 ## 寫入規格書
 

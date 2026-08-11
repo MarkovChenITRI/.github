@@ -1,15 +1,15 @@
 ---
-description: "協助使用者為一個使用者流程，草擬 tests/operations/<flow>.md 的情境、前置條件與步驟初稿，作為驗收標準；實際執行與記錄結果交給 test 技能"
+description: "協助使用者為一個使用者流程，草擬 <專案資料夾>/.github/specs/usage-examples/<flow-name>.md 的情境、前置條件與步驟初稿，作為驗收標準；實際執行與記錄結果交給 test 技能"
 ---
 
 # 使用範例／驗收標準撰寫 SOP
 
-依 `.github/instructions/operations-test.instructions.md` 的「tests/operations/&lt;flow&gt;.md 固定內容」格式，透過問答協助使用者草擬一條使用者操作流程的初稿。
+依 `.github/instructions/spec-format.instructions.md` 的「使用範例／驗收標準」格式，透過問答協助使用者草擬一條使用者操作流程的初稿。
 
 ## 開始之前
 
 1. 確認要草擬的流程名稱；使用者未提供時，先詢問。
-2. 開啟 `tests/operations/<flow-name>.md`，確認是否已存在：
+2. 開啟 `<專案資料夾>/.github/specs/usage-examples/<flow-name>.md`，確認是否已存在：
    - 已存在：告知使用者已存在，詢問要不要改走既有流程更新，而不是重複建立。
    - 不存在：依下方問答建立初稿。
 
@@ -23,12 +23,12 @@ description: "協助使用者為一個使用者流程，草擬 tests/operations/
 
 ## 寫入初稿
 
-1. 依 `operations-test.instructions.md` 的固定格式整理內容，「執行紀錄」段落留空白模板（日期、執行者、使用工具、逐步實際結果、整體判定五個欄位都保留標籤，不填內容）。
-2. 開啟 `tests/operations/<flow-name>.md`，寫入初稿；檔案不存在時先建立。
+1. 依 `spec-format.instructions.md`「使用範例／驗收標準」的固定格式整理內容。
+2. 開啟 `<專案資料夾>/.github/specs/usage-examples/<flow-name>.md`，寫入初稿；檔案不存在時先建立。
 3. 在對話中貼出寫入的完整內容，請使用者確認。
-4. 告知使用者：這份初稿的情境、前置條件與步驟，就是這條流程的驗收標準；實際執行與記錄結果，交給 `test` 技能的 operations 流程處理，不在這裡執行。
+4. 告知使用者：這份初稿的情境、前置條件與步驟，就是這條流程的驗收標準；實際執行與記錄結果，交給 `test` 技能寫進 `<專案資料夾>/tests/operations/<flow-name>.md`，是另一份獨立的檔案，不在這裡執行。
 
 ## 完成條件
 
-1. `tests/operations/<flow-name>.md` 已包含情境／角色、前置條件、步驟三段內容，「執行紀錄」留空白模板。
+1. `<專案資料夾>/.github/specs/usage-examples/<flow-name>.md` 已包含情境／角色、前置條件、步驟三段內容。
 2. 使用者已確認過寫入的內容。

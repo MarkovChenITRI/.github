@@ -5,7 +5,7 @@ applyTo: ".github/proposals/**/*.md"
 
 # 計劃書敘述段落格式
 
-計劃書固定路徑 `.github/proposals/<name>.md`，依序包含四個段落：目標市場需求、產品開發與技術服務、計畫架構與實施方法、計畫時程與查核點。這份文件定義前兩段——純敘述、沒有圖表語法規則——的內容範圍；後兩段的樹狀圖、時程圖與查核點表格規則，定義在 `proposal-schedule-format.instructions.md`。
+計劃書固定路徑 `<專案資料夾>/.github/proposals/<name>.md`，依序包含四個段落：目標市場需求、產品開發與技術服務、計畫架構與實施方法、計畫時程與查核點。這份文件定義前兩段——純敘述、沒有圖表語法規則——的內容範圍；後兩段的樹狀圖、時程圖與查核點表格規則，定義在 `proposal-schedule-format.instructions.md`。
 
 ## 目標市場需求
 

@@ -23,15 +23,15 @@ infra 不適用這個比例，見 `infra-test.instructions.md`。
 
 ### units
 
-1. 開啟 `.github/specs/domain.md`，找到對應模組的 What 與 How。
-2. 在 `tests/units/` 下建立新的測試檔案，外部依賴用假物件（mock/stub）取代。
-3. 在終端機執行 `pytest tests/units` 確認新測試通過。
+1. 開啟 `<專案資料夾>/.github/specs/domain.md`，找到對應模組的 What 與 How。
+2. 在 `<專案資料夾>/tests/units/` 下建立新的測試檔案，外部依賴用假物件（mock/stub）取代。
+3. 在終端機執行 `pytest <專案資料夾>/tests/units` 確認新測試通過。
 
 ### modules
 
-1. 開啟 `.github/specs/application.md`，找到對應 use case 的 How。
-2. 在 `tests/modules/` 下建立新的測試檔案，依情境使用真實依賴或容器化依賴（例如 testcontainers）。
-3. 在終端機執行 `pytest tests/modules` 確認新測試通過。
+1. 開啟 `<專案資料夾>/.github/specs/application.md`，找到對應 use case 的 How。
+2. 在 `<專案資料夾>/tests/modules/` 下建立新的測試檔案，依情境使用真實依賴或容器化依賴（例如 testcontainers）。
+3. 在終端機執行 `pytest <專案資料夾>/tests/modules` 確認新測試通過。
 
 ## 執行測試 SOP
 
@@ -39,12 +39,12 @@ infra 不適用這個比例，見 `infra-test.instructions.md`。
 
 ### units
 
-1. 在終端機執行 `pytest tests/units`。
-2. 每次 `git push` 後，GitHub Actions 的 `units` job 也會自動執行同一條指令，結果顯示在 PR 的 checks 清單中。
+1. 在終端機執行 `pytest <專案資料夾>/tests/units`。
+2. 每次 `git push` 後，GitHub Actions 的 `units` job 也會自動執行同一條指令（在 CI 執行環境裡，`<專案資料夾>` 就是簽出後的檢查目錄本身，指令維持 `pytest tests/units` 不加前綴，見下方「設定 CI」），結果顯示在 PR 的 checks 清單中。
 
 ### modules
 
-1. 在終端機執行 `pytest tests/modules`。
+1. 在終端機執行 `pytest <專案資料夾>/tests/modules`。
 2. 每次 `git push` 後，GitHub Actions 的 `modules` job 也會自動執行同一條指令，結果顯示在 PR 的 checks 清單中。
 
 ## 更新測試 SOP
@@ -52,19 +52,19 @@ infra 不適用這個比例，見 `infra-test.instructions.md`。
 下列任一情境成立時，進入這段 SOP：
 
 - 執行測試後有案例 fail。
-- `.github/specs/<layer>.md` 對應模組的段落被更新，測試還沒跟上。
+- `<專案資料夾>/.github/specs/<layer>.md` 對應模組的段落被更新，測試還沒跟上。
 
 ### 判斷步驟
 
-1. 開啟 `.github/specs/<layer>.md`，找到對應模組目前的 What／How。
+1. 開啟 `<專案資料夾>/.github/specs/<layer>.md`，找到對應模組目前的 What／How。
 2. 比對測試案例驗證的行為，跟規格書目前的 What／How 是否一致：
    - 一致（規格書已反映新行為，測試案例還沒跟上）→ 屬於這段 SOP 的更新情境，往下走「更新步驟」。
    - 不一致（規格書內容還是舊的，測試失敗代表程式碼行為偏離規格）→ 屬於回歸，回報該模組段落裡的 Who，處理方式交由 Who 決定。
 
 ### 更新步驟
 
-- units：在 `tests/units/` 修改對應測試檔案，執行 `pytest tests/units` 確認通過。
-- modules：在 `tests/modules/` 修改對應測試檔案，執行 `pytest tests/modules` 確認通過。
+- units：在 `<專案資料夾>/tests/units/` 修改對應測試檔案，執行 `pytest <專案資料夾>/tests/units` 確認通過。
+- modules：在 `<專案資料夾>/tests/modules/` 修改對應測試檔案，執行 `pytest <專案資料夾>/tests/modules` 確認通過。
 
 ## 目錄結構
 
@@ -78,7 +78,7 @@ tests/
 
 ## 設定 CI
 
-在子專案（不是這個 runtime 本身）建立 `.github/workflows/tests.yml`：
+在 `<專案資料夾>`（不是這個 runtime 本身）底下建立 `.github/workflows/tests.yml`：
 
 ```yaml
 name: Tests
