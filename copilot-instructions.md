@@ -37,6 +37,23 @@
 5. 超出邊界時，回報這個落差。
 6. 各層具體的檢查步驟，寫在 `plan`、`test`、`implement` 各自指向的 `instructions/*.instructions.md` 或 `prompts/*.prompt.md` 檔案裡，這裡只定義邊界確認的順序。
 
+### plan 技能通用規範
+
+plan 技能負責三類產出物，彼此有建立順序依賴：
+
+1. **規格書**：系統架構（`<專案資料夾>/.github/specs/overview.md`）先建，模組規格（`<專案資料夾>/.github/specs/<layer>/<module>.md`）次之，使用範例／驗收標準（`<專案資料夾>/.github/specs/usage-examples/<flow>.md`）最後。
+2. **計劃書**（`<專案資料夾>/.github/proposals/<name>.md`）：獨立於規格書，不依賴前三者先存在。
+
+各類產出物的格式依循：
+
+| 產出物 | 格式依循 |
+|---|---|
+| 系統架構、模組規格、使用範例 | `spec-format.instructions.md` |
+| 計劃書敘述段落（目標市場需求、產品開發與技術服務） | `proposal-format.instructions.md` |
+| 計劃書圖表段落（架構圖、時程、查核點） | `proposal-schedule-format.instructions.md` |
+
+進入任何 plan prompt 的主動作前，先讀取對應的現有文件；已有的內容只補齊缺的部分，不整份覆蓋。各 plan prompt 的執行細節見 `.github/prompts/plan-*.md`；引擎可自動載入的完整版見 `instructions/plan.instructions.md`。
+
 ### 專案特有設計的即時記錄
 
 `plan`、`test`、`implement` 的過程中，比照上一節「讀取上層資源、確認邊界」的做法——這裡的上層資源，換成這個 `.github` 底下 `instructions/*.instructions.md` 的通用規則檔案——判斷、記錄專案自己的知識：

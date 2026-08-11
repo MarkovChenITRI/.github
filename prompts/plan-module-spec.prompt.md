@@ -2,9 +2,9 @@
 description: "從 0 協助使用者為一個新模組或功能撰寫規格，透過問答收斂 Who/What/How/Where，寫入 <專案資料夾>/.github/specs/<layer>.md 或 <專案資料夾>/.github/specs/<layer>/<module>.md"
 ---
 
-# 模組規格撰寫 SOP
+# 模組規格撰寫
 
-依 `.github/instructions/spec-format.instructions.md` 的四層定義與規格書欄位，透過問答協助使用者建立一個新模組的規格。
+依 `spec-format.instructions.md` 的「模組規格」格式，透過問答協助使用者建立一個新模組的規格；實際執行與測試紀錄由 `test` 技能接手。產出寫入 `<專案資料夾>/.github/specs/<layer>.md` 或 `<專案資料夾>/.github/specs/<layer>/<module>.md`。
 
 ## 開始之前
 
@@ -40,6 +40,6 @@ description: "從 0 協助使用者為一個新模組或功能撰寫規格，透
 
 ## 完成條件
 
-1. 對應的規格檔案已包含這個模組的段落，四個欄位都有具體內容。
-2. 使用者已確認過寫入的內容。
-3. 使用者接著要求開始實作時，交給 `.github/instructions/code-build.instructions.md` 的 Implementation SOP 接手。
+- **格式面**：對應的規格檔案已存在並包含這個模組的段落，Who／What／How／Where 四個欄位齊全——逐一對照 `spec-format.instructions.md`「模組規格欄位」與「How 欄位的骨架」確認。
+- **內容面**：每個欄位的描述有具體依據，讀者能根據這段做出判斷；How 骨架的六個子段落（開場定位、依賴關係、圖、逐一深入、不變式、完成條件）都有填寫。
+- **程序面**：使用者已確認過寫入的內容。
