@@ -1,6 +1,6 @@
 ---
-description: "Loaded automatically when working in tests/**. Mirrors the test 技能通用規範 — test pyramid, SOP pointer, and which instructions file covers each test type."
-applyTo: "tests/**"
+description: "Loaded automatically for all test-related prompts. Mirrors the test 技能通用規範 — test pyramid, SOP pointer, and which instructions file covers each test type."
+applyTo: ".github/prompts/operations-test.prompt.md"
 ---
 
 # test 技能通用規範

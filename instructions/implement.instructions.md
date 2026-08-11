@@ -1,6 +1,6 @@
 ---
-description: "Loaded automatically when working in src/**. Mirrors the implement 技能通用規範 — layer placement, dependency direction, and Implementation SOP pointer."
-applyTo: "src/**"
+description: "Loaded automatically for all implement-*.md prompts. Mirrors the implement 技能通用規範 — layer placement, dependency direction, and Implementation SOP pointer."
+applyTo: ".github/prompts/implement-*.md"
 ---
 
 # implement 技能通用規範
