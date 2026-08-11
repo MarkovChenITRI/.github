@@ -5,6 +5,20 @@ description: "Use when the user asks to add, modify, or fix code under the prese
 
 # implement
 
-使用者要求新增、修改或修正落在使用者介面層、應用層、領域層、基礎設施層的程式碼時觸發。
+`implement` 底下的結構固定如下：
 
-依 `.github/instructions/architecture.instructions.md` 的 Implementation SOP 執行：判斷所屬層級 → 確認 `.github/specs/<layer>.md` 是否已有對應模組的段落（沒有就依 `plan` skill 的流程先建立）→ 依「分層放置規則」與「依賴方向」施工 → 行為有變更時回寫規格書。
+```mermaid
+mindmap
+  root((implement))
+    撰寫與建置（Code、Build）
+    發布與部署（Release、Deploy）
+    運行與監控（Operate、Monitor）
+```
+
+使用者要求新增、修改或修正程式碼時觸發。異動的是程式碼邏輯本身、或把它組裝成可執行產物，屬於撰寫與建置；異動的是把已經建置好的產物送出版本、送進部署環境，屬於發布與部署；異動的是已上線系統的運行狀態、監控告警或異常處理，屬於運行與監控。判斷落在哪一階後，依下表對應的 SOP 執行：
+
+| 階段 | 對應 SOP |
+| --- | --- |
+| 撰寫與建置（Code、Build） | `.github/instructions/code-build.instructions.md` |
+| 發布與部署（Release、Deploy） | `.github/instructions/release-deploy.instructions.md` |
+| 運行與監控（Operate、Monitor） | `.github/instructions/operate-monitor.instructions.md` |

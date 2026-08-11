@@ -4,7 +4,7 @@ description: "扮演真實使用者，依 tests/operations/<flow>.md 腳本逐�
 
 # 使用者操作測試 SOP
 
-依 `.github/instructions/testing.instructions.md` 的 operations 測試程序，親自扮演目標使用者，執行指定的使用者流程腳本。
+依 `.github/instructions/operations-test.instructions.md` 的 operations 測試程序，親自扮演目標使用者，執行指定的使用者流程腳本。
 
 ## 開始之前
 

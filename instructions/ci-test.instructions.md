@@ -1,29 +1,25 @@
 ---
-description: "Use when adding, running, or updating any test — infra, units, modules, or operations. First identify which of the three scenarios applies (add / run / update), then follow that scenario's procedure for the relevant category."
-applyTo: "tests/{infra,units,modules,operations}/**, .github/workflows/**"
+description: "Use when adding, running, or updating a units or modules test, or setting up the CI workflow that runs them."
+applyTo: "tests/units/**, tests/modules/**, .github/workflows/**"
 ---
 
-# 測試執行準則
+# CI 自動化執行（units、modules）測試準則
 
-## 何時被呼叫
+## 測試金字塔
 
-Copilot 處理測試相關任務時，先判斷屬於下列哪一種情境，再到對應段落執行步驟：
+units、modules、operations 三類除了執行機制不同，該寫多少數量也不同，依測試金字塔原則分配：
 
-- 對應的程式碼或使用者流程還沒有測試 → 走「新增測試 SOP」
-- 需要確認現有測試目前是否通過 → 走「執行測試 SOP」
-- 對應的程式碼或使用者流程已變更，現有測試需要同步調整 → 走「更新測試 SOP」
+1. units 數量最多、涵蓋情境最廣：外部依賴都用假物件取代，執行最快、成本最低，同一個模組的每一種輸入組合與邊界條件都該有對應案例。
+2. modules 數量次之：只驗證跨模組整合才會出錯的行為（例如真實依賴的組合方式、交易邊界），units 已經涵蓋的單一模組邏輯不重複寫。
+3. operations 數量最少，理由見 `operations-test.instructions.md`。
 
-三種情境都要先判斷這個測試屬於 infra、units、modules、operations 哪一類，再依該分類的步驟執行。
+infra 不適用這個比例，見 `infra-test.instructions.md`。
+
+新增測試前，先確認這個情境有沒有被更底層的測試涵蓋過——modules 動筆前先看 units 有沒有涵蓋、operations 動筆前先看 modules 有沒有涵蓋；已經涵蓋時，優先在底層補案例，不疊加到上層。
 
 ## 新增測試 SOP
 
-現有程式碼或使用者流程還沒有對應測試時：
-
-### infra
-
-1. 開啟 `.github/specs/infrastructure.md`，找到要驗證的硬體行為與邊界條件。
-2. 在 `tests/infra/main.py` 撰寫新的測試案例。
-3. 接上目標硬體，在終端機執行 `pytest tests/infra/main.py` 確認新測試通過。
+現有程式碼還沒有對應測試時：
 
 ### units
 
@@ -37,20 +33,9 @@ Copilot 處理測試相關任務時，先判斷屬於下列哪一種情境，再
 2. 在 `tests/modules/` 下建立新的測試檔案，依情境使用真實依賴或容器化依賴（例如 testcontainers）。
 3. 在終端機執行 `pytest tests/modules` 確認新測試通過。
 
-### operations
-
-1. 開啟 `.github/specs/presentation.md`，找到這條新流程要驗證的介面契約。
-2. 依「tests/operations/&lt;flow&gt;.md 固定內容」的格式，在 `tests/operations/<flow-name>.md` 建立這條流程的腳本。
-3. 依「操作工具對應」選定工具，在對話中輸入 `/operations-test` 首次執行並記錄結果。
-
 ## 執行測試 SOP
 
 需要確認現有測試目前是否通過時：
-
-### infra
-
-1. 接上目標硬體，在終端機執行 `pytest tests/infra/main.py`。
-2. 這個指令維持本機執行；`.github/workflows/tests.yml` 不包含這個分類。
 
 ### units
 
@@ -61,11 +46,6 @@ Copilot 處理測試相關任務時，先判斷屬於下列哪一種情境，再
 
 1. 在終端機執行 `pytest tests/modules`。
 2. 每次 `git push` 後，GitHub Actions 的 `modules` job 也會自動執行同一條指令，結果顯示在 PR 的 checks 清單中。
-
-### operations
-
-1. 在對話中輸入 `/operations-test` 並指定要執行的 `tests/operations/<flow-name>.md`。
-2. Copilot 依「操作工具對應」選定的工具逐步實際操作，把結果記錄到該檔案的「執行紀錄」段落。
 
 ## 更新測試 SOP
 
@@ -83,59 +63,17 @@ Copilot 處理測試相關任務時，先判斷屬於下列哪一種情境，再
 
 ### 更新步驟
 
-依測試所屬分類，修改對應測試後重新執行確認：
-
-- infra：在 `tests/infra/main.py` 修改對應案例，接上目標硬體，執行 `pytest tests/infra/main.py` 確認通過。
 - units：在 `tests/units/` 修改對應測試檔案，執行 `pytest tests/units` 確認通過。
 - modules：在 `tests/modules/` 修改對應測試檔案，執行 `pytest tests/modules` 確認通過。
-- operations：在 `tests/operations/<flow-name>.md` 更新步驟表與預期結果，在對話中輸入 `/operations-test` 重新執行並記錄結果。
-
-## 操作工具對應
-
-operations 測試依系統曝露方式挑選操作工具：
-
-- Web App：在 VS Code 按 `Ctrl+Shift+P`（macOS 為 `Cmd+Shift+P`）開啟命令選擇區，執行 `Simple Browser: Show`，輸入執行中頁面的網址，在裡面操作。
-- Python SDK／library：開啟或建立一個 `.ipynb` notebook，在 cell 中 `import` 該套件、呼叫要驗證的公開 API，執行 cell 觀察輸出。
-- CLI 工具：在 VS Code 內建終端機（`` Ctrl+` ``）直接執行要驗證的指令。
-- 其他曝露方式：選擇真實使用者實際會用的同一種管道操作。
-
-## tests/operations/&lt;flow&gt;.md 固定內容
-
-```markdown
-# <流程名稱>
-
-## 情境／角色
-使用者是誰、想完成什麼目標。
-
-## 前置條件
-系統狀態、需要的帳號或資料。
-
-## 步驟
-
-| # | 操作 | 預期結果 |
-|---|------|---------|
-| 1 | ... | ... |
-
-## 執行紀錄
-- 日期：
-- 執行者：
-- 使用工具：
-- 逐步實際結果：
-- 整體判定：pass / partial / fail
-```
 
 ## 目錄結構
 
 ```text
 tests/
-├── infra/
-│   └── main.py
 ├── units/
 │   └── <鏡射 src/domain/ 的結構>
-├── modules/
-│   └── <鏡射 src/application/ 的結構>
-└── operations/
-    └── <flow-name>.md
+└── modules/
+    └── <鏡射 src/application/ 的結構>
 ```
 
 ## 設定 CI
