@@ -13,7 +13,7 @@ units、modules、operations 三類除了執行機制不同，該寫多少數量
 2. modules 數量次之：只驗證跨模組整合才會出錯的行為（例如真實依賴的組合方式、交易邊界），units 已經涵蓋的單一模組邏輯不重複寫。
 3. operations 數量最少，理由見 `test-operations.instructions.md`。
 
-infra 不適用這個比例，見 `infra-test.instructions.md`。
+infra 不適用這個比例，見 `test-infra.instructions.md`。
 
 新增測試前，先確認這個情境有沒有被更底層的測試涵蓋過——modules 動筆前先看 units 有沒有涵蓋、operations 動筆前先看 modules 有沒有涵蓋；已經涵蓋時，優先在底層補案例，不疊加到上層。
 

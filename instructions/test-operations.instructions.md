@@ -5,7 +5,7 @@ applyTo: "tests/operations/**"
 
 # Copilot 操作驗證（operations）測試準則
 
-operations 數量最少，比例原則見 `ci-test.instructions.md` 的「測試金字塔」段落。
+operations 數量最少，比例原則見 `test-ci.instructions.md` 的「測試金字塔」段落。
 
 ## 新增測試 SOP
 

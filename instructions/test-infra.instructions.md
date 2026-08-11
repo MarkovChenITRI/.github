@@ -5,7 +5,7 @@ applyTo: "tests/infra/**"
 
 # 僅本機驗證（infra）測試準則
 
-這一類不適用測試金字塔比例，數量以實際要驗證的硬體行為與邊界條件為準（units、modules、operations 三類的比例原則見 `ci-test.instructions.md` 的「測試金字塔」段落）。
+這一類不適用測試金字塔比例，數量以實際要驗證的硬體行為與邊界條件為準（units、modules、operations 三類的比例原則見 `test-ci.instructions.md` 的「測試金字塔」段落）。
 
 ## 新增測試 SOP
 
