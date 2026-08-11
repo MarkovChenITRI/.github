@@ -11,7 +11,7 @@ units、modules、operations 三類除了執行機制不同，該寫多少數量
 
 1. units 數量最多、涵蓋情境最廣：外部依賴都用假物件取代，執行最快、成本最低，同一個模組的每一種輸入組合與邊界條件都該有對應案例。
 2. modules 數量次之：只驗證跨模組整合才會出錯的行為（例如真實依賴的組合方式、交易邊界），units 已經涵蓋的單一模組邏輯不重複寫。
-3. operations 數量最少，理由見 `operations-test.instructions.md`。
+3. operations 數量最少，理由見 `test-operations.instructions.md`。
 
 infra 不適用這個比例，見 `infra-test.instructions.md`。
 

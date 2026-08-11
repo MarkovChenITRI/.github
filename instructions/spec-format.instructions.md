@@ -152,4 +152,4 @@ How 欄位不是一句話，依下列骨架展開：
 | 1 | <...> | <...> |
 ````
 
-這份文件只記錄驗收標準；實際執行與記錄結果，交給 `test` 技能寫進 `<專案資料夾>/tests/operations/<flow-name>.md`，格式定義在 `operations-test.instructions.md`，不在這裡重複。
+這份文件只記錄驗收標準；實際執行與記錄結果，交給 `test` 技能寫進 `<專案資料夾>/tests/operations/<flow-name>.md`，格式定義在 `test-operations.instructions.md`，不在這裡重複。
