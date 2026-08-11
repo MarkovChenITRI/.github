@@ -17,8 +17,8 @@ mindmap
 
 使用者要求新增、修改或修正程式碼時觸發。異動的是程式碼邏輯本身、或把它組裝成可執行產物，屬於撰寫與建置；異動的是把已經建置好的產物送出版本、送進部署環境，屬於發布與部署；異動的是已上線系統的運行狀態、監控告警或異常處理，屬於運行與監控。判斷落在哪一階後，依下表對應的 SOP 執行：
 
-| 階段 | 對應 SOP |
-| --- | --- |
-| 撰寫與建置（Code、Build） | `instructions/code-build.instructions.md` |
-| 發布與部署（Release、Deploy） | `instructions/release-deploy.instructions.md` |
-| 運行與監控（Operate、Monitor） | `instructions/operate-monitor.instructions.md` |
+| 階段 | 對應 SOP | 主動作段落 | 寫入段落 | 產出路徑 |
+| --- | --- | --- | --- | --- |
+| 撰寫與建置（Code、Build） | `instructions/code-build.instructions.md` | 實作步驟 | — | `src/` |
+| 發布與部署（Release、Deploy） | `instructions/release-deploy.instructions.md` | 執行步驟 | — | — |
+| 運行與監控（Operate、Monitor） | `instructions/operate-monitor.instructions.md` | 執行步驟 | — | — |
