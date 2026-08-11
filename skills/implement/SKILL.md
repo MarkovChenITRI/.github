@@ -15,10 +15,10 @@ mindmap
     運行與監控（Operate、Monitor）
 ```
 
-使用者要求新增、修改或修正程式碼時觸發。異動的是程式碼邏輯本身、或把它組裝成可執行產物，屬於撰寫與建置；異動的是把已經建置好的產物送出版本、送進部署環境，屬於發布與部署；異動的是已上線系統的運行狀態、監控告警或異常處理，屬於運行與監控。判斷落在哪一階後，依下表對應的 SOP 執行：
+使用者要求新增、修改或修正程式碼時觸發。異動的是程式碼邏輯本身、或把它組裝成可執行產物，屬於撰寫與建置；異動的是把已經建置好的產物送出版本、送進部署環境，屬於發布與部署；異動的是已上線系統的運行狀態、監控告警或異常處理，屬於運行與監控。這個 skill 底下所有對應文件，都要先遵照 `instructions/implement.instructions.md` 的技能通用準則，再依下表對應的方式執行：
 
-| 階段 | 對應 SOP | 主動作 | 寫入段落 | 產出路徑 |
+| 段落 | 對應文件 | 協作方式 | 職責名稱 | 產出路徑 |
 | --- | --- | --- | --- | --- |
-| 撰寫與建置（Code、Build） | `instructions/code-build.instructions.md` | 實作步驟 | — | `src/` |
-| 發布與部署（Release、Deploy） | `instructions/release-deploy.instructions.md` | 執行步驟 | — | — |
-| 運行與監控（Operate、Monitor） | `instructions/operate-monitor.instructions.md` | 執行步驟 | — | — |
+| 撰寫與建置（Code、Build） | `instructions/code-build.instructions.md` | 實作步驟 | 程式撰寫與建置 | `<專案資料夾>/<系統官方名稱>/` |
+| 發布與部署（Release、Deploy） | `instructions/release-deploy.instructions.md` | 實作步驟 | 發布部署管理 | `<專案資料夾>/.github/workflows/` |
+| 運行與監控（Operate、Monitor） | `instructions/operate-monitor.instructions.md` | 執行步驟 | 系統運行監控 | GitHub 議題（Issue） |

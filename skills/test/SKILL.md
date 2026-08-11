@@ -15,12 +15,12 @@ mindmap
     Copilot 操作驗證
 ```
 
-使用者要求新增、執行或更新測試時觸發。要驗證的內容只能接上實體硬體、在本機執行，搬不進 CI，屬於僅本機驗證；要驗證的是核心邏輯或跨模組整合在異動過程中有沒有壞掉、需要每次異動都有紀律地自動執行，屬於 CI 自動化執行；要驗證的是使用者實際操作瀏覽器或 App 的體驗、只能由 Copilot 親自扮演操作者跑一遍，屬於 Copilot 操作驗證。判斷落在哪一類後，依下表對應的 SOP 執行：
+使用者要求新增、執行或更新測試時觸發。要驗證的內容只能接上實體硬體、在本機執行，搬不進 CI，屬於僅本機驗證；要驗證的是核心邏輯或跨模組整合在異動過程中有沒有壞掉、需要每次異動都有紀律地自動執行，屬於 CI 自動化執行；要驗證的是使用者實際操作瀏覽器或 App 的體驗、只能由 Copilot 親自扮演操作者跑一遍，屬於 Copilot 操作驗證。這個 skill 底下所有對應文件，都要先遵照 `instructions/test.instructions.md` 的技能通用準則，再依下表對應的方式執行：
 
-| 分類 | 對應 SOP | 主動作 | 寫入段落 | 產出路徑 |
+| 分類 | 對應文件 | 協作方式 | 產出路徑 |
 | --- | --- | --- | --- | --- |
-| 僅本機驗證 | `instructions/infra-test.instructions.md` | — | — | `tests/infra/` |
-| CI 自動化執行 | `instructions/ci-test.instructions.md` | — | — | `tests/units/`、`tests/modules/` |
-| Copilot 操作驗證 | `instructions/test-operations.instructions.md`（撰寫）、`prompts/test-operations.prompt.md`（執行） | 執行步驟 | 寫入測試紀錄 | `tests/operations/` |
+| 僅本機驗證 | `instructions/infra-test.instructions.md` | 實作步驟 | `tests/infra/` |
+| CI 自動化執行 | `instructions/ci-test.instructions.md` | 實作步驟 | `tests/units/`、`tests/modules/` |
+| Copilot 操作驗證 | `instructions/test-operations.instructions.md`（撰寫）、`prompts/test-operations.prompt.md`（執行） | 執行步驟 | `tests/operations/` |
 
 `units`、`modules`、`operations` 三類的數量分配依測試金字塔原則遞減，詳細比例與理由見 `ci-test.instructions.md` 的「測試金字塔」段落。
