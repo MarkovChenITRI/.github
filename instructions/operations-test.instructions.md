@@ -13,13 +13,13 @@ operations 數量最少，比例原則見 `ci-test.instructions.md` 的「測試
 
 1. 開啟 `<專案資料夾>/.github/specs/presentation.md`，找到這條新流程要驗證的介面契約。
 2. `<專案資料夾>/.github/specs/usage-examples/<flow-name>.md` 還沒有初稿時，交給 `plan` 技能的 `plan-usage-example.prompt.md` 建立；已有初稿時，直接沿用。
-3. 依「操作工具對應」選定工具，在對話中輸入 `/operations-test` 首次執行並記錄結果。
+3. 依「操作工具對應」選定工具，在對話中輸入 `/test-operations` 首次執行並記錄結果。
 
 ## 執行測試 SOP
 
 需要確認現有測試目前是否通過時：
 
-1. 在對話中輸入 `/operations-test` 並指定要執行的流程；步驟表與預期結果依 `<專案資料夾>/.github/specs/usage-examples/<flow-name>.md` 為準。
+1. 在對話中輸入 `/test-operations` 並指定要執行的流程；步驟表與預期結果依 `<專案資料夾>/.github/specs/usage-examples/<flow-name>.md` 為準。
 2. Copilot 依「操作工具對應」選定的工具逐步實際操作，把結果記錄到 `<專案資料夾>/tests/operations/<flow-name>.md` 的「執行紀錄」段落。
 
 ## 更新測試 SOP
@@ -39,7 +39,7 @@ operations 數量最少，比例原則見 `ci-test.instructions.md` 的「測試
 
 ### 更新步驟
 
-先更新 `<專案資料夾>/.github/specs/usage-examples/<flow-name>.md` 的步驟表與預期結果，在對話中輸入 `/operations-test` 依新步驟重新執行，結果記到 `<專案資料夾>/tests/operations/<flow-name>.md` 的「執行紀錄」段落。
+先更新 `<專案資料夾>/.github/specs/usage-examples/<flow-name>.md` 的步驟表與預期結果，在對話中輸入 `/test-operations` 依新步驟重新執行，結果記到 `<專案資料夾>/tests/operations/<flow-name>.md` 的「執行紀錄」段落。
 
 ## 操作工具對應
 

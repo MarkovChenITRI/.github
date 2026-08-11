@@ -102,4 +102,4 @@ H1 是這份 SOP 的職責名稱，不含「SOP」字樣。定位段落緊跟 H1
 | `plan-usage-example.prompt.md` | 寫入段落名稱為「寫入初稿」，應改為「寫入驗收標準」；完成條件缺格式面查核 |
 | `plan-proposal-narrative.prompt.md` | 開始之前第 2 項分支說明缺「告知使用者已存在」的明確動作 |
 | `plan-proposal-schedule.prompt.md` | 開始之前第 2 項分支說明缺「告知使用者已存在」的明確動作 |
-| `operations-test.prompt.md` | 缺「寫入測試紀錄」段落（目前把寫入動作埋在完成條件第 2 條，讀執行時會遺漏） |
+| `test-operations.prompt.md` | 缺「寫入測試紀錄」段落（目前把寫入動作埋在完成條件第 2 條，讀執行時會遺漏） |

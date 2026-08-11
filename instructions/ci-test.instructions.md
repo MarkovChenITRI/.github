@@ -111,7 +111,7 @@ jobs:
         run: pytest tests/modules
 ```
 
-這份 workflow 只定義 `units` 與 `modules` 兩個 job；`infra` 維持本機執行，`operations` 由 `/operations-test` 手動觸發。非 Python 專案把 `Set up environment` 與執行指令換成對應語言的安裝與測試指令，job 名稱與觸發規則維持不變。
+這份 workflow 只定義 `units` 與 `modules` 兩個 job；`infra` 維持本機執行，`operations` 由 `/test-operations` 手動觸發。非 Python 專案把 `Set up environment` 與執行指令換成對應語言的安裝與測試指令，job 名稱與觸發規則維持不變。
 
 建好 workflow 後，到 GitHub 網站的 repository 頁面，依序執行：`Settings` → `Branches` → 對目標分支的規則按 `Edit`（或 `Add branch protection rule`）→ 勾選 `Require status checks to pass before merging` → 在搜尋框輸入並勾選 `units` 與 `modules` → 按 `Save changes`。完成後，這兩個 job 的失敗才會擋 merge。
 

@@ -21,6 +21,6 @@ mindmap
 | --- | --- | --- | --- | --- |
 | 僅本機驗證 | `instructions/infra-test.instructions.md` | — | — | `tests/infra/` |
 | CI 自動化執行 | `instructions/ci-test.instructions.md` | — | — | `tests/units/`、`tests/modules/` |
-| Copilot 操作驗證 | `instructions/operations-test.instructions.md`（撰寫）、`prompts/operations-test.prompt.md`（執行） | 執行步驟 | 寫入測試紀錄 | `tests/operations/<flow>.md` |
+| Copilot 操作驗證 | `instructions/operations-test.instructions.md`（撰寫）、`prompts/test-operations.prompt.md`（執行） | 執行步驟 | 寫入測試紀錄 | `tests/operations/<flow>.md` |
 
 `units`、`modules`、`operations` 三類的數量分配依測試金字塔原則遞減，詳細比例與理由見 `ci-test.instructions.md` 的「測試金字塔」段落。
