@@ -19,6 +19,6 @@ mindmap
 
 | 階段 | 對應 SOP |
 | --- | --- |
-| 撰寫與建置（Code、Build） | `.github/instructions/code-build.instructions.md` |
-| 發布與部署（Release、Deploy） | `.github/instructions/release-deploy.instructions.md` |
-| 運行與監控（Operate、Monitor） | `.github/instructions/operate-monitor.instructions.md` |
+| 撰寫與建置（Code、Build） | `instructions/code-build.instructions.md` |
+| 發布與部署（Release、Deploy） | 待建立——由 `plan` 確認專案的發布部署方式後再建立 |
+| 運行與監控（Operate、Monitor） | 待建立——由 `plan` 確認專案的監控告警方式後再建立 |
