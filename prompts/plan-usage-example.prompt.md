@@ -24,12 +24,12 @@ description: "協助使用者為一個使用者流程，草擬 <專案資料夾>
 
 ## 寫入驗收標準
 
-1. 依 `spec-format.instructions.md`「使用範例／驗收標準」的固定格式，整理情境／角色、前置條件、步驟三段內容。
+1. 依 `.github/templates/usage-example.md` 的固定格式，整理情境／角色、前置條件、步驟三段內容。
 2. 開啟 `<專案資料夾>/.github/specs/usage-examples/<flow-name>.md`，寫入整理好的內容；檔案不存在時先建立。
 3. 在對話中貼出寫入的完整內容，請使用者確認。
 
 ## 完成條件
 
-- **格式面**：`<專案資料夾>/.github/specs/usage-examples/<flow-name>.md` 已存在，情境／角色、前置條件、步驟三段齊全——逐一對照 `spec-format.instructions.md`「使用範例／驗收標準」範本確認。
+- **格式面**：`<專案資料夾>/.github/specs/usage-examples/<flow-name>.md` 已存在，情境／角色、前置條件、步驟三段齊全——逐一對照 `.github/templates/usage-example.md` 確認。
 - **內容面**：情境／角色有具體的使用者角色描述；前置條件可操作，讀者能判斷系統是否滿足；步驟表每一步都有對應的預期結果。
 - **程序面**：使用者已確認過寫入的內容。

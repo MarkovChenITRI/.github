@@ -25,8 +25,8 @@ mindmap
 
 | 段落 | 對應文件 | 協作方式 | 職責名稱 | 產出路徑 |
 | --- | --- | --- | --- | --- |
-| 目標市場需求、產品開發與技術服務 | `.github/instructions/plan-ideation.prompt.md` | 問答步驟 | 市場需求與技術定位 | `<專案資料夾>/.github/proposals/ideation.md` |
-| 計畫架構與實施方法、計畫時程、查核點 | `.github/instructions/plan-action-items.prompt.md` | 問答步驟 | 計畫執行規劃 | `<專案資料夾>/.github/proposals/action-items.md` |
+| 目標市場需求、產品開發與技術服務 | `.github/prompts/plan-ideation.prompt.md` | 問答步驟 | 市場需求與技術定位 | `<專案資料夾>/.github/proposals/ideation.md` |
+| 計畫架構與實施方法、計畫時程、查核點 | `.github/prompts/plan-action-items.prompt.md` | 問答步驟 | 計畫執行規劃 | `<專案資料夾>/.github/proposals/action-items.md` |
 
 ### 規格書
 

@@ -33,13 +33,13 @@ description: "從 0 協助使用者為一個新模組或功能撰寫規格，透
 
 ## 寫入規格書
 
-1. 依 `spec-format.instructions.md` 的格式，把四個欄位（含 How 欄位的完整骨架）整理成一段。
+1. 依 `.github/templates/module-spec.md` 的欄位格式與 `spec-format.instructions.md`「How 欄位的骨架」，把四個欄位（含 How 欄位的完整骨架）整理成一段。
 2. 開啟對應的規格檔案，把這段加進去；檔案不存在時先建立。
 3. 在對話中貼出寫入的完整段落，請使用者確認內容正確。
 4. 這個模組屬於系統架構尚未列出的新模組時，回到 `plan-overview.prompt.md` 更新系統架構的模組清單。
 
 ## 完成條件
 
-- **格式面**：對應的規格檔案已存在並包含這個模組的段落，Who／What／How／Where 四個欄位齊全——逐一對照 `spec-format.instructions.md`「模組規格欄位」與「How 欄位的骨架」確認。
+- **格式面**：對應的規格檔案已存在並包含這個模組的段落，Who／What／How／Where 四個欄位齊全——逐一對照 `.github/templates/module-spec.md` 與 `spec-format.instructions.md`「How 欄位的骨架」確認。
 - **內容面**：每個欄位的描述有具體依據，讀者能根據這段做出判斷；How 骨架的六個子段落（開場定位、依賴關係、圖、逐一深入、不變式、完成條件）都有填寫。
 - **程序面**：使用者已確認過寫入的內容。
