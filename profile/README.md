@@ -4,7 +4,7 @@
 
 ## Agentic SDK
 
-Since 2023, AI 
+Since 2023, AI companies are trying to build a system that approach to AGI.
 
 #Chips #Models #Harness
 
