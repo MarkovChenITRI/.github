@@ -4,8 +4,8 @@
 
 ## Agentic SDK
 
-Since 2023, AI companies are trying to build a system that approach to AGI.
-
+Since 2023, AI companies are trying to build a system that approach to AGI. 
+#Open Sources
 #Chips #Models #Harness
 
 ```mermaid
