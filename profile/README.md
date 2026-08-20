@@ -1,6 +1,7 @@
 # Markov Chen
 
-歡迎來到我的 GitHub 個人頁面。
+A tech lead
+architecture
 
 ## Agentic SDK
 
