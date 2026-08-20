@@ -1,13 +1,10 @@
-# Markov Chen
+# Markov Chen (make it more C-class)
 
-A tech lead
-architecture
+I'm a system architect at ITRI, working across the semiconductor and mechatronic groups on heterogeneous integration for embedded AI and robotics controllers. That work splits into two SDKs I maintain here: an **Agentic SDK** for reasoning and planning systems, and an **Embodied SDK** for physical control systems.
 
 ## Agentic SDK
 
-Since 2023, AI companies are trying to build a system that approach to AGI. 
-#Open Sources
-#Chips #Models #Harness
+Since 2023, AI companies have been racing toward systems that approach AGI, and this SDK tracks the open-source models, chips, and agent harnesses I draw on for that work. The stack below separates model access, orchestration, memory, and function nodes into four independent layers.
 
 ```mermaid
 ---
@@ -26,8 +23,9 @@ packet
 96-127: "OpenAI SDK"
 ```
 
-這個架構由下而上分為模型介接、流程編排、記憶與功能節點四層。模型介接層統一模型呼叫的相容介面，使流程可使用指定端點與模型執行推論；流程編排層建立執行狀態、安排下一步並管理流程的推進與結束條件；記憶層承接跨回合的對話脈絡與可供檢索的長期經驗；功能節點層處理輸入理解、下一步判斷、資料補回、回覆或工具行動，以及結果檢查與再規劃。這四層將模型連線、執行控制、上下文保存與 Agent 行為分開，使任一層的策略可獨立替換，而不改變其他層的責任。
+Bottom to top: the **model interface** layer standardizes how the workflow calls any model, so inference can run against a chosen endpoint without changing the layers above it. The **orchestration** layer owns execution state, decides the next step, and manages how a run advances or ends. The **memory** layer carries conversation context across turns and stores retrievable long-term experience. The **function-node** layer handles input understanding, next-step decisions, data retrieval, responses and tool actions, and checking results to re-plan. Keeping model connectivity, execution control, context retention, and agent behavior in separate layers means any one layer's strategy can be swapped without touching the others' responsibilities.
 
+Reference hardware I target for this stack:
 
 * [AMD Ryzen AI Series]()
 * [NVIDIA Jetson Series]()
@@ -35,52 +33,39 @@ packet
 
 ## Embodied SDK
 
-
-#physical AI
+The physical-AI counterpart to the Agentic SDK — this is where planning decisions turn into motor commands under real energy, safety, and spatial constraints, covering everything from perception to actuation on real hardware.
 
 ```mermaid
 ---
 title: Embodied SDK
 ---
 packet
-0-15: "具身智慧開發套件（Embodied SDK）"
-16-31: "觸控型應用程式（Web）"
-32-42: "地圖導航站"
-43-52: "測試遊樂場"
-53-63: "智慧主控板"
-64-73: "機構定位與轉譯"
-74-84: "虛實動力學校準"
-85-95: "邊緣 AI 推論引擎"
-96-111: "控制指令生成器"
-112-127: "控制介面"
-128-135: "電池管理"
-136-143: "安全護網"
+0-15: "Embodied SDK"
+16-31: "Touch Web App"
+32-42: "Map & Navigation Console"
+43-52: "Test Playground"
+53-63: "Smart Control Board"
+64-73: "Mechanism Localization & Translation"
+74-84: "Sim-to-Real Dynamics Calibration"
+85-95: "Edge AI Inference Engine"
+96-111: "Control Command Generator"
+112-127: "Control Interface"
+128-135: "Battery Management"
+136-143: "Safety Net"
 144-151: "SLAM"
-152-159: "任務規劃"
-160-166: "硬體抽象"
-167-173: "運動控制"
-174-180: "共享記憶體"
-181-186: "環境感測"
-187-191: "AI 加速器"
-192-207: "即時作業系統（RTOS）"
-208-223: "通用作業系統（GTOS）"
-224-255: "大小腦共控平台"
+152-159: "Task Planning"
+160-166: "Hardware Abstraction"
+167-173: "Motion Control"
+174-180: "Shared Memory"
+181-186: "Environment Sensing"
+187-191: "AI Accelerator"
+192-207: "Real-Time OS (RTOS)"
+208-223: "General-Purpose OS (GTOS)"
+224-255: "Cerebrum-Cerebellum Co-Control Platform"
 ```
 
-這個架構以四層分離具身系統從操作到執行的責任：使用者介面層負責讓開發與現場操作人員建立、觀察及操作任務；核心工具層負責提供可由上層共用的定位、校準與邊緣運算能力；領域應用層負責將操作意圖轉化為受能源、安全、空間狀態與任務目標約束的控制決策；基礎設施層負責提供裝置存取、即時執行、感測與運算資源，使上層能力可在實體平台上運行。各層以職責邊界管理變更：介面層不處理領域決策，核心工具層不決定任務目標，領域應用層不實作硬體驅動，基礎設施層不承擔使用者流程。模組間的資料格式、呼叫順序、技術堆疊、硬體通訊協定與 Benchmark 專案尚未定義，待業界比對與模組規格完成後定案。
+Four layers split responsibility from operation down to execution. The **interface** layer lets developers and field operators create, observe, and run tasks. The **core tools** layer provides shared positioning, calibration, and edge-compute capabilities that everything above draws on. The **domain application** layer turns operational intent into control decisions, constrained by energy, safety, spatial state, and mission goals. The **infrastructure** layer provides device access, real-time execution, sensing, and compute so the upper layers can run on physical hardware. Each layer keeps to its own boundary — the interface layer doesn't make domain decisions, core tools doesn't set mission goals, the domain layer doesn't implement hardware drivers, and infrastructure doesn't own user workflows. Data formats between modules, call order, the technology stack, hardware protocols, and benchmark targets are still open, pending industry comparison and finalized module specs.
 
+## About This Account
 
-
-## 這裡的內容
-
-這個帳號用於整理軟體開發、系統設計與技術文件相關的工作成果。
-
-## 近期關注
-
-- 軟體架構與可維護性
-- 開發流程與自動化
-- 以清楚文件支援團隊協作
-
-## 專案
-
-精選專案與技術筆記會陸續整理於公開儲存庫。
+This account collects my work on software development, system design, and technical documentation — currently centered on software architecture and maintainability, workflow automation, and using clear documentation to support team collaboration. Selected projects and technical notes will be added to public repositories here over time.
