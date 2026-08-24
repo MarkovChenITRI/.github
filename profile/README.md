@@ -1,4 +1,4 @@
-# Markov Chen (make it more C-class)
+# Markov Chen
 
 I'm a system architect for AI research and development, advocating semiconductor innovation and robotics intelligence integrated with sovereign AI. help enterprise
 
