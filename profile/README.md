@@ -2,7 +2,7 @@
 
 ### AI R&D Architect & Developer Advocate
 
-💡 Bridging AI research, semiconductor innovation, and robotics intelligence across MediaTek, AMD, and NVIDIA platforms. Helping enterprises seamlessly deploy AI solutions on embedded systems, workstations, and the cloud.
+💡 Bridging AI research, semiconductor innovation, and robotics intelligence across **MediaTek**, **AMD**, and **NVIDIA** platforms. Helping enterprises seamlessly deploy AI solutions on **embedded systems**, **workstations**, and the **cloud**.
 
 
 ## Agentic SDK
