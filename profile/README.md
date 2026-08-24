@@ -1,9 +1,10 @@
 # Markov Chen
 
-I'm a architect for AI research and development, advocating semiconductor innovation and robotics intelligence integrated with **MediaTek**, **AMD** and **NVIDIA** playforms. help enterprises build their own AI solutions on **embedded systems**, **workstations** and **cloud**.
+I'm a architect for AI research and development, advocating semiconductor innovation and robotics intelligence integrated with **MediaTek**, **AMD** and **NVIDIA** playforms. help enterprises deploy their own AI solutions on **embedded systems**, **workstations** and **cloud**.
 
-AI Hub
-at ITRI, I work for sovereign AI. That work splits into two SDKs I maintain here: an **Agentic SDK** for reasoning and planning systems, and an **Embodied SDK** for physical control systems.
+at ITRI, I responsible for sovereign AI. That build a Hub for collecting both Descrimativ AI and Generative AI 
+
+work splits into two SDKs I maintain here: an **Agentic SDK** for reasoning and planning systems, and an **Embodied SDK** for physical control systems.
 
 ## Agentic SDK
 
