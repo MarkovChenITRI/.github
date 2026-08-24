@@ -4,6 +4,10 @@
 
 💡 Bridging AI research, semiconductor innovation, and robotics intelligence across **MediaTek**, **AMD**, and **NVIDIA** platforms. Helping enterprises seamlessly deploy AI solutions on **embedded systems**, **workstations**, and the **cloud**.
 
+* [MediaTek Genio Series](https://github.com/R300-AI/MTK-genio-demo.git)
+* [AMD Ryzen AI Series](https://github.com/R300-AI/amd-ryzen-ai-benchmark)
+* [NVIDIA Jetson Series](https://github.com/R300-AI/NVDA-jetson-demo)
+
 At ITRI, I act as a bridge between the developer community and product teams—translating product value to external developers and bringing their feedback back to shape **technical roadmaps**. I also build repositories and demo apps to help developers get started more easily. To see my commercial outcomes and case studies, please visit [ITRI AI Hub](ai-hub-portal.azurewebsites.net/home) website.
 
 ## Agentic SDK
@@ -34,9 +38,8 @@ Bottom to top: the **model interface** layer standardizes how the workflow calls
 
 Reference hardware I target for this stack:
 
-* [AMD Ryzen AI Series]()
-* [NVIDIA Jetson Series]()
-* [MediaTek Genio Series]()
+
+
 
 ## Embodied SDK
 
