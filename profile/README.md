@@ -1,6 +1,6 @@
 # Markov Chen (make it more C-class)
 
-I'm a system architect in AI research and development, advocating semiconductor innovation and robotics intelligence adopts sovereign AI.
+I'm a system architect in AI research and development, advocating semiconductor innovation and robotics intelligence integrated with sovereign AI.
 
 ITRI AI Hub for sovereign AI Chips can be used in semiconductor innovation and robotics intelligence technilogy.
 
