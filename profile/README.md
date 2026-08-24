@@ -2,9 +2,8 @@
 
 I'm a architect for AI research and development, advocating semiconductor innovation and robotics intelligence integrated with MediaTek, AMD and NVIDIA AI playforms. help enterprises build their own AI solutions on embedded, workstation and cloud systems.
 
-ITRI AI Hub for sovereign AI Chips can be used in semiconductor innovation and robotics intelligence technilogy.
-
-at ITRI, working across the semiconductor and mechatronic groups on heterogeneous integration for embedded AI and robotics controllers. That work splits into two SDKs I maintain here: an **Agentic SDK** for reasoning and planning systems, and an **Embodied SDK** for physical control systems.
+AI Hub
+at ITRI, I work for sovereign AI. That work splits into two SDKs I maintain here: an **Agentic SDK** for reasoning and planning systems, and an **Embodied SDK** for physical control systems.
 
 ## Agentic SDK
 
