@@ -4,7 +4,7 @@
 
 💡 Bridging AI research, semiconductor innovation, and robotics intelligence across **MediaTek**, **AMD**, and **NVIDIA** platforms. Helping enterprises seamlessly deploy AI solutions on **embedded systems**, **workstations**, and the **cloud**.
 
-At ITRI, I act as a bridge between the developer community and product teams—translating product value to external developers and bringing their feedback back to shape **technical roadmaps**. I also build repositories and demo apps to help developers get started more easily. You can visit [ITRI AI Hub](ai-hub-portal.azurewebsites.net/home) for more information.
+At ITRI, I act as a bridge between the developer community and product teams—translating product value to external developers and bringing their feedback back to shape **technical roadmaps**. I also build repositories and demo apps to help developers get started more easily. all of the  [ITRI AI Hub](ai-hub-portal.azurewebsites.net/home) website.
 
 ## Agentic SDK
 
