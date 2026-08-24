@@ -1,6 +1,6 @@
 # Markov Chen (make it more C-class)
 
-I'm a system architect at ITRI, working across the semiconductor and mechatronic groups on heterogeneous integration for embedded AI and robotics controllers. That work splits into two SDKs I maintain here: an **Agentic SDK** for reasoning and planning systems, and an **Embodied SDK** for physical control systems.
+I'm a Developer Advocate at ITRI, working across the semiconductor and mechatronic groups on heterogeneous integration for embedded AI and robotics controllers. That work splits into two SDKs I maintain here: an **Agentic SDK** for reasoning and planning systems, and an **Embodied SDK** for physical control systems.
 
 ## Agentic SDK
 
