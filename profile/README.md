@@ -1,6 +1,6 @@
 # Markov Chen
 
-I'm a system architect for AI research and development, advocating semiconductor innovation and robotics intelligence integrated with MediaTek, AMD and NVIDIA solutions. help enterprise
+I'm a system architect for AI research and development, advocating semiconductor innovation and robotics intelligence integrated with MediaTek, AMD and NVIDIA AI playforms. help enterprises build their own AI solutions on embedded, workstation and cloud systems.
 
 ITRI AI Hub for sovereign AI Chips can be used in semiconductor innovation and robotics intelligence technilogy.
 
