@@ -31,7 +31,7 @@ packet
 48-63: "Hierarchical Memory（MemGPT）"
 64-79: "Workflow"
 80-95: "Plan-Action"
-96-127: "OpenAI SDK(Plan&Action)"
+96-127: "OpenAI SDK (Plan & Action)"
 ```
 
 Bottom to top: the **model interface** layer standardizes how the workflow calls any model, so inference can run against a chosen endpoint without changing the layers above it. The **orchestration** layer owns execution state, decides the next step, and manages how a run advances or ends. The **memory** layer carries conversation context across turns and stores retrievable long-term experience. The **function-node** layer handles input understanding, next-step decisions, data retrieval, responses and tool actions, and checking results to re-plan. Keeping model connectivity, execution control, context retention, and agent behavior in separate layers means any one layer's strategy can be swapped without touching the others' responsibilities.
