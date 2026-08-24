@@ -9,11 +9,9 @@ At ITRI, I act as a bridge between the developer community and product teams—t
 ## Agentic SDK
 
 
-I responsible for sovereign AI. That build a Hub for collecting both Descrimativ AI and Generative AI 
-
-work splits into two SDKs I maintain here: an **Agentic SDK** for reasoning and planning systems, and an **Embodied SDK** for physical control systems.
-
 Since 2023, AI companies have been racing toward systems that approach AGI, and this SDK tracks the open-source models, chips, and agent harnesses I draw on for that work. The stack below separates model access, orchestration, memory, and function nodes into four independent layers.
+
+I responsible for sovereign AI. That build a Hub for collecting both Descrimativ AI and Generative AI 
 
 ```mermaid
 ---
