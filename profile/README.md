@@ -47,7 +47,7 @@ Bottom to top: the **model interface** layer standardizes how the workflow calls
 
 Reference hardware I target for this stack:
 
-
+## Harness SDK
 
 
 ## Embodied SDK
