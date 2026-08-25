@@ -16,15 +16,7 @@ Since 2023,
 
 transformers(2017)-scaling law(2020)-emergent abilities(2023)-hallucination(2024)-governance(2025)
 
-hardware acceleration
 
-
-
-famous while scaling law bring us magical tricky point. from context engineering, low-rank fine tuned, retrieval, toolcalling to harness engineering. all of the thecnologies tell us commercial used AI cannot just rely on weight
-
-companies have been racing toward systems that approach AGI, and this SDK tracks the open-source models, chips, and agent harnesses I draw on for that work. The stack below separates model access, orchestration, memory, and function nodes into four independent layers.
-
-I responsible for sovereign AI. That build a Hub for collecting both Descrimativ AI and Generative AI [**Agentic-SDK**](https://github.com/R300-AI/Agentic-SDK)
 
 ```mermaid
 ---
@@ -38,8 +30,8 @@ packet
 24-31: "Reflect"
 32-47: "InContextMemory"
 48-63: "Hierarchical Memory（MemGPT）"
-64-79: "Workflow"
-80-95: "Plan-Action"
+64-79: "In-Context Workflow"
+80-95: "Cross-Context Workflow"
 96-127: "OpenAI SDK (Plan & Action)"
 ```
 
@@ -84,6 +76,16 @@ packet
 ```
 
 Four layers split responsibility from operation down to execution. The **interface** layer lets developers and field operators create, observe, and run tasks. The **core tools** layer provides shared positioning, calibration, and edge-compute capabilities that everything above draws on. The **domain application** layer turns operational intent into control decisions, constrained by energy, safety, spatial state, and mission goals. The **infrastructure** layer provides device access, real-time execution, sensing, and compute so the upper layers can run on physical hardware. Each layer keeps to its own boundary — the interface layer doesn't make domain decisions, core tools doesn't set mission goals, the domain layer doesn't implement hardware drivers, and infrastructure doesn't own user workflows. Data formats between modules, call order, the technology stack, hardware protocols, and benchmark targets are still open, pending industry comparison and finalized module specs.
+
+hardware acceleration
+
+
+
+famous while scaling law bring us magical tricky point. from context engineering, low-rank fine tuned, retrieval, toolcalling to harness engineering. all of the thecnologies tell us commercial used AI cannot just rely on weight
+
+companies have been racing toward systems that approach AGI, and this SDK tracks the open-source models, chips, and agent harnesses I draw on for that work. The stack below separates model access, orchestration, memory, and function nodes into four independent layers.
+
+I responsible for sovereign AI. That build a Hub for collecting both Descrimativ AI and Generative AI [**Agentic-SDK**](https://github.com/R300-AI/Agentic-SDK)
 
 ## About This Account
 
