@@ -35,10 +35,6 @@ packet
 96-127: "OpenAI SDK (Plan & Action)"
 ```
 
-Bottom to top: the **model interface** layer standardizes how the workflow calls any model, so inference can run against a chosen endpoint without changing the layers above it. The **orchestration** layer owns execution state, decides the next step, and manages how a run advances or ends. The **memory** layer carries conversation context across turns and stores retrievable long-term experience. The **function-node** layer handles input understanding, next-step decisions, data retrieval, responses and tool actions, and checking results to re-plan. Keeping model connectivity, execution control, context retention, and agent behavior in separate layers means any one layer's strategy can be swapped without touching the others' responsibilities.
-
-Reference hardware I target for this stack:
-
 ## Harness SDK
 
 
@@ -79,6 +75,9 @@ Four layers split responsibility from operation down to execution. The **interfa
 
 hardware acceleration
 
+Bottom to top: the **model interface** layer standardizes how the workflow calls any model, so inference can run against a chosen endpoint without changing the layers above it. The **orchestration** layer owns execution state, decides the next step, and manages how a run advances or ends. The **memory** layer carries conversation context across turns and stores retrievable long-term experience. The **function-node** layer handles input understanding, next-step decisions, data retrieval, responses and tool actions, and checking results to re-plan. Keeping model connectivity, execution control, context retention, and agent behavior in separate layers means any one layer's strategy can be swapped without touching the others' responsibilities.
+
+Reference hardware I target for this stack:
 
 
 famous while scaling law bring us magical tricky point. from context engineering, low-rank fine tuned, retrieval, toolcalling to harness engineering. all of the thecnologies tell us commercial used AI cannot just rely on weight
