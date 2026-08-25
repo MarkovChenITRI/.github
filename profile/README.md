@@ -12,7 +12,7 @@ At ITRI, I act as a bridge between the developer community and product teams—t
 
 ## Agentic SDK
 
-Since 2023, 
+To support 
 
 transformers(2017)-scaling law(2020)-emergent abilities(2023)-hallucination(2024)-governance(2025)
 
