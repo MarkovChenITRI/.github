@@ -14,17 +14,11 @@ At ITRI, I act as a bridge between the developer community and product teams—t
 
 Since 2023, 
 
-transformers(2017)-scaling law(2020)-GPT(2023)-
+transformers(2017)-scaling law(2020)-emergent abilities(2023)-hallucination(2024)-governance(2025)
 
 hardware acceleration
 
-scaling-law lead us discover emergence abilities of foundation models. 
 
-governance,  
- illusion
-
-emergent abilities
-hallucination
 
 famous while scaling law bring us magical tricky point. from context engineering, low-rank fine tuned, retrieval, toolcalling to harness engineering. all of the thecnologies tell us commercial used AI cannot just rely on weight
 
