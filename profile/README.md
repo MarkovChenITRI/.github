@@ -35,9 +35,9 @@ packet
 
 This architecture **eliminates reinventing the wheel** to build a complete system from scratch, allowing developers to focus exclusively on innovating within any single module shown above. For instance, hardware innovators can test their chips using our ready-made upper layers, and software developers can plug in a new planning or memory mechanism without building the underlying infrastructure.
 
-## Harnesy
-
 ## Embodied Plan and Actions
+
+## Harnesy
 
 # Vision
 
