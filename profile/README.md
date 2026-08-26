@@ -39,6 +39,7 @@ from agentic_sdk import Workflow
 from agentic_sdk.modules import GenerativeAction
 
 workflow = Workflow(
+    memory="in-context",
     action=GenerativeAction(
         api_key="ollama",
         base_url="http://localhost:11434/v1/",
