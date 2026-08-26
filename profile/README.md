@@ -33,10 +33,12 @@ packet
 18-23: "Act"
 24-31: "Reflect"
 32-47: "InContextMemory"
-48-63: "Hierarchical Memory（MemGPT）"
-64-79: "In-Context Workflow"
-80-95: "Cross-Context Workflow"
-96-127: "OpenAI SDK (Plan & Action)"
+48-63: "CrossContextMemory"
+64-95: "Workflow"
+96-103: "OpenAI"
+104-111: "Azure"
+112-119: "Ollama"
+120-127: "vLLM"
 ```
 
 ## Harness SDK
