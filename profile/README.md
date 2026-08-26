@@ -34,6 +34,21 @@ packet
 ```
 
 This architecture **eliminates reinventing the wheel** to build a complete system from scratch, allowing developers to focus exclusively on innovating within any single module shown above. For instance, hardware innovators can test their chips using our ready-made upper layers, and software developers can plug in a new planning or memory mechanism without building the underlying infrastructure.
+```
+from agentic_sdk import Workflow
+from agentic_sdk.modules import GenerativeAction
+
+workflow = Workflow(
+    action=GenerativeAction(
+        api_key="ollama",
+        base_url="http://localhost:11434/v1/",
+        model="llama3.2:1b",
+    )
+)
+
+result = workflow.run("What's your name?")
+print(result.final_message)
+```
 
 ## Embodied AI
 
