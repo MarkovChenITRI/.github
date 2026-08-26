@@ -33,22 +33,14 @@ packet
 
 ## Harnesy
 
-## Embodied Actions
+## Embodied Plan and Actions
 
-
+# Vision
 
 To support 
 
 transformers(2017)-scaling law(2020)-emergent abilities(2023)-hallucination(2024)-governance(2025)
 
-
-
-
-
-## Harness SDK
-
-
-## Embodied Vision
 
 The physical-AI counterpart to the Agentic SDK — this is where planning decisions turn into motor commands under real energy, safety, and spatial constraints, covering everything from perception to actuation on real hardware.
 
