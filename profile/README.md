@@ -12,6 +12,8 @@ At ITRI, I act as a bridge between the developer community and product teams—t
 
 ## Agentic SDK
 
+To enable any language models on communities can be acceletated by given silicon solution, I proposed a [Agentic SDK](https://github.com/R300-AI/Agentic-SDK) for
+
 ```mermaid
 ---
 title: Agentic SDK Architecture & Tech Stack
