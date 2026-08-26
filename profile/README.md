@@ -33,7 +33,7 @@ packet
 18-23: "Act"
 24-31: "Reflect"
 32-47: "InContextMemory"
-48-63: "CrossContextMemory"
+48-63: "CrossContextMemory (MemGPT)"
 64-95: "Workflow"
 96-103: "OpenAI"
 104-111: "Azure"
