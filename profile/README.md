@@ -52,7 +52,7 @@ result = workflow.run("What's your name?")
 print(result.final_message)
 ```
 
-## Embodied AI
+## Embodied Action Runtime
 
 Vision
 
