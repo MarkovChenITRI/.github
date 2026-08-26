@@ -12,7 +12,7 @@ At ITRI, I act as a bridge between the developer community and product teams—t
 
 ## Agentic SDK
 
-To enable any language models on communities can be acceletated by given silicon solution, I proposed a [**framework**](https://github.com/R300-AI/Agentic-SDK) that make a single-scope innovative effort can proof theirs concepts with leveraging public offered open-source techniques. It reduce the whole research and development periods.
+To enable any AI agents on communities can be deploy on given silicon solution, I proposed a [**framework**](https://github.com/R300-AI/Agentic-SDK) that make a single-scope innovative effort can proof theirs concepts with leveraging public offered open-source techniques. It reduce the whole research and development periods.
 
 ```mermaid
 ---
@@ -33,7 +33,7 @@ packet
 120-127: "vLLM"
 ```
 
-while some silicon innovator proof theirs hardware can 
+while some silicon innovator proof theirs hardware can accelerating a given model, then they just need to make sure the inference process are satisfy one on the interfaces button layer, then they can build an agent by choising a given module rather than rebluid theirs own non-official version. while some agent developers build up an
 
 ## Harnesy
 
