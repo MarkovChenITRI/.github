@@ -10,7 +10,6 @@
 
 At ITRI, I act as a bridge between the developer community and product teams—translating product value to external developers and bringing their feedback back to shape **technical roadmaps**. I also build repositories and demo apps to help developers get started more easily. To see my commercial outcomes and case studies, please visit [ITRI AI Hub](ai-hub-portal.azurewebsites.net/home) website.
 
-## Harnesy
 ## Agentic SDK
 
 ```mermaid
@@ -32,7 +31,9 @@ packet
 120-127: "vLLM"
 ```
 
-## Embodied SDK
+## Harnesy
+
+## Embodied Kit
 
 
 
