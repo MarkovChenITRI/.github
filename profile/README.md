@@ -15,7 +15,7 @@ At ITRI, I act as a bridge between the developer community and product teams—t
 
 ```mermaid
 ---
-title: Agentic SDK
+title: Agentic SDK Architecture & Tech Stack
 ---
 packet
 0-5: "Perceive"
