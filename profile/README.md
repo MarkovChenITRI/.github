@@ -37,9 +37,11 @@ This architecture **eliminates reinventing the wheel** to build a complete syste
 
 ## Embodied Plan and Actions
 
+Vision
+
 ## Harnesy
 
-# Vision
+
 
 To support 
 
