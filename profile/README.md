@@ -12,15 +12,6 @@ At ITRI, I act as a bridge between the developer community and product teams—t
 
 ## Harnesy
 ## Agentic SDK
-## Embodied SDK
-
-
-
-To support 
-
-transformers(2017)-scaling law(2020)-emergent abilities(2023)-hallucination(2024)-governance(2025)
-
-
 
 ```mermaid
 ---
@@ -40,6 +31,18 @@ packet
 112-119: "Ollama"
 120-127: "vLLM"
 ```
+
+## Embodied SDK
+
+
+
+To support 
+
+transformers(2017)-scaling law(2020)-emergent abilities(2023)-hallucination(2024)-governance(2025)
+
+
+
+
 
 ## Harness SDK
 
