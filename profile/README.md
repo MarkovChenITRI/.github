@@ -33,6 +33,8 @@ packet
 120-127: "vLLM"
 ```
 
+while some silicon innovator proof theirs hardware can 
+
 ## Harnesy
 
 ## Embodied Plan and Actions
