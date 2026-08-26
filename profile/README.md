@@ -12,7 +12,7 @@ At ITRI, I act as a bridge between the developer community and product teams—t
 
 ## Agentic SDK
 
-To enable any language models on communities can be acceletated by given silicon solution, I proposed a [**framework**](https://github.com/R300-AI/Agentic-SDK) that leveraging 
+To enable any language models on communities can be acceletated by given silicon solution, I proposed a [**framework**](https://github.com/R300-AI/Agentic-SDK) that make a single-scope innovative effort can proof theirs concepts with leveraging public offered open-source techniques. It reduce the whole research and development periods.
 
 ```mermaid
 ---
