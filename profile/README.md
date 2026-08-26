@@ -33,7 +33,7 @@ packet
 120-127: "vLLM"
 ```
 
-This architecture eliminates reinventing the wheel to build a complete system from scratch, allowing developers to focus on innovation within any single module shown above while leveraging our baseline methods for the rest. 
+This architecture **eliminates reinventing the wheel** to build a complete system from scratch, allowing developers to focus on innovation within any single module shown above while leveraging our baseline methods for the rest. 
 
 ## Harnesy
 
