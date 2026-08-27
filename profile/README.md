@@ -12,7 +12,7 @@ At ITRI, I act as a bridge between the developer community and product teams—t
 
 ## Agentic SDK
 
-To enable AI agents from the community to deploy directly on diverse silicon solutions, I proposed a [**framework**](https://github.com) that allows niche innovations to rapidly prove their concepts by leveraging public open-source techniques, significantly cutting down the overall R&D cycle.
+To enable **AI agents** from the community to **deploy directly on diverse silicon solutions**, I proposed a [**framework**](https://github.com) that allows niche innovations to rapidly prove their concepts by leveraging public open-source techniques, significantly cutting down the overall R&D cycle.
 
 ```mermaid
 ---
