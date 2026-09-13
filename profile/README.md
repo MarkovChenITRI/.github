@@ -64,31 +64,28 @@ print(result.final_message)
 
 ```mermaid
 ---
-title: Embodied SDK
+title: Embodied SDK Architecture
 ---
 packet
-0-15: "Embodied SDK"
-16-31: "Touch Web App"
-32-42: "Map & Navigation Console"
-43-52: "Test Playground"
-53-63: "Smart Control Board"
-64-73: "Mechanism Localization & Translation"
-74-84: "Sim-to-Real Dynamics Calibration"
-85-95: "Edge AI Inference Engine"
-96-111: "Control Command Generator"
-112-127: "Control Interface"
-128-135: "Battery Management"
-136-143: "Safety Net"
-144-151: "SLAM"
-152-159: "Task Planning"
-160-166: "Hardware Abstraction"
-167-173: "Motion Control"
-174-180: "Shared Memory"
-181-186: "Environment Sensing"
-187-191: "AI Accelerator"
-192-207: "Real-Time OS (RTOS)"
-208-223: "General-Purpose OS (GTOS)"
-224-255: "Cerebrum-Cerebellum Co-Control Platform"
+0-63: "Universal Embodied SDK for VLA"
+64-95: "Actions"
+96-127: "Feedbacks"
+128-143: "Goal-Driven Mode (Skills)"
+144-159: "Reactive Driving Mode (Remote)"
+160-175: "Real-Time Channel (100Hz-1000Hz)"
+176-191: "High-Bandwidth Channel (10Hz-60Hz)"
+192-203: "GTOS"
+204-215: "RTOS"
+216-221: "Motion Rep"
+222-227: "Physics"
+228-233: "Sys Dynamics"
+234-239: "Signal Trans"
+240-245: "Coord Trans"
+246-251: "Clock Sampl"
+252-252: "Arm"
+253-253: "AMR"
+254-254: "Hand / Leg"
+255-255: "Head"
 ```
 
 ## Harnesy
