@@ -39,13 +39,23 @@ This architecture **eliminates reinventing the wheel** to build a complete syste
 from agentic_sdk import Workflow
 from agentic_sdk.modules import GenerativeAction
 
+endpoint = {"api_key": "ollama", "base_url": "http://localhost:11434/v1/", "model": "qwen3.8:27b"}
+listener = RealtimeTranscription(api_key=..., base_url=..., model=...) 
+
 workflow = Workflow(
     memory="InContext",
-    action=GenerativeAction(
-        api_key="ollama",
-        base_url="http://localhost:11434/v1/",
-        model="llama3.2:1b",
-    )
+    perceive=VoiceTextPerceive(transport=listener),
+    plan=NextStepWithSkills(skill_packages="examples/skills", **endpoint),
+    action=ToolCallAction(
+        , **endpoint,
+        tools=[{
+            "type": "function",
+            "function": {
+                "name": "confirm_booking",
+                "description": "送出預約",
+                "parameters": {"type": "object", "properties": {"date": {"type": "string"}}},
+            },
+    }]
 )
 
 result = workflow.run("What's your name?")
