@@ -60,6 +60,8 @@ result = workflow.run("What's your name?")
 print(result.final_message)
 ```
 
+In practice, the unified Workflow connects the upper VoiceTextPerceive, SemanticRetrieve, and MemGPT modules into a single control pipeline. This pipeline directly drives the local Ollama or vLLM endpoints, matching your software logic into model inference running on the underlying silicon platform.
+
 ## Universal Embodied SDK
 
 ```mermaid
