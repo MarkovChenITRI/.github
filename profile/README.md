@@ -37,25 +37,23 @@ This architecture **eliminates reinventing the wheel** to build a complete syste
 
 ```python
 from agentic_sdk import Workflow
-from agentic_sdk.modules import GenerativeAction
+from agentic_sdk.audio.realtime import RealtimeTranscription
+from agentic_sdk.modules import (
+    NextStepWithSkills, PlanCheckReflect, SemanticRetrieve, ToolCallAction, VoiceTextPerceive,
+)
 
 endpoint = {"api_key": "ollama", "base_url": "http://localhost:11434/v1/", "model": "qwen3.8:27b"}
-listener = RealtimeTranscription(api_key=..., base_url=..., model=...) 
+listener = RealtimeTranscription(api_key=..., base_url=..., model=...)
 
 workflow = Workflow(
-    memory="InContext",
     perceive=VoiceTextPerceive(transport=listener),
-    plan=NextStepWithSkills(skill_packages="examples/skills", **endpoint),
-    retrieve=SemanticRetrieve（）
-    reflect=PlanCheckReflect()
-    action=ToolCallAction(
-        , **endpoint,
-        tools=[{
-            "type": "function",
-            "function": {
-                ...
-            },
-    }]
+    plan=NextStepWithSkills(skill_packages="path/to/skill-package", **endpoint),
+    retrieve=SemanticRetrieve(sources=["path/to/knowledge.md"], **embedding),
+    reflect=PlanCheckReflect(**endpoint),
+    action=ToolCallAction(**endpoint, tools=[{
+        "type": "function",
+        "function": {...},
+    }]),
 )
 
 result = workflow.run("What's your name?")
