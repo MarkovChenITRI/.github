@@ -59,7 +59,6 @@ workflow = Workflow(
 result = workflow.run("What's your name?")
 print(result.final_message)
 ```
-It combine both open-sources ecosystem and Sovereign consideration in our business. developers can adopt our ai chip to build an general agent, innovators can proof theirs new ai technology and get the funding as soon as possible.
 
 ## Universal Embodied SDK
 
