@@ -46,14 +46,14 @@ workflow = Workflow(
     memory="InContext",
     perceive=VoiceTextPerceive(transport=listener),
     plan=NextStepWithSkills(skill_packages="examples/skills", **endpoint),
+    retrieve=SemanticRetrieve（）
+    reflect=PlanCheckReflect()
     action=ToolCallAction(
         , **endpoint,
         tools=[{
             "type": "function",
             "function": {
-                "name": "confirm_booking",
-                "description": "送出預約",
-                "parameters": {"type": "object", "properties": {"date": {"type": "string"}}},
+                ...
             },
     }]
 )
@@ -63,19 +63,6 @@ print(result.final_message)
 ```
 
 ## Universal Embodied SDK
-
-Vision
-
-## Harnesy
-
-* [Office A+ Writer]()
-
-To support 
-
-transformers(2017)-scaling law(2020)-emergent abilities(2023)-hallucination(2024)-governance(2025)
-
-
-The physical-AI counterpart to the Agentic SDK — this is where planning decisions turn into motor commands under real energy, safety, and spatial constraints, covering everything from perception to actuation on real hardware.
 
 ```mermaid
 ---
@@ -105,6 +92,19 @@ packet
 208-223: "General-Purpose OS (GTOS)"
 224-255: "Cerebrum-Cerebellum Co-Control Platform"
 ```
+
+## Harnesy
+
+* [Office A+ Writer]()
+
+To support 
+
+transformers(2017)-scaling law(2020)-emergent abilities(2023)-hallucination(2024)-governance(2025)
+
+
+The physical-AI counterpart to the Agentic SDK — this is where planning decisions turn into motor commands under real energy, safety, and spatial constraints, covering everything from perception to actuation on real hardware.
+
+
 
 Four layers split responsibility from operation down to execution. The **interface** layer lets developers and field operators create, observe, and run tasks. The **core tools** layer provides shared positioning, calibration, and edge-compute capabilities that everything above draws on. The **domain application** layer turns operational intent into control decisions, constrained by energy, safety, spatial state, and mission goals. The **infrastructure** layer provides device access, real-time execution, sensing, and compute so the upper layers can run on physical hardware. Each layer keeps to its own boundary — the interface layer doesn't make domain decisions, core tools doesn't set mission goals, the domain layer doesn't implement hardware drivers, and infrastructure doesn't own user workflows. Data formats between modules, call order, the technology stack, hardware protocols, and benchmark targets are still open, pending industry comparison and finalized module specs.
 
