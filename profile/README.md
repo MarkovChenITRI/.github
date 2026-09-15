@@ -66,6 +66,46 @@ In practice, the unified **Workflow** connects the upper `VoiceTextPerceive`, `S
 
 ```mermaid
 ---
+title: Universal Embodied SDK Architecture
+---
+packet
+0-31: "Universal Embodied SDK for Embodied AI & Robotics"
+32-47: "Sparse Waypoint Control"
+48-63: "Dense Action Control"
+64-71: "Waypoint Program Interpreter"
+72-87: "Digital Twin"
+88-95: "Asynchronous Action Executor"
+96-103: "Motion Commands"
+104-111: "Physical Constraints"
+112-119: "State Feedback"
+120-127: "Temporal Determinism"
+128-133: "Inverse Kinematics"
+134-139: "Action Chunk Smoothing"
+140-145: "Streaming Interpolation & Command Timeout"
+146-151: "Joint & Workspace Limits"
+152-157: "CBF Safety Filter"
+158-163: "State Streaming"
+164-169: "Coordinate Frame Management"
+170-175: "Encoder Feedback"
+176-181: "Digital Twin Runtime Verification"
+182-187: "Command Buffer"
+188-193: "Real-time Cyclic Scheduling"
+194-199: "Timestamp Synchronization"
+200-205: "EtherCAT DC Synchronization"
+206-209: "Vertical Multi-Joint Robot"
+210-213: "SCARA Robot"
+214-217: "Cartesian Coordinate Robot"
+218-221: "Wafer Transfer Robot"
+222-225: "Humanoid Robot"
+226-229: "Quadruped Robot"
+230-233: "Mobile Manipulator"
+234-237: "Dual-Arm Robot"
+238-247: "Industrial Robots"
+248-255: "Service Robots"
+```
+
+```mermaid
+---
 title: Embodied SDK Architecture
 ---
 packet
