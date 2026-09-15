@@ -75,34 +75,10 @@ packet
 64-71: "Waypoint Program Interpreter"
 72-87: "Digital Twin"
 88-95: "Asynchronous Action Executor"
-96-111: "Industrial Robots"
-112-127: "Service Robots"
-```
-
-```mermaid
----
-title: Embodied SDK Architecture
----
-packet
-0-15: "Actions"
-16-31: "Feedbacks"
-32-39: "Goal-Driven Mode (Skills)"
-40-47: "Reactive Driving Mode (Remote)"
-48-55: "Real-Time Channel (100Hz-1000Hz)"
-56-63: "High-Bandwidth Channel (10Hz-60Hz)"
-64-79: "GTOS"
-80-95: "RTOS"
-96-100: "Motion Rep"
-101-105: "Physics"
-106-111: "Sys Dynamics"
-112-117: "Signal Trans"
-118-122: "Coord Trans"
-123-127: "Clock Sampl"
-128-133: "Arm"
-134-139: "AMR"
-140-145: "Hand"
-146-151: "Leg"
-152-159: "Head"
+96-111: "GPOS"
+112-127: "RTOS"
+128-143: "Industrial Robots"
+144-159: "Service Robots"
 ```
 
 ## Harnesy
