@@ -75,8 +75,8 @@ packet
 64-71: "Waypoint Program Interpreter"
 72-87: "Digital Twin"
 88-95: "Asynchronous Action Executor"
-96-127: "Industrial Robots"
-128-159: "Service Robots"
+96-111: "Industrial Robots"
+112-127: "Service Robots"
 ```
 
 ```mermaid
