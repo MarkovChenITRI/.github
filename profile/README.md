@@ -71,7 +71,7 @@ title: Universal Embodied SDK Architecture
 packet
 0-15: "Sparse Waypoint Control"
 16-31: "Dense Action Control"
-32-63: "Agentic Orchestration for Sim-to-Real Validation"
+32-63: "Agentic Orchestration for Sim-to-Real Alignment"
 64-71: "Waypoint Program Interpreter"
 72-87: "Digital Twin"
 88-95: "Asynchronous Action Executor"
