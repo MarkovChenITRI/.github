@@ -69,9 +69,9 @@ In practice, the unified **Workflow** connects the upper `VoiceTextPerceive`, `S
 title: Universal Embodied SDK Architecture
 ---
 packet
-0-31: "Universal Embodied SDK for Embodied AI & Robotics"
-32-47: "Sparse Waypoint Control"
-48-63: "Dense Action Control"
+0-15: "Sparse Waypoint Control"
+16-31: "Dense Action Control"
+32-47: "Auto Tuning"
 64-71: "Waypoint Program Interpreter"
 72-87: "Digital Twin"
 88-95: "Asynchronous Action Executor"
