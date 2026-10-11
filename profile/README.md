@@ -111,7 +111,7 @@ packet
 32-47: "Chief of Staff"
 48-63: "Development Advisor"
 64-71: "Legal"
-72-79: "Investment"
+72-79: "Finance"
 80-87: "Technology"
 88-95: "Policy"
 96-105: "Project A"
