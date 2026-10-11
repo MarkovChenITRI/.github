@@ -105,12 +105,21 @@ To realize this vision, Harnesy centers on the System Owner, supported by a Chie
 ```mermaid
 ---
 title: Harnesy Architecture
+config:
+  packet:
+    showBits: false
 ---
 packet
 0-31: "主權｜Sovereignty — System Owner"
-32-63: "治理｜Governance — Chief of Staff · Development Advisor"
-64-95: "專業｜Expertise — 法務 Legal · 投資 Investment · 技術 Technology · 政策 Policy"
-96-127: "實踐｜Execution — Project A · Project B · Project C"
+32-47: "Chief of Staff"
+48-63: "Development Advisor"
+64-71: "法務 Legal"
+72-79: "投資 Investment"
+80-87: "技術 Technology"
+88-95: "政策 Policy"
+96-105: "Project A"
+106-115: "Project B"
+116-127: "Project C"
 ```
 
 ## About This Account
