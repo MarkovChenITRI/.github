@@ -115,8 +115,8 @@ packet
 80-87: "技術 Technology"
 88-95: "政策 Policy"
 96-105: "Project A"
-106-115: "Project B"
-116-127: "Project C"
+106-115: "..."
+116-127: "Project N"
 ```
 
 ## About This Account
