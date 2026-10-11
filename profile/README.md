@@ -107,7 +107,7 @@ To realize this vision, Harnesy centers on the System Owner, with the Chief of S
 title: Harnesy Architecture
 ---
 packet
-0-31: "主權 Sovereignty System"
+0-31: "主權系統 System Owner"
 32-47: "幕僚 Chief of Staff"
 48-63: "顧問 Development Advisor"
 64-71: "法務 Legal"
