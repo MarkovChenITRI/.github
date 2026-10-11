@@ -105,9 +105,6 @@ To realize this vision, Harnesy centers on the System Owner, supported by a Chie
 ```mermaid
 ---
 title: Harnesy Architecture
-config:
-  packet:
-    showBits: false
 ---
 packet
 0-31: "主權｜Sovereignty — System Owner"
