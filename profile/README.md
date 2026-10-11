@@ -107,9 +107,9 @@ To realize this vision, Harnesy centers on the System Owner, supported by a Chie
 title: Harnesy Architecture
 ---
 packet
-0-31: "主權｜Sovereignty — System Owner"
-32-47: "Chief of Staff"
-48-63: "Development Advisor"
+0-31: "主權 System Owner"
+32-47: "幕僚 Chief of Staff"
+48-63: "顧問 Development Advisor"
 64-71: "法務 Legal"
 72-79: "投資 Investment"
 80-87: "技術 Technology"
