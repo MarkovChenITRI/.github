@@ -107,42 +107,34 @@ To realize this vision, Harnesy centers on the System Owner, supported by a Chie
 title: Harnesy Architecture
 ---
 flowchart TB
-    subgraph L1["主權｜Sovereignty"]
+    subgraph L1["Sovereignty"]
         O["System Owner"]
     end
 
-    subgraph L2["治理｜Governance"]
+    subgraph L2["Governance"]
         direction LR
         C["Chief of Staff"]
         A["Development Advisor"]
     end
 
-    subgraph L3["專業｜Expertise"]
+    subgraph L3["Expertise"]
         direction LR
-        L["法務"]
-        I["投資"]
-        T["技術"]
-        P["政策"]
+        L["Legal"]
+        I["Investment"]
+        T["Technology"]
+        P["Policy"]
     end
 
-    subgraph L4["實踐｜Execution"]
+    subgraph L4["Execution"]
         direction LR
         P1["Project A"]
         P2["Project B"]
         P3["Project C"]
     end
 
-    O --> C
-    O --> A
-
-    C --> L & I & T & P
-
-    L --> P1 & P2 & P3
-    I --> P1 & P2 & P3
-    T --> P1 & P2 & P3
-    P --> P1 & P2 & P3
-
-    O -.-> P1 & P2 & P3
+    L1 --> L2
+    L2 --> L3
+    L3 --> L4
 ```
 
 ## About This Account
