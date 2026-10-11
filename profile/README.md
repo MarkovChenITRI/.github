@@ -85,29 +85,29 @@ packet
 
 ## Harnesy
 
-To free humans from routine work and allow them to focus on what truly deserves their attention, I proposed Harnesy, a personal AI Operating System built around the philosophy of Great Thoughts Time. By integrating mature community-developed Skills, specialized AI Agents, and persistent project knowledge, Harnesy delegates information gathering, task execution, and cross-domain coordination to AI, allowing humans to devote their time and attention to three essential pursuits:
+To free humans from routine work and allow them to focus on what truly deserves their attention, I proposed Harnesy, a personal **AI Operating System** built around the philosophy of **Great Thoughts Time**. By integrating mature community-developed Skills, specialized AI Agents, and persistent project knowledge, Harnesy delegates information gathering, task execution, and cross-domain coordination to AI, allowing humans to devote their time and attention to three essential pursuits:
 
-1. Examine your understanding of the world by actively seeking conflicting evidence and exploring how those contradictions can be explained.
+1. **Examine your understanding of the world by actively seeking conflicting evidence and exploring how those contradictions can be explained.**
    - Engage deeply with meaningful subjects to achieve compounding knowledge.
    - Remain open-minded and continuously update your understanding as new evidence emerges.
-2. Identify the most important problems worth solving now, with a plausible path toward progress.
+2. **Identify the most important problems worth solving now, with a plausible path toward progress.**
    - Where is my field heading?
    - Where do the most meaningful opportunities lie?
    - Does how I spend my time align with what I believe matters most?
    - How will this technology transform science and the institution I work in?
-3. Promote your research outcomes and turn valuable ideas into real-world impact.
+3. **Promote your research outcomes and turn valuable ideas into real-world impact.**
    - Practice clear and elegant writing, formal presentations, and informal conversations.
    - Learn to work within institutions and overcome excessive attachment to personal positions.
    - Periodically challenge yourself to move into new fields of research, exploring different knowledge and opportunities.
 
-To realize this vision, Harnesy centers on the System Owner, supported by a Chief of Staff that coordinates projects through GitHub repositories and mature Skills, dynamically drawing on four areas of expertise—Legal, Investment, Technology, and Policy—as projects evolve. In parallel, a Development Advisor uses Claude and ChatGPT Output Styles to help the user explore knowledge, refine their understanding, and strengthen communication skills. Together, these two roles support project execution and personal growth, enabling the System Owner to focus on important problems while continuously improving their ability to solve them.
+To realize this vision, Harnesy centers on the System Owner, with the Chief of Staff managing projects through **GitHub repositories** and mature Skills while integrating expertise in Legal, Investment, Technology, and Policy as projects evolve. Meanwhile, the Development Advisor uses **Claude** or **ChatGPT Output Styles** to help the user explore knowledge, refine their understanding, and strengthen communication skills through everyday interactions. Together, they connect project execution with personal growth, allowing the System Owner to devote more time to important problems while continuously improving their ability to solve them.
 
 ```mermaid
 ---
 title: Harnesy Architecture
 ---
 packet
-0-31: "主權 System Owner"
+0-31: "主權 Sovereignty System"
 32-47: "幕僚 Chief of Staff"
 48-63: "顧問 Development Advisor"
 64-71: "法務 Legal"
