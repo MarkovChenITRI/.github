@@ -42,8 +42,7 @@ Embedded AI System Architect specializing in heterogeneous‑accelerator runtime
 
 ## Experience
 
-<img align="right" src="resume-assets/july-2023-present.svg" alt="July 2023 – present"><b>AI Chip Application Engineer</b>, Industrial Technology Research Institute (ITRI)
-
+<img align="right" src="resume-assets/july-2023-present.svg" alt="July 2023 – present"><b>AI Chip Application Engineer</b>, Industrial Technology Research Institute (ITRI)<br>
 Developed heterogeneous‑accelerator runtime components and system‑level inference workflows, enabling consistent execution behavior and scalable deployment across multiple SoC/NPU/ASIC platforms.
 - Built a new VPU execution path on MTK Genio to enable multi‑engine inference and cross‑accelerator alignment.
 - Standardized deployment flows across 7+ accelerator platforms via unified runtime pipelines.
@@ -53,8 +52,7 @@ Developed heterogeneous‑accelerator runtime components and system‑level infe
 
 ## Projects
 
-<img align="right" src="resume-assets/dec-2023-dec-2025.svg" alt="Dec 2023 – Dec 2025"><b>Advanced Manufacturing Platform for Heterogeneously Integrated AI Chips</b>
-
+<img align="right" src="resume-assets/dec-2023-dec-2025.svg" alt="Dec 2023 – Dec 2025"><b>Advanced Manufacturing Platform for Heterogeneously Integrated AI Chips</b><br>
 Technical Program Owner & Lead Architect for a heterogeneous AI inference validation platform optimizing runtime efficiency across multi-engine edge systems. Focused on workload scheduling, memory‑access analysis, and cross‑SoC execution consistency.
 - Achieved 30–50% latency improvement through segmented and parallel multi‑engine scheduling.
 - Developed a VPU‑based analyzer profiling operator load and memory‑transfer patterns.
@@ -62,8 +60,7 @@ Technical Program Owner & Lead Architect for a heterogeneous AI inference valida
 - Validated across 7+ heterogeneous chips and 14 model‑family architectures.
 - Delivered 26+ deployment templates and SDK modules for consistent cross‑platform execution.
 
-<img align="right" src="resume-assets/jan-2024-present.svg" alt="Jan 2024 – present"><b>Chip and System Integration Platform for AI Application Service</b>
-
+<img align="right" src="resume-assets/jan-2024-present.svg" alt="Jan 2024 – present"><b>Chip and System Integration Platform for AI Application Service</b><br>
 Edge AI Deployment Owner for an end-to-end optimization and deployment system (ITRI AI Hub) improving model readiness across varied edge environments. Focused on quantization workflows, operator rewriting, and scalable deployment flows.
 - Drove platform adoption across 8 domains, 5 system integrators, and 10+ partner deployments.
 - Built optimization modules for quantization, pruning, and operator tuning.
@@ -71,8 +68,7 @@ Edge AI Deployment Owner for an end-to-end optimization and deployment system (I
 - Delivered 10+ enhancements, 5 tech transfers, 2 patents, and 2 IEEE papers.
 - Presented system results at AMD AI Solution Day and ITRI × NSTDA Joint Seminar.
 
-<img align="right" src="resume-assets/jan-2025-present.svg" alt="Jan 2025 – present"><b>AI Badminton Trainer (CES 2025)</b>
-
+<img align="right" src="resume-assets/jan-2025-present.svg" alt="Jan 2025 – present"><b>AI Badminton Trainer (CES 2025)</b><br>
 Technical Lead for an AI-based sports-training system integrating multi-node embedded vision processing, GPU-accelerated 3D tracking, and cloud-based LLM analytics. Focused on real-time pose estimation, training assessment, and smart-facility applications.
 - Demonstrated at CES 2025 and received the TWICE Pickup Award.
 - Developed an MDLA/Hailo-based embedded pipeline for low-latency 3D pose tracking.
@@ -98,14 +94,12 @@ Technical Lead for an AI-based sports-training system integrating multi-node emb
 
 ## Education
 
-<img align="right" src="resume-assets/sept-2020-sept-2022.svg" alt="Sept 2020 – Sept 2022"><b>National Taiwan University of Science and Technology</b>, Master of Business Administration in Industrial Management – New Taipei City, Taiwan
-
+<img align="right" src="resume-assets/sept-2020-sept-2022.svg" alt="Sept 2020 – Sept 2022"><b>National Taiwan University of Science and Technology</b>, Master of Business Administration in Industrial Management – New Taipei City, Taiwan<br>
 Artificial Intelligence | Deep learning optimization, representation learning, and intelligent automation systems
 - **Optimization** (Developed self‑supervised and attention‑based models for encoding and dynamic optimization)
 - **Automation** (Applied reinforcement learning to continuous control of industrial equipment, e.g., injection molder and CNC machines)
 
-<img align="right" src="resume-assets/sept-2015-june-2020.svg" alt="Sept 2015 – June 2020"><b>National Taiwan University of Science and Technology</b>, Bachelor of Business Administration in Industrial Management – New Taipei City, Taiwan
-
+<img align="right" src="resume-assets/sept-2015-june-2020.svg" alt="Sept 2015 – June 2020"><b>National Taiwan University of Science and Technology</b>, Bachelor of Business Administration in Industrial Management – New Taipei City, Taiwan<br>
 Applied AI & Computer Vision | Data‑driven automation, intelligent systems, and industrial ML applications
 - **Healthcare** (Built CV models for medical diagnostics, e.g., human motion analysis, tumor segmentation)
 - **Robotics** (Integrated AIoT systems for AGVs and robotic arms in smart manufacturing)
@@ -113,27 +107,22 @@ Applied AI & Computer Vision | Data‑driven automation, intelligent systems, an
 
 ## Selected Publications
 
-<img align="right" src="resume-assets/dec-2025.svg" alt="Dec 2025"><b>Incorporating Process Quality Capability into Process Parameter Tuning for High‑Voltage Power Cable Manufacturing</b>
-
+<img align="right" src="resume-assets/dec-2025.svg" alt="Dec 2025"><b>Incorporating Process Quality Capability into Process Parameter Tuning for High‑Voltage Power Cable Manufacturing</b><br>
 Chao-Lung Yang, Tzu-Hsien Chu, ***Guan‑Ying Chen***, Chae-Wu Huang<br>
 [10.1007/s00170-025-17161-8](https://doi.org/10.1007/s00170-025-17161-8) (The International Journal of Advanced Manufacturing Technology)
 
-<img align="right" src="resume-assets/sept-2025.svg" alt="Sept 2025"><b>VAE‑Augmented PoseFormer for Robust 3D Human Pose Estimation and a Knowledge‑Driven Prototype for Intelligent Badminton Coaching</b>
-
+<img align="right" src="resume-assets/sept-2025.svg" alt="Sept 2025"><b>VAE‑Augmented PoseFormer for Robust 3D Human Pose Estimation and a Knowledge‑Driven Prototype for Intelligent Badminton Coaching</b><br>
 Tsung-Sheng Cheng, ***Guan‑Ying Chen***, Chia-Hsuan Lu, You-Lin Yeh<br>
 International Symposium on Novel and Sustainable Technology
 
-<img align="right" src="resume-assets/june-2025.svg" alt="June 2025"><b>RAG-Based Badminton Tactics Recommendation System</b>
-
+<img align="right" src="resume-assets/june-2025.svg" alt="June 2025"><b>RAG-Based Badminton Tactics Recommendation System</b><br>
 Tsung-Sheng Cheng, ***Guan‑Ying Chen***, Chia-Hsuan Lu, You-Lin Yeh<br>
 [10.1109/ICCE-Taiwan66881.2025.11208074](https://doi.org/10.1109/ICCE-Taiwan66881.2025.11208074) (IEEE International Conference on Consumer Electronics)
 
-<img align="right" src="resume-assets/mar-2025.svg" alt="Mar 2025"><b>From Pharmacy to Home — A Medication Management System to Overcome the Digital Divide for the Elderly</b>
-
+<img align="right" src="resume-assets/mar-2025.svg" alt="Mar 2025"><b>From Pharmacy to Home — A Medication Management System to Overcome the Digital Divide for the Elderly</b><br>
 Tsung-Sheng Cheng, ***Guan‑Ying Chen***, Wei-Ji Lin, Cheng-Xin Zhang, Bo-Chen Wang, Cheng-Siou Wu<br>
 [10.1109/ICCT-Pacific63901.2025.11012839](https://doi.org/10.1109/ICCT-Pacific63901.2025.11012839) (IEEE International Conference on Consumer Technology)
 
-<img align="right" src="resume-assets/mar-2025.svg" alt="Mar 2025"><b>Statistical Density Analysis of Squeegee Blade and Pressure on Textile Screen Printing</b>
-
+<img align="right" src="resume-assets/mar-2025.svg" alt="Mar 2025"><b>Statistical Density Analysis of Squeegee Blade and Pressure on Textile Screen Printing</b><br>
 Chao-Lung Yang, Chi-Hao Chien, ***Guan‑Ying Chen***, Shu‑Yu Li<br>
 [10.1177/15280837251326240](https://doi.org/10.1177/15280837251326240) (Journal of Industrial Textiles)
